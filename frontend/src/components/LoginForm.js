@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { Link } from 'react-router-dom';
 
 const LoginForm = () => {
     const [user_email, setEmail] = useState('');
@@ -58,7 +59,7 @@ const LoginForm = () => {
           </form>
 
           <p className="account-link">
-              Ainda não possui uma conta? <a href="/register"> Solicitar Cadastro</a>
+              Ainda não possui uma conta? <Link to="/registerform">Solicitar Cadastro</Link>
             </p>
 
         </div>
