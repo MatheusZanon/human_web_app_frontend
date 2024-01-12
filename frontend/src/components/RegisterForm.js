@@ -5,17 +5,17 @@ const RegisterForm = () => {
     const [user_name, setUserName] = useState('');
     const [user_email, setUserEmail] = useState('');
     const [user_password, setUserPassword] = useState('');
-    const [role, setRole] = useState('');
-    const [hierarchy, setHierarchy] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [setor, setSetor] = useState('');
 
     const handleRegister = async () => {
         try {
-            const response = await fetch('http://localhost:5000/funcionarios', {
+            const response = await fetch('http://localhost:5000/solicitacao', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ user_name, user_email, user_password, role, hierarchy }),
+                body: JSON.stringify({ user_name, user_email, user_password, telefone, setor}),
             });
 
             if (response.ok) {
@@ -30,10 +30,30 @@ const RegisterForm = () => {
         }
     };
 
+    const handleTelefoneChange = (event) => {
+        // Lógica para formatar o número de telefone conforme necessário
+        // Neste exemplo, apenas permite números e adiciona um espaço a cada 4 dígitos
+        const inputTelefone = event.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+        
+        // Lógica para formatar o número no formato (99) 99999-9999
+        //let formattedTelefone = inputTelefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    
+        let formattedTelefone = '';
+
+        for (let i = 0; i < inputTelefone.length; i++) {
+        //if (i > 0 && i % 4 === 0) {
+        //    formattedTelefone += ' ';
+        //}
+        formattedTelefone += inputTelefone[i];
+        }
+
+        setTelefone(formattedTelefone);
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         handleRegister();
-    }
+    };
     
     return (
         <div className="container">
@@ -55,29 +75,27 @@ const RegisterForm = () => {
                         value={user_password} onChange={(e) => setUserPassword(e.target.value)}
                     />
 
+                    <label htmlFor="telefone" className="form-label" >Telefone:</label>
+                        <input 
+                            className="form-input"
+                            type="text"
+                            id="telefone"
+                            name="telefone"
+                            placeholder="Digite seu telefone"
+                            value={telefone}
+                            onChange={handleTelefoneChange}
+                        />
+
                     <div className="form-role">
-                        <label className="checkbox-label">Função:</label>
+                        <label className="checkbox-label">Setor:</label>
                         
                         <label htmlFor="role1" className="checkbox-label">Financeiro</label>
                         <input id="role1" type="checkbox" className="form-checkbox" 
-                            checked={role === 'financeiro'} onChange={() => setRole('financeiro')}
+                            checked={setor === 'financeiro'} onChange={() => setSetor('financeiro')}
                         />
                         <label htmlFor="role2" className="checkbox-label">RH</label>
                         <input id="role2" type="checkbox" className="form-checkbox" 
-                            checked={role === 'rh'} onChange={() => setRole('rh')}
-                        />
-                    </div>
-
-                    <div className="form-hierarchy">
-                        <label className="checkbox-label">Hierarquia:</label>
-                        
-                        <label htmlFor="hierarchy1" className="checkbox-label">Hierarquia 1</label>
-                        <input id="hierarchy1" type="checkbox" className="form-checkbox" 
-                            checked={hierarchy === 'hierarchy1'} onChange={() => setHierarchy('hierarchy1')}
-                        />
-                        <label htmlFor="hierarchy2" className="checkbox-label">Hierarquia 2</label>
-                        <input id="hierarchy2" type="checkbox" className="form-checkbox" 
-                            checked={hierarchy === 'hierarchy2'} onChange={() => setHierarchy('hierarchy2')}
+                            checked={setor === 'rh'} onChange={() => setSetor('rh')}
                         />
                     </div>
 
