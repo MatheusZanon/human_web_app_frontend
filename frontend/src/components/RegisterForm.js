@@ -19,14 +19,14 @@ const RegisterForm = () => {
             });
 
             if (response.ok) {
-                console.log('Cadastro bem-sucedido!');
+                console.log('Solicitação de cadastro criada com sucesso!');
                 // Aqui você pode redirecionar para a próxima página ou realizar outras ações após o cadastro
             } else {
-                console.error('Erro no cadastro.');
+                console.error('Erro na criação da solicitação de cadastro!.');
                 // Aqui você pode exibir uma mensagem de erro para o usuário
             }
         } catch (error) {
-            console.error('Erro ao realizar cadastro:', error);
+            console.error('Erro ao realizar solicitação:', error);
         }
     };
 
