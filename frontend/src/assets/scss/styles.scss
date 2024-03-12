@@ -1,0 +1,47 @@
+// Import Bootstrap functions, variables, and mixins
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+
+// Define custom colors
+$light: #e5d7a9;
+$dark: #2a2a2a;
+$primary: #ff7043;
+$secondary: #c3adad;
+$info: #f97316;
+$success: #22c55e;
+$warning: #e3e337;
+$danger: #ef4444;
+
+$human-black: #2a2a2a;
+$human-black-hover: #353535;
+$human-orange: #ff8f16;
+$human-white: #eaeaea;
+
+// Merge custom colors with Bootstrap's theme colors
+$custom-colors: (
+  'light': $light,
+  'dark': $dark,
+  'primary': $primary,
+  'secondary': $secondary,
+  'info': $info,
+  'success': $success,
+  'warning': $warning,
+  'danger': $danger,
+  'human-black': $human-black,
+  'human-black-hover': $human-black-hover,
+  'human-orange': $human-orange,
+  'human-white': $human-white,
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+$font-family-base: 'Roboto', sans-serif;
+$font-family-monospace: 'Space Mono', monospace;
+
+// Import Bootstrap SCSS files
+@import 'bootstrap/scss/bootstrap';

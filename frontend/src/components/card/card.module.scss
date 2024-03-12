@@ -1,0 +1,13 @@
+.card {
+  max-width: 300px;
+
+  .cardTags > *:not(:last-child) {
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 576px) {
+    .card {
+      max-width: 100%;
+    }
+  }
+}

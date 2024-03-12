@@ -1,0 +1,51 @@
+.sidebar {
+  position: fixed;
+  height: calc(100vh);
+  padding: 0 0.5rem;
+  -webkit-box-shadow: 15px 15px 35px -25px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 15px 15px 35px -25px rgba(0, 0, 0, 0.75);
+  box-shadow: 15px 15px 35px -25px rgba(0, 0, 0, 0.75);
+  overflow-y: hidden;
+  background-color: var(--bs-human-black);
+  z-index: 1;
+
+  .brandWrapper {
+    .brandTitle {
+      color: var(--bs-human-white);
+      font-weight: 600;
+    }
+  }
+
+  .toggleBtn {
+    color: var(--bs-human-white);
+  }
+
+  .navlist {
+    padding: 0.5rem 0rem;
+    margin: 0;
+    list-style: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+
+    .navlink {
+      padding: 0.5rem 0.5rem;
+      border-radius: 0.25rem;
+      text-decoration: none;
+
+      color: var(--bs-human-white);
+
+      &:hover {
+        background-color: var(--bs-human-black-hover);
+      }
+      &[aria-current='page'] {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--bs-primary);
+        border-radius: 0;
+        border-left: 2px solid var(--bs-human-orange);
+        background-color: var(--bs-human-black-hover);
+      }
+    }
+  }
+}

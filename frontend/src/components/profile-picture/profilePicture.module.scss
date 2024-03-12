@@ -1,0 +1,10 @@
+.dropdownItem {
+  &:hover {
+    color: var(--bs-primary);
+    background-color: var(--bs-tertiary-bg);
+  }
+
+  &.focus {
+    background-color: var(--bs-tertiary-bg);
+  }
+}
