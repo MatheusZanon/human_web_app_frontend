@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const schema = z.object({
   email: z.string().email('Email inválido'),
@@ -11,6 +11,8 @@ const schema = z.object({
 type LoginData = z.infer<typeof schema>;
 
 function Login() {
+  const navigate = useNavigate(); 
+  
   const {
     register,
     handleSubmit,
@@ -34,6 +36,8 @@ function Login() {
     const parsedData = schema.safeParse(data);
     if (parsedData.success) {
       console.log(data);
+      navigate('/');
+      
     } else {
       console.log(`Error: ${parsedData.error}`);
     }
