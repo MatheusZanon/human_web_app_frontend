@@ -23,7 +23,7 @@ function ProfilePicture({ src, alt }: ProfilePictureProps) {
           <UserRound className='me-2' width={20} height={20} />
           Profile
         </Link>
-        <Link className={`dropdown-item ${styles.dropdownItem}`} to='#'>
+        <Link className={`dropdown-item ${styles.dropdownItem}`} to='/login'>
           <LogOut className='me-2' width={20} height={20} />
           Logout
         </Link>
