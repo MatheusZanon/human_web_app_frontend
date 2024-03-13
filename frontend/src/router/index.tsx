@@ -64,36 +64,13 @@ const allRoutes: route[] = [
   },
 ];
 
-/**
- * Interceptador de rotas protegidas
- * Se não tiver o token de autenticação redireciona para a página de login
- */
-function ProtectedRouteInterceptor({ children }: { children: React.ReactNode }) {
-  const isAuthenticated = !!localStorage.getItem('token');
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated && location.pathname !== '/login') {
-      navigate('/login', { replace: true });
-    }
-  }, [isAuthenticated, location.pathname, navigate]);
-
-  return children;
-}
-
-const protectedRoutes = allRoutes.map((route) => ({
-  ...route,
-  element: <ProtectedRouteInterceptor>{route.element}</ProtectedRouteInterceptor>,
-}));
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout />,
-    children: protectedRoutes.map((route) => ({
-      path: route.path,
-      element: route.element,
+    children: allRoutes.map(({ path, element }) => ({
+      path, element
     })),
   },
   {
