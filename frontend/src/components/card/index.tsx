@@ -1,4 +1,4 @@
-import { fromNow, fromUnixTimestamp } from '@/libs';
+import { fromNow } from '@/libs';
 import styles from './card.module.scss';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
@@ -8,13 +8,14 @@ type CardProps = {
   image: string;
   title: string;
   text: string;
+  categoria: string;
   details_link: string;
   btn: string;
   executions: number;
-  last_execution: number;
+  last_execution: string;
 };
 
-function Card({ image, title, text, details_link, btn, executions, last_execution, children }: CardProps) {
+function Card({ image, title, text, categoria, details_link, btn, executions, last_execution, children }: CardProps) {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -34,11 +35,14 @@ function Card({ image, title, text, details_link, btn, executions, last_executio
           <hr />
           <div className={`${styles.cardTags}`}>
             <p className='fw-bold d-flex justify-content-between'>
+              Categoria: <span className='text-muted fw-normal'>{categoria}</span>
+              </p>
+            <p className='fw-bold d-flex justify-content-between'>
               Execuções: <span className='text-muted fw-normal'>{executions}</span>
             </p>
             <p className='fw-bold d-flex justify-content-between'>
               Ultima execução:{' '}
-              <span className='text-muted fw-normal'>{fromNow(fromUnixTimestamp(last_execution))}</span>
+              <span className='text-muted fw-normal'>{fromNow(new Date(last_execution))}</span>
             </p>
           </div>
           <button type='button' className='btn btn-primary' onClick={() => setShowModal(true)}>
