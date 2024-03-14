@@ -1,5 +1,5 @@
-import { createBrowserRouter, useLocation, useNavigate } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import { createBrowserRouter } from 'react-router-dom';
+import React from 'react';
 
 /**
  * Layout
@@ -18,12 +18,13 @@ import Register from '@/pages/register';
  * Paginas
  */
 import Home from '@/pages/home';
-import Dashboard from '@/pages/dashboard/';
+import Robos from '@/pages/robos';
 import Profile from '@/pages/profile';
 
 /**
  * Robos
- */
+*/
+import RoboDetalhes from '@/pages/robos/detalhes';
 import Financeiro from '@/pages/robos/financeiro/financeiro';
 
 /**
@@ -44,7 +45,11 @@ const allRoutes: route[] = [
   },
   {
     path: '/robos',
-    element: <Dashboard />,
+    element: <Robos />,
+  },
+  {
+    path: '/robos/:roboId',
+    element: <RoboDetalhes />
   },
   {
     path: '/robos/financeiro',
