@@ -14,8 +14,12 @@ function Robos() {
       <div className='px-3 pb-3 shadow rounded'>
         <h1 className='my-2'>Robôs</h1>
         <div className='d-flex gap-2'>
-          <button  className='btn btn-primary' onClick={() => seedRobos()}>Seed Robos</button>
-          <button  className='btn btn-danger' onClick={() => deleteRobos()}>Seed Robos</button>
+          <button className='btn btn-primary' onClick={() => seedRobos()}>
+            Seed Robos
+          </button>
+          <button className='btn btn-danger' onClick={() => deleteRobos()}>
+            Seed Robos
+          </button>
         </div>
         <div className='d-flex gap-2 flex-wrap'>
           {robos.isSuccess &&
