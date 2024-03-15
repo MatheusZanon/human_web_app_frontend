@@ -36,13 +36,12 @@ function Card({ image, title, text, categoria, details_link, btn, executions, la
           <div className={`${styles.cardTags}`}>
             <p className='fw-bold d-flex justify-content-between'>
               Categoria: <span className='text-muted fw-normal'>{categoria}</span>
-              </p>
+            </p>
             <p className='fw-bold d-flex justify-content-between'>
               Execuções: <span className='text-muted fw-normal'>{executions}</span>
             </p>
             <p className='fw-bold d-flex justify-content-between'>
-              Ultima execução:{' '}
-              <span className='text-muted fw-normal'>{fromNow(new Date(last_execution))}</span>
+              Ultima execução: <span className='text-muted fw-normal'>{fromNow(new Date(last_execution))}</span>
             </p>
           </div>
           <button type='button' className='btn btn-primary' onClick={() => setShowModal(true)}>
@@ -64,12 +63,7 @@ function Card({ image, title, text, categoria, details_link, btn, executions, la
               </div>
               <div className='modal-body'>{children}</div>
               <div className='modal-footer'>
-                <button
-                  type='button'
-                  className='btn btn-secondary'
-                  data-bs-dismiss='modal'
-                  onClick={() => setShowModal(false)}
-                >
+                <button type='button' className='btn' data-bs-dismiss='modal' onClick={() => setShowModal(false)}>
                   Close
                 </button>
               </div>

@@ -35,9 +35,7 @@ function Login() {
   function onSubmit(data: LoginData) {
     const parsedData = schema.safeParse(data);
     if (parsedData.success) {
-      console.log(data);
       navigate('/');
-      
     } else {
       console.log(`Error: ${parsedData.error}`);
     }
