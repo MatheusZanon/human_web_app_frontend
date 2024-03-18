@@ -3,6 +3,8 @@ import styles from './main.module.scss';
 import { useContext } from 'react';
 import { SidebarContext } from '../aside';
 import { motion, useMotionValue } from 'framer-motion';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Main() {
   const { open } = useContext(SidebarContext);
@@ -10,6 +12,7 @@ function Main() {
   const marginLeft = useMotionValue(open ? '256px' : '56px');
 
   return (
+    <>
     <motion.main
       className={`${styles.main}`}
       initial={{ width: 'calc(100% - 256px)', marginLeft: '256px' }}
@@ -19,7 +22,9 @@ function Main() {
     >
       <Outlet />
     </motion.main>
-  );
+    <ToastContainer />
+    </>  
+    );
 }
 
 export default Main;
