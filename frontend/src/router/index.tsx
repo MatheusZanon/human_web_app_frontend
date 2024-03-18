@@ -42,39 +42,39 @@ type route = {
 
 const allRoutes: route[] = [
   {
-    path: '/home',
+    path: '',
     element: <Home />,
   },
   {
-    path: '/dashboard',
+    path: 'dashboard',
     element: <Dashboard />,
   },
   {
-    path: '/robos',
+    path: 'robos',
     element: <Robos />,
   },
   {
-    path: '/robos/:roboId',
+    path: 'robos/:roboId',
     element: <RoboDetalhes />,
   },
   {
-    path: '/robos/financeiro',
+    path: 'robos/financeiro',
     element: <Financeiro />,
   },
   {
-    path: '/robos/rh',
+    path: 'robos/rh',
     element: <RH />,
   },
   {
-    path: '/relatorios',
+    path: 'relatorios',
     element: <Relatorios />,
   },
   {
-    path: '/relatorios/valores-financeiro',
+    path: 'relatorios/valores-financeiro',
     element: <ValoresFinanceiro />,
   },
   {
-    path: '/profile',
+    path: 'profile',
     element: <Profile />,
   },
 ];
@@ -100,7 +100,7 @@ const router = createBrowserRouter([
     path: '/main',
     element: <MainLayout />,
     children: allRoutes.map(({ path, element }) => ({
-      path: `/main/${path}`,
+      path,
       element,
     })),
   },
