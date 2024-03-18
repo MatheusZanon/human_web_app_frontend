@@ -2,10 +2,12 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 
 const schema = z.object({
-  email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'É necessário pelo menos 6 caracteres'),
+  username: z.string().min(2, 'Nome de usuário inválido'),
+  password: z.string().min(2, 'É necessário pelo menos 6 caracteres'),
 });
 
 type LoginData = z.infer<typeof schema>;
@@ -13,11 +15,7 @@ type LoginData = z.infer<typeof schema>;
 function Login() {
   const navigate = useNavigate(); 
   
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginData>({
+  const { register, handleSubmit, formState: { errors }} = useForm<LoginData>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
@@ -26,7 +24,7 @@ function Login() {
     shouldUseNativeValidation: false,
     delayError: 500,
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
     resolver: zodResolver(schema),
@@ -35,9 +33,22 @@ function Login() {
   function onSubmit(data: LoginData) {
     const parsedData = schema.safeParse(data);
     if (parsedData.success) {
-      console.log(data);
-      navigate('/');
-      
+      axios.post('http://localhost:8000/api/login/', {
+        username: parsedData.data.username,
+        password: parsedData.data.password,
+      }).then(response => {
+        if (response.status == 200) {
+          const { token } = response.data;
+          navigate('/', token);
+        }    
+      }).catch(error => {
+        console.error('Houve um erro no login: ', error, error.response.status);
+        if (error.response.status == 404) {
+          toast("Credenciais Inválidas!");
+        } else if (error.response.status == 500) {
+          toast("Erro Interno do Servidor");
+        }
+      });
     } else {
       console.log(`Error: ${parsedData.error}`);
     }
@@ -48,11 +59,11 @@ function Login() {
       <img src='https://via.placeholder.com/250x100' alt={`Human logo`} className='w-50 mb-2' />
       <form onSubmit={handleSubmit(onSubmit)} className='w-100'>
         <div>
-          <label htmlFor='email' className='form-label'>
-            Email<span className='text-danger'>*</span>
+          <label htmlFor='username' className='form-label'>
+            Nome de Usuário:<span className='text-danger'>*</span>
           </label>
-          <input type='email' id='email' className='form-control' {...register('email')} />
-          {errors.email && <p className='text-danger'>{errors.email.message}</p>}
+          <input type='text' id='username' className='form-control' {...register('username')} />
+          {errors.username && <p className='text-danger'>{errors.username.message}</p>}
         </div>
         <div>
           <label htmlFor='password' className='form-label'>
@@ -74,6 +85,7 @@ function Login() {
           </span>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }
