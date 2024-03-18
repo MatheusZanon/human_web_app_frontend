@@ -23,8 +23,12 @@ export function toNow(date: Date) {
   return dayjs(date).toNow();
 }
 
-export function formatDate(date: Date) {
-  return dayjs(date).format('DD/MM/YYYY');
+export function formatDate(date: Date, format = 'DD/MM/YYYY') {
+  return dayjs(date).format(format);
+}
+
+export function formatIsoDate(date: string, format = 'DD/MM/YYYY') {
+  return dayjs(date).format(format);
 }
 
 export function fromUtcDate(date: string) {

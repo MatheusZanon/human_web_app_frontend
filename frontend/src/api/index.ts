@@ -1,8 +1,14 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getRobos } from './http/robos/';
-import { postRobos } from './http/robos/postRobos';
 import { queryClient } from '@/utils/queryClient';
-import { deleteRobos } from './http/robos/deleteRobos';
+import {
+  getRobos,
+  getRoboById,
+  getRoboParametrosById,
+  postRobos,
+  deleteRobos,
+  postExecutarRobo,
+  RoboParametrosType,
+} from './http/';
 
 export function useRobos() {
   return useQuery({
@@ -11,24 +17,51 @@ export function useRobos() {
   });
 }
 
+export function useRoboById({ roboId }: { roboId: string }) {
+  return useQuery({
+    queryKey: ['robo', roboId],
+    queryFn: () => getRoboById({ robo_id: roboId }),
+    enabled: !!roboId,
+  });
+}
+
+export function useRoboParametrosById({ roboId }: { roboId: string }) {
+  return useQuery({
+    queryKey: ['robo', roboId, 'parametros'],
+    queryFn: () => getRoboParametrosById({ robo_id: roboId }),
+    enabled: !!roboId,
+  });
+}
+
 export function useSeedRobos() {
   return useMutation({
+    mutationKey: ['robos'],
     mutationFn: () => {
       return postRobos();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['robos'] });
-    }
-  })
+    },
+  });
 }
 
 export function useDeleteRobos() {
   return useMutation({
+    mutationKey: ['robos'],
     mutationFn: () => {
       return deleteRobos();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['robos'] });
-    }
-  })
+    },
+  });
+}
+
+export function useExecutarRobo({ roboId }: { roboId: string }) {
+  return useMutation({
+    mutationKey: ['robo', roboId, 'executar'],
+    mutationFn: (data: RoboParametrosType) => {
+      return postExecutarRobo({ roboId, data });
+    },
+  });
 }

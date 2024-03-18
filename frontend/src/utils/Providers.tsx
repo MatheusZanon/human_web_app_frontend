@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/utils/queryClient';
 import router from '@/router';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Providers = [ComponentType<any>, ComponentProps<any>?][];
 
 const combineProviders = (providers: Providers): React.FC =>
@@ -25,3 +26,4 @@ export const AllProviders = combineProviders([
   [QueryClientProvider, { client: queryClient }],
   [RouterProvider, { router: router }],
 ]);
+
