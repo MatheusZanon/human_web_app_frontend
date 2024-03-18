@@ -72,7 +72,7 @@ function Register() {
         if (response.status == 201){
           toast("Solicitação de Cadastro efetuada com sucesso!");
           setTimeout(() => {
-            navigate('/login');
+            navigate('/');
           }, 1000);
         }
       }).catch(error => {
@@ -147,7 +147,7 @@ function Register() {
         <div className='row mt-2'>
           <span className='text-muted'>
             Já possui uma conta?{' '}
-            <Link to='/login' className='text-decoration-none text-primary'>
+            <Link to='/' className='text-decoration-none text-primary'>
               Clique aqui
             </Link>{' '}
             para entrar no sistema

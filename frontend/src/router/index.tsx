@@ -25,7 +25,8 @@ import Profile from '@/pages/profile';
  * Robos
  */
 import RoboDetalhes from '@/pages/robos/detalhes';
-import Financeiro from '@/pages/robos/financeiro/financeiro';
+import Financeiro from '@/pages/robos/financeiro';
+import RH from '@/pages/robos/rh';
 
 /**
  * Relatorios
@@ -41,7 +42,7 @@ type route = {
 
 const allRoutes: route[] = [
   {
-    path: '/',
+    path: '/home',
     element: <Home />,
   },
   {
@@ -61,6 +62,10 @@ const allRoutes: route[] = [
     element: <Financeiro />,
   },
   {
+    path: '/robos/rh',
+    element: <RH />,
+  },
+  {
     path: '/relatorios',
     element: <Relatorios />,
   },
@@ -77,14 +82,6 @@ const allRoutes: route[] = [
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <MainLayout />,
-    children: allRoutes.map(({ path, element }) => ({
-      path,
-      element,
-    })),
-  },
-  {
-    path: '/login',
     element: (
       <BlankLayout>
         <Login />
@@ -98,6 +95,14 @@ const router = createBrowserRouter([
         <Register />
       </BlankLayout>
     ),
+  },
+  {
+    path: '/main',
+    element: <MainLayout />,
+    children: allRoutes.map(({ path, element }) => ({
+      path: `/main/${path}`,
+      element,
+    })),
   },
   {
     path: '*',

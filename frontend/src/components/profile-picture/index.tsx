@@ -19,11 +19,11 @@ function ProfilePicture({ src, alt }: ProfilePictureProps) {
         <img src={src} alt={`${alt} profile picture`} className='img-fluid rounded-circle' />
       </button>
       <div className='dropdown-menu'>
-        <Link className={`dropdown-item ${styles.dropdownItem}`} to={'/profile'}>
+        <Link className={`dropdown-item ${styles.dropdownItem}`} to={'/main/profile'}>
           <UserRound className='me-2' width={20} height={20} />
           Profile
         </Link>
-        <Link className={`dropdown-item ${styles.dropdownItem}`} to='/login'>
+        <Link className={`dropdown-item ${styles.dropdownItem}`} to='/'>
           <LogOut className='me-2' width={20} height={20} />
           Logout
         </Link>

@@ -2,7 +2,7 @@ import { useRobos } from '@/api';
 import Card from '@/components/card';
 import logo from '@/assets/react.svg';
 import { useSeedRobos, useDeleteRobos } from '@/api';
-import Parametros from './parametros';
+import Parametros from './robo_parametros';
 function Robos() {
   const robos = useRobos();
 
@@ -30,7 +30,7 @@ function Robos() {
                 image={logo}
                 text={robo.descricao}
                 categoria={robo.categoria}
-                details_link={'/robos/' + robo.id}
+                details_link={'/main/robos/' + robo.id}
                 btn={'Executar'}
                 executions={robo.execucoes}
                 last_execution={robo.ultima_execucao}

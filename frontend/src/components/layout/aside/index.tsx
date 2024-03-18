@@ -92,25 +92,25 @@ function Sidebar() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <NavItem icon={<Home className={open ? 'me-2' : ''} />} title={open ? 'Home' : ''} to='/' />
+        <NavItem icon={<Home className={open ? 'me-2' : ''} />} title={open ? 'Home' : ''} to='/main/home' />
         <li className='nav-item'>
           <SubMenu sbmIcon={<Bot className={open ? 'me-2' : ''} />} sbmTitle='Robôs' parentOpen={open}>
-            <NavItem icon={<Bot className={open ? 'me-2' : ''} />} title={open ? 'Todos' : ''} to='/robos' />
+            <NavItem icon={<Bot className={open ? 'me-2' : ''} />} title={open ? 'Todos' : ''} to='/main/robos' />
             <NavItem
               icon={<Bot className={open ? 'me-2' : ''} />}
               title={open ? 'Financeiro' : ''}
-              to='/robos/financeiro'
+              to='/main/robos/financeiro'
             />
-            <NavItem icon={<Bot className={open ? 'me-2' : ''} />} title={open ? 'RH' : ''} to='/robos/rh' />
+            <NavItem icon={<Bot className={open ? 'me-2' : ''} />} title={open ? 'RH' : ''} to='/main/robos/rh' />
           </SubMenu>
         </li>
         <li className='nav-item'>
           <SubMenu sbmIcon={<LineChart className={open ? 'me-2' : ''} />} sbmTitle='Relatórios' parentOpen={open}>
-            <NavItem icon={<LineChart className={open ? 'me-2' : ''} />} title={open ? 'Todos' : ''} to='/relatorios' />
+            <NavItem icon={<LineChart className={open ? 'me-2' : ''} />} title={open ? 'Todos' : ''} to='/main/relatorios' />
             <NavItem
               icon={<LineChart className={open ? 'me-2' : ''} />}
               title={open ? 'Valores Financeiro' : ''}
-              to='/relatorios/valores-financeiro'
+              to='/main/relatorios/valores-financeiro'
             />
           </SubMenu>
         </li>
@@ -119,7 +119,6 @@ function Sidebar() {
           title={open ? 'Registrar' : ''}
           to='/register'
         />
-        <NavItem icon={<LogIn className={open ? 'me-2' : ''} />} title={open ? 'Login' : ''} to='/login' />
       </motion.ul>
     </motion.nav>
   );

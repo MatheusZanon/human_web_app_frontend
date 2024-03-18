@@ -39,7 +39,7 @@ function Login() {
       }).then(response => {
         if (response.status == 200) {
           const { token } = response.data;
-          navigate('/', token);
+          navigate('/main/home', token);
         }    
       }).catch(error => {
         console.error('Houve um erro no login: ', error, error.response.status);

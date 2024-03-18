@@ -1,5 +1,5 @@
 function Financeiro() {
-  return <div>Folha</div>;
+  return <div>Financeiro</div>;
 }
 
 export default Financeiro;
