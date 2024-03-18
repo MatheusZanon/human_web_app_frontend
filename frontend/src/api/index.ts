@@ -35,6 +35,7 @@ export function useRoboParametrosById({ roboId }: { roboId: string }) {
 
 export function useSeedRobos() {
   return useMutation({
+    mutationKey: ['robos'],
     mutationFn: () => {
       return postRobos();
     },
@@ -46,6 +47,7 @@ export function useSeedRobos() {
 
 export function useDeleteRobos() {
   return useMutation({
+    mutationKey: ['robos'],
     mutationFn: () => {
       return deleteRobos();
     },
@@ -57,6 +59,7 @@ export function useDeleteRobos() {
 
 export function useExecutarRobo({ roboId }: { roboId: string }) {
   return useMutation({
+    mutationKey: ['robo', roboId, 'executar'],
     mutationFn: (data: RoboParametrosType) => {
       return postExecutarRobo({ roboId, data });
     },

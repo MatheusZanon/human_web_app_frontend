@@ -75,7 +75,7 @@ function Parametros({ id }: { id: string }) {
 
   const onSubmit = (data: RoboParametrosType) => {
     executarRobo(data);
-  }
+  };
 
   return (
     <>
@@ -88,9 +88,7 @@ function Parametros({ id }: { id: string }) {
               <input
                 type={parametro.parametro_info.tipo.toLowerCase()}
                 defaultValue={
-                  parametro.parametro_info.tipo.toLowerCase() === 'date'
-                    ? new Date(parametro.valor).toISOString().slice(0, 10)
-                    : parametro?.valor
+                  parametro.parametro_info.tipo.toLowerCase() === 'date' ? parametro?.valor : parametro?.valor
                 }
                 {...register(parametro.parametro_info.nome)}
                 className='form-control'
@@ -117,4 +115,3 @@ function Parametros({ id }: { id: string }) {
 }
 
 export default Parametros;
-

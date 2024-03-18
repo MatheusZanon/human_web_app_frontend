@@ -23,7 +23,7 @@ import Profile from '@/pages/profile';
 
 /**
  * Robos
-*/
+ */
 import RoboDetalhes from '@/pages/robos/detalhes';
 import Financeiro from '@/pages/robos/financeiro/financeiro';
 
@@ -32,6 +32,7 @@ import Financeiro from '@/pages/robos/financeiro/financeiro';
  */
 import Relatorios from '@/pages/relatorios';
 import ValoresFinanceiro from '@/pages/relatorios/valores-financeiro';
+import Dashboard from '@/pages/dashboard';
 
 type route = {
   path: string;
@@ -44,12 +45,16 @@ const allRoutes: route[] = [
     element: <Home />,
   },
   {
+    path: '/dashboard',
+    element: <Dashboard />,
+  },
+  {
     path: '/robos',
     element: <Robos />,
   },
   {
     path: '/robos/:roboId',
-    element: <RoboDetalhes />
+    element: <RoboDetalhes />,
   },
   {
     path: '/robos/financeiro',
@@ -69,13 +74,13 @@ const allRoutes: route[] = [
   },
 ];
 
-
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout />,
     children: allRoutes.map(({ path, element }) => ({
-      path, element
+      path,
+      element,
     })),
   },
   {

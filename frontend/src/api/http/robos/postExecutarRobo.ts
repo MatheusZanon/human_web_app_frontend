@@ -5,6 +5,6 @@ export type RoboParametrosType = {
 };
 
 export async function postExecutarRobo({ roboId, data }: { roboId: string; data: RoboParametrosType }) {
-  const response = await api.post(`robos/${roboId}/executar`, data).then((res) => res.data);
+  const response = await api.post(`robos/${roboId}/executar/`, data).then((res) => res.data);
   return response;
 }

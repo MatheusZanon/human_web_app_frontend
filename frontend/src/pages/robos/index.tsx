@@ -2,7 +2,7 @@ import { useRobos } from '@/api';
 import Card from '@/components/card';
 import logo from '@/assets/react.svg';
 import { useSeedRobos, useDeleteRobos } from '@/api';
-import Parametros from './Parametros';
+import Parametros from './parametros';
 function Robos() {
   const robos = useRobos();
 
