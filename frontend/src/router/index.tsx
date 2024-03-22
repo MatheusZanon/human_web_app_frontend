@@ -1,5 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import React from 'react';
+import RequireAuth from './require_auth';
+
 
 /**
  * Layout
@@ -43,39 +45,40 @@ type route = {
 const allRoutes: route[] = [
   {
     path: '',
-    element: <Home />,
+    element: <Home />
   },
   {
     path: 'dashboard',
-    element: <Dashboard />,
+    element: <Dashboard />
+
   },
   {
     path: 'robos',
-    element: <Robos />,
+    element: <Robos />
   },
   {
     path: 'robos/:roboId',
-    element: <RoboDetalhes />,
+    element: <RoboDetalhes />
   },
   {
     path: 'robos/financeiro',
-    element: <Financeiro />,
+    element: <Financeiro />
   },
   {
     path: 'robos/rh',
-    element: <RH />,
+    element: <RH />
   },
   {
     path: 'relatorios',
-    element: <Relatorios />,
+    element: <Relatorios />
   },
   {
     path: 'relatorios/valores-financeiro',
-    element: <ValoresFinanceiro />,
+    element: <ValoresFinanceiro />
   },
   {
     path: 'profile',
-    element: <Profile />,
+    element: <Profile />
   },
 ];
 
@@ -98,7 +101,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/main',
-    element: <MainLayout />,
+    element: (
+      <RequireAuth>
+        <MainLayout />
+      </RequireAuth>
+    ),
     children: allRoutes.map(({ path, element }) => ({
       path,
       element,

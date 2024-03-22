@@ -68,6 +68,9 @@ function Register() {
         last_name: parsedData.data.lastname,
         email: parsedData.data.email,
         password: parsedData.data.password,
+        rg: null,
+        cpf: parsedData.data.cpf,
+        telefone_celular: null,
       }).then(response => {
         if (response.status == 201){
           toast("Solicitação de Cadastro efetuada com sucesso!");

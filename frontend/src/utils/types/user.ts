@@ -1,10 +1,8 @@
 export type User = {
   id: number;
+  username: string;
   first_name: string;
   last_name: string;
   email: string;
-  date_of_birth: string;
-  age: number;
-  country: string;
-  phone: string;
+  is_superuser: boolean;
 };

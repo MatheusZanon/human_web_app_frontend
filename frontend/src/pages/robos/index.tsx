@@ -1,7 +1,6 @@
-import { useRobos } from '@/api';
 import Card from '@/components/card';
 import logo from '@/assets/react.svg';
-import { useSeedRobos, useDeleteRobos } from '@/api';
+import { useRobos, useSeedRobos, useDeleteRobos } from '@/api/http/robos';
 import Parametros from './robo_parametros';
 function Robos() {
   const robos = useRobos();
@@ -18,7 +17,7 @@ function Robos() {
             Seed Robos
           </button>
           <button className='btn btn-danger' onClick={() => deleteRobos()}>
-            Seed Robos
+            Delete Robos
           </button>
         </div>
         <div className='d-flex gap-2 flex-wrap'>
@@ -30,7 +29,7 @@ function Robos() {
                 image={logo}
                 text={robo.descricao}
                 categoria={robo.categoria}
-                details_link={'/main/robos/' + robo.id}
+                details_link={'robos/' + robo.id}
                 btn={'Executar'}
                 executions={robo.execucoes}
                 last_execution={robo.ultima_execucao}

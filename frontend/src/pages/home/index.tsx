@@ -26,22 +26,18 @@ function Home() {
             <TableRow>
               <TableHeader>ID</TableHeader>
               <TableHeader>Nome</TableHeader>
-              <TableHeader>Email</TableHeader>
-              <TableHeader>RG</TableHeader>
-              <TableHeader>CPF</TableHeader>
-              <TableHeader>Telefone</TableHeader>
+              <TableHeader>Setor</TableHeader>
+              <TableHeader>Cargo</TableHeader>
               <TableHeader>Actions</TableHeader>
             </TableRow>
           </TableHead>
           <TableBody>
             {funcionarios.map(funcionario => (
-              <TableRow key={funcionario.id}>
-                <TableData>{funcionario.id}</TableData>
+              <TableRow key={funcionario.usuario_id}>
+                <TableData>{funcionario.usuario_id}</TableData>
                 <TableData>{funcionario.nome}</TableData>
-                <TableData>{funcionario.email}</TableData>
-                {funcionario.rg != null ? <TableData>{funcionario.rg}</TableData> : <TableData>-</TableData>}
-                {funcionario.cpf != null ? <TableData>{funcionario.cpf}</TableData> : <TableData>-</TableData>}
-                <TableData>{funcionario.telefone_celular}</TableData>
+                <TableData>{funcionario.setor}</TableData>
+                <TableData>{funcionario.cargo}</TableData>
                 <TableData>
                   <div className='d-flex gap-2'>
                     <button className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'>

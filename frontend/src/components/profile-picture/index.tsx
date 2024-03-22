@@ -8,6 +8,12 @@ type ProfilePictureProps = {
 };
 
 function ProfilePicture({ src, alt }: ProfilePictureProps) {
+  const logout = () => {
+    return () => {
+      localStorage.removeItem('accessToken');
+    };
+  }
+
   return (
     <div className='dropdown'>
       <button
@@ -21,9 +27,9 @@ function ProfilePicture({ src, alt }: ProfilePictureProps) {
       <div className='dropdown-menu'>
         <Link className={`dropdown-item ${styles.dropdownItem}`} to={'/main/profile'}>
           <UserRound className='me-2' width={20} height={20} />
-          Profile
+          Perfil
         </Link>
-        <Link className={`dropdown-item ${styles.dropdownItem}`} to='/'>
+        <Link className={`dropdown-item ${styles.dropdownItem}`} to='/' onClick={logout()}>
           <LogOut className='me-2' width={20} height={20} />
           Logout
         </Link>

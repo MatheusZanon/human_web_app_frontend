@@ -33,17 +33,28 @@ function Login() {
   function onSubmit(data: LoginData) {
     const parsedData = schema.safeParse(data);
     if (parsedData.success) {
-      axios.post('http://localhost:8000/api/login/', {
+      axios.post('http://localhost:8000/api/token/', {
         username: parsedData.data.username,
         password: parsedData.data.password,
       }).then(response => {
         if (response.status == 200) {
-          const { token } = response.data;
-          navigate('/main', token);
+          const { refresh, access } = response.data;
+          localStorage.setItem('accessToken', access);
+          axios.get('http://localhost:8000/api/user/', {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }).then(response => {
+            const usuario = response.data;
+            console.log(usuario)
+            setTimeout(() => {
+              navigate('/main');
+            }, 1000);
+          });
         }    
       }).catch(error => {
         console.error('Houve um erro no login: ', error, error.response.status);
-        if (error.response.status == 404) {
+        if (error.response.status == 401) {
           toast("Credenciais Inválidas!");
         } else if (error.response.status == 500) {
           toast("Erro Interno do Servidor");

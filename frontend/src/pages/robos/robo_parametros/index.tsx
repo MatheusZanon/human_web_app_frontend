@@ -1,4 +1,4 @@
-import { useExecutarRobo, useRoboParametrosById } from '@/api';
+import { useExecutarRobo, useRoboParametrosById } from '@/api/http/robos';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';

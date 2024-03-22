@@ -1,6 +1,4 @@
-import { useRoboById } from '@/api';
-import { useExecutarRobo } from '@/api';
-import { RoboParametrosType } from '@/api/http';
+import { useRoboById, useExecutarRobo, RoboParametrosType } from '@/api/http/robos';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
@@ -29,7 +27,7 @@ function RoboDetalhes() {
 
   return (
     <div>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <div>Carregando...</div>}
       {isSuccess && (
         <>
           <h1>Robo - {robo?.nome}</h1>

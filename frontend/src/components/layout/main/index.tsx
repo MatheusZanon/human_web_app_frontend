@@ -20,7 +20,7 @@ function Main() {
       animate={{ width: open ? 'calc(100% - 256px)' : 'calc(100% - 56px)', marginLeft: open ? '256px' : '56px' }}
       transition={{ type: 'spring', damping: 15, stiffness: 110 }}
     >
-      <Outlet />
+    <Outlet />
     </motion.main>
     <ToastContainer />
     </>  
