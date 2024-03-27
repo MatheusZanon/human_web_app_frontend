@@ -22,6 +22,8 @@ function Robos() {
           </button>
         </div>
         <div className='d-flex gap-2 flex-wrap'>
+          {robos.isLoading && <div>Loading...</div>}
+          {robos.isSuccess && robos.data.length === 0 && <div>No data</div>}
           {robos.isSuccess &&
             robos.data.map((robo) => (
               <Card

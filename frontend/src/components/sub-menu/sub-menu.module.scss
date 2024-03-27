@@ -16,6 +16,15 @@
     &:hover {
       background-color: var(--bs-human-black-hover);
     }
+
+    &[aria-current='page'] {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--bs-primary);
+      border-radius: 0;
+      border-left: 2px solid var(--bs-human-orange);
+      background-color: var(--bs-human-black-hover);
+    }
   }
 
   .subMenuList {
@@ -24,7 +33,7 @@
     list-style: none;
 
     .subMenuItem {
-      margin: 0 0.2rem;
+      margin-left: 0.5rem;
       border-radius: 0rem;
       text-decoration: none;
 
