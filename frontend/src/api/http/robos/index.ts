@@ -1,7 +1,74 @@
-export * from './getRobos';
-export * from './getRoboById';
-export * from './getRoboParametrosById';
-export * from './postRobos';
-export * from './deleteRobos';
-export * from './postExecutarRobo';
-export * from './getRoboRotinasById';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { queryClient } from '@/utils/queryClient';
+import { getRobos } from './getRobos';
+import { getRoboById } from './getRoboById';
+import { getRoboParametrosById } from './getRoboParametrosById';
+import { postRobos } from './postRobos';
+import { deleteRobos } from './deleteRobos';
+import { postExecutarRobo, type RoboParametrosType } from './postExecutarRobo';
+import { getRoboRotinasById } from './getRoboRotinasById';
+export type { RoboParametrosType }  from './postExecutarRobo';
+
+export function useRobos() {
+  return useQuery({
+    queryKey: ['robos'],
+    queryFn: () => getRobos(),
+  });
+}
+
+export function useRoboById({ roboId }: { roboId: string }) {
+  return useQuery({
+    queryKey: ['robo', roboId],
+    queryFn: () => getRoboById({ robo_id: roboId }),
+    enabled: !!roboId,
+  });
+}
+
+export function useRoboParametrosById({ roboId }: { roboId: string }) {
+  return useQuery({
+    queryKey: ['robo', roboId, 'parametros'],
+    queryFn: () => getRoboParametrosById({ robo_id: roboId }),
+    enabled: !!roboId,
+  });
+}
+
+export function useSeedRobos() {
+  return useMutation({
+    mutationKey: ['robos'],
+    mutationFn: () => {
+      return postRobos();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['robos'] });
+    },
+  });
+}
+
+export function useDeleteRobos() {
+  return useMutation({
+    mutationKey: ['robos'],
+    mutationFn: () => {
+      return deleteRobos();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['robos'] });
+    },
+  });
+}
+
+export function useExecutarRobo({ roboId }: { roboId: string }) {
+  return useMutation({
+    mutationKey: ['robo', roboId, 'executar'],
+    mutationFn: (data: RoboParametrosType) => {
+      return postExecutarRobo({ roboId, data });
+    },
+  });
+}
+
+export function useGetRoboRotinasById({ roboId }: { roboId: string }) {
+  return useQuery({
+    queryKey: ['robo', roboId, 'rotinas'],
+    queryFn: () => getRoboRotinasById({ robo_id: roboId }),
+    enabled: !!roboId,
+  });
+}

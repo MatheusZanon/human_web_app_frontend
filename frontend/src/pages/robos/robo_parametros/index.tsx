@@ -1,4 +1,4 @@
-import { useExecutarRobo, useRoboParametrosById, useRoboRotinasById } from '@/api';
+import { useExecutarRobo, useRoboParametrosById, useGetRoboRotinasById } from '@/api/http/robos';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,7 +14,7 @@ function Parametros({ id }: { id: string }) {
         roboId: id,
     });
 
-    const { data: roboRotinas, isSuccess: isRoboRotinasSuccess } = useRoboRotinasById({ roboId: id ? id : '' });
+    const { data: roboRotinas, isSuccess: isRoboRotinasSuccess } = useGetRoboRotinasById({ roboId: id ? id : '' });
     const createSchemaFromResponse = (response: typeof roboParametros) => {
         const schemaObject: Record<string, z.ZodType> = {};
 

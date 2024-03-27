@@ -1,5 +1,4 @@
-import { useRoboById, useRoboParametrosById, useRoboRotinasById } from '@/api';
-import { useExecutarRobo } from '@/api';
+import { useRoboById, useRoboParametrosById, useGetRoboRotinasById, useExecutarRobo } from '@/api/http/robos';
 import { RoboParametrosType } from '@/api/http';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -24,7 +23,7 @@ function RoboDetalhes() {
         isStale: isRoboDetalhesStale,
     } = useRoboById({ roboId: roboId ? roboId : '' });
 
-    const { data: roboRotinas, isSuccess: isRoboRotinasSuccess } = useRoboRotinasById({ roboId: roboId ? roboId : '' });
+    const { data: roboRotinas, isSuccess: isRoboRotinasSuccess } = useGetRoboRotinasById({ roboId: roboId ? roboId : '' });
 
     const { mutate: executarRobo } = useExecutarRobo({ roboId: roboId ? roboId : '' });
 
