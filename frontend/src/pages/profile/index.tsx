@@ -1,28 +1,13 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ProfileCard from '@/components/profile-card';
+import { useGetUser } from '@/api/http/user';
 
 function Profile() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:8000/api/user/', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      console.log("user", user)
-      setUser(response.data);
-    }
-    fetchUser()
-  }, []);
-
-
-  if (!user) {
+  const user = useGetUser();
+  
+  if (user.isError) {
     return <div>Nenhum usuário encontrado!</div>;
-  } else {
+  } else if (user.isSuccess) {
     return (
       <div className='px-3 pb-3 shadow rounded'>
         <h1>Perfil</h1>
@@ -34,7 +19,7 @@ function Profile() {
             <h2>Meus dados</h2>
             <div className='row'>
               <div className='col'>
-                <p>Nome: {user.username}</p>
+                <p>Nome: {user.data.username}</p>
                 <p>Cargo: Desenvolvedor</p>
                 <p>Setor: TI</p>
               </div>
@@ -45,7 +30,7 @@ function Profile() {
             </div>
             <div className='row'>
               <h3>Contato</h3>
-              <p>Email: {user.email}</p>
+              <p>Email: {user.data.email}</p>
               <p>Telefone: (00) 0 0000-0000</p>
             </div>
             <div className='row'>

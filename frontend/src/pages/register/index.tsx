@@ -76,10 +76,10 @@ function Register() {
           toast("Solicitação de Cadastro efetuada com sucesso!");
           setTimeout(() => {
             navigate('/');
-          }, 1000);
-        }
+          }, 500);
+        } 
       }).catch(error => {
-        console.error('Houve um erro na solicitação de cadastro: ', error)
+        toast.error(`Erro: ${error.response.data.error}`);
       });
     } else {
       console.log(`Error: ${parsedData.error}`);

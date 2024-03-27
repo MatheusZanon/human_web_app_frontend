@@ -40,7 +40,7 @@ function Login() {
         if (response.status == 200) {
           const { refresh, access } = response.data;
           localStorage.setItem('accessToken', access);
-          axios.get('http://localhost:8000/api/user/', {
+          axios.get('http://localhost:8000/api/token/verify/', {
             headers: {
               Authorization: `Bearer ${access}`,
             },
