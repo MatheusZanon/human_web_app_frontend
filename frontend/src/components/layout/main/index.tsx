@@ -13,18 +13,18 @@ function Main() {
 
   return (
     <>
-      <motion.main
-        className={`${styles.main}`}
-        initial={{ width: 'calc(100% - 256px)', marginLeft: '256px' }}
-        style={{ width, marginLeft }}
-        animate={{ width: open ? 'calc(100% - 256px)' : 'calc(100% - 56px)', marginLeft: open ? '256px' : '56px' }}
-        transition={{ type: 'spring', damping: 15, stiffness: 110 }}
-      >
-        <Outlet />
-      </motion.main>
-      <ToastContainer />
-    </>
-  );
+    <motion.main
+      className={`${styles.main}`}
+      initial={{ width: 'calc(100% - 256px)', marginLeft: '256px' }}
+      style={{ width, marginLeft }}
+      animate={{ width: open ? 'calc(100% - 256px)' : 'calc(100% - 56px)', marginLeft: open ? '256px' : '56px' }}
+      transition={{ type: 'spring', damping: 15, stiffness: 110 }}
+    >
+      <Outlet />
+    </motion.main>
+    <ToastContainer />
+    </>  
+    );
 }
 
 export default Main;

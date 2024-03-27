@@ -8,7 +8,6 @@ import {
   deleteRobos,
   postExecutarRobo,
   RoboParametrosType,
-  getRoboRotinasById,
 } from './http/';
 
 export function useRobos() {
@@ -30,14 +29,6 @@ export function useRoboParametrosById({ roboId }: { roboId: string }) {
   return useQuery({
     queryKey: ['robo', roboId, 'parametros'],
     queryFn: () => getRoboParametrosById({ robo_id: roboId }),
-    enabled: !!roboId,
-  });
-}
-
-export function useRoboRotinasById({ roboId }: { roboId: string }) {
-  return useQuery({
-    queryKey: ['robo', roboId, 'rotinas'],
-    queryFn: () => getRoboRotinasById({ robo_id: roboId }),
     enabled: !!roboId,
   });
 }

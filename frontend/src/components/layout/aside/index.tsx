@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, Bot, UserRoundPlus, LineChart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, Bot, LogIn, UserRoundPlus, LineChart, ChevronLeft, ChevronRight } from 'lucide-react';
 import logo from '@/assets/react.svg';
 import SubMenu from '@/components/sub-menu';
 import styles from './aside.module.scss';
@@ -33,13 +33,13 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 
 function NavItem({ icon, title, to }: { icon: React.ReactNode; title: string; to: string }) {
   const location = useLocation();
-  const isActive = location.pathname.split('/').slice(2).join('/') === to;
+  const isActive = location.pathname === to;
 
   return (
     <>
       <NavLink
         className={`d-flex align-items-center ${styles.navlink}`}
-        aria-current={isActive ? 'page' : false}
+        aria-current={isActive ? 'page' : undefined}
         to={to}
       >
         {icon}
@@ -54,7 +54,7 @@ function Sidebar() {
 
   return (
     <motion.nav
-      className={`d-block ${styles.sidebar}`}
+      className={`col-md-3 col-lg-2 d-block ${styles.sidebar}`}
       initial={{ width: '256px', top: '0' }}
       animate={{
         width: open ? '256px' : '56px',
@@ -95,21 +95,21 @@ function Sidebar() {
         <NavItem icon={<Home className={open ? 'me-2' : ''} />} title={open ? 'Home' : ''} to='' />
         <li className='nav-item'>
           <SubMenu sbmIcon={<Bot className={open ? 'me-2' : ''} />} sbmTitle='Robôs' parentOpen={open}>
-            <NavItem icon={<Bot className={'me-2'} />} title={'Todos'} to='robos' />
+            <NavItem icon={<Bot className={open ? 'me-2' : ''} />} title={open ? 'Todos' : ''} to='robos' />
             <NavItem
-              icon={<Bot className={'me-2'} />}
-              title={'Financeiro'}
+              icon={<Bot className={open ? 'me-2' : ''} />}
+              title={open ? 'Financeiro' : ''}
               to='robos/financeiro'
             />
-            <NavItem icon={<Bot className={'me-2'} />} title={'RH'} to='robos/rh' />
+            <NavItem icon={<Bot className={open ? 'me-2' : ''} />} title={open ? 'RH' : ''} to='robos/rh' />
           </SubMenu>
         </li>
         <li className='nav-item'>
           <SubMenu sbmIcon={<LineChart className={open ? 'me-2' : ''} />} sbmTitle='Relatórios' parentOpen={open}>
-            <NavItem icon={<LineChart className={'me-2'} />} title={'Todos'} to='relatorios' />
+            <NavItem icon={<LineChart className={open ? 'me-2' : ''} />} title={open ? 'Todos' : ''} to='relatorios' />
             <NavItem
-              icon={<LineChart className={'me-2'} />}
-              title={'Valores Financeiro'}
+              icon={<LineChart className={open ? 'me-2' : ''} />}
+              title={open ? 'Valores Financeiro' : ''}
               to='relatorios/valores-financeiro'
             />
           </SubMenu>
