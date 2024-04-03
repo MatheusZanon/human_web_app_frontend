@@ -2,7 +2,6 @@ import { createBrowserRouter } from 'react-router-dom';
 import React from 'react';
 import RequireAuth from './require_auth';
 
-
 /**
  * Layout
  */
@@ -38,83 +37,82 @@ import ValoresFinanceiro from '@/pages/relatorios/valores-financeiro';
 import Dashboard from '@/pages/dashboard';
 
 type route = {
-  path: string;
-  element: React.ReactNode;
+    path: string;
+    element: React.ReactNode;
 };
 
 const allRoutes: route[] = [
-  {
-    path: '',
-    element: <Home />
-  },
-  {
-    path: 'dashboard',
-    element: <Dashboard />
-
-  },
-  {
-    path: 'robos',
-    element: <Robos />
-  },
-  {
-    path: 'robos/:roboId',
-    element: <RoboDetalhes />
-  },
-  {
-    path: 'robos/financeiro',
-    element: <Financeiro />
-  },
-  {
-    path: 'robos/rh',
-    element: <RH />
-  },
-  {
-    path: 'relatorios',
-    element: <Relatorios />
-  },
-  {
-    path: 'relatorios/valores-financeiro',
-    element: <ValoresFinanceiro />
-  },
-  {
-    path: 'profile',
-    element: <Profile />
-  },
+    {
+        path: '',
+        element: <Home />,
+    },
+    {
+        path: 'dashboard',
+        element: <Dashboard />,
+    },
+    {
+        path: 'robos',
+        element: <Robos />,
+    },
+    {
+        path: 'robos/:roboId',
+        element: <RoboDetalhes />,
+    },
+    {
+        path: 'robos/financeiro',
+        element: <Financeiro />,
+    },
+    {
+        path: 'robos/rh',
+        element: <RH />,
+    },
+    {
+        path: 'relatorios',
+        element: <Relatorios />,
+    },
+    {
+        path: 'relatorios/valores-financeiro',
+        element: <ValoresFinanceiro />,
+    },
+    {
+        path: 'profile',
+        element: <Profile />,
+    },
 ];
 
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: (
-      <BlankLayout>
-        <Login />
-      </BlankLayout>
-    ),
-  },
-  {
-    path: '/register',
-    element: (
-      <BlankLayout>
-        <Register />
-      </BlankLayout>
-    ),
-  },
-  {
-    path: '/main',
-    element: (
-      <RequireAuth>
-        <MainLayout />
-      </RequireAuth>
-    ),
-    children: allRoutes.map(({ path, element }) => ({
-      path,
-      element,
-    })),
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+    {
+        path: '/',
+        element: (
+            <BlankLayout>
+                <Login />
+            </BlankLayout>
+        ),
+    },
+    {
+        path: '/register',
+        element: (
+            <BlankLayout>
+                <Register />
+            </BlankLayout>
+        ),
+    },
+    {
+        path: '/main',
+        element: (
+            <RequireAuth>
+                <MainLayout />
+            </RequireAuth>
+        ),
+        children: allRoutes.map(({ path, element }) => ({
+            path,
+            element,
+        })),
+    },
+    {
+        path: '*',
+        element: <NotFound />,
+    },
 ]);
 
 export default router;

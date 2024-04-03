@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 
 interface RequireAuthProps {
     children: React.ReactNode; // Define o tipo dos filhos como React.ReactNode
@@ -20,8 +21,9 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
                 return;
             }
             try {
-                const response = await axios.get('http://localhost:8000/api/token/verify/', { 
-                    headers: { Authorization: `Bearer ${accessToken}` }}); 
+                const response = await axios.get('http://localhost:8000/api/token/verify/', {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
                 if (response.status == 200) {
                     setIsAuthenticated(true);
                 }
@@ -38,11 +40,11 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
 
     if (isChecking) {
         return <div>Carregando...</div>; // Ou algum componente de loading
-      }
-    
-      if (!isAuthenticated) {
-        return <Navigate to="/" state={{ from: location }} replace />;
-      }
+    }
+
+    if (!isAuthenticated) {
+        return <Navigate to='/' state={{ from: location }} replace />;
+    }
 
     return <>{children}</>; // Renderiza os filhos se o usuário estiver autenticado
 };

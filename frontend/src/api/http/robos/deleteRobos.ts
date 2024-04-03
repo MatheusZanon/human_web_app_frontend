@@ -1,8 +1,7 @@
-import { api } from "@/utils/axios";
-import { Robo } from "@/utils/types/robo";
+import { api } from '@/utils/axios';
+import { Robo } from '@/utils/types/robo';
 
-export async function deleteRobos() {
-  const data = await api.delete<Robo[]>('robos').then((res) => res.data);
-  window.location.reload();
-  return data;
+export async function deleteRobos(id: number) {
+    const data = await api.delete<Robo>(`robos/${id}`).then((res) => res.data);
+    return data;
 }

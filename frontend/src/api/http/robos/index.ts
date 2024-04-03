@@ -7,68 +7,97 @@ import { postRobos } from './postRobos';
 import { deleteRobos } from './deleteRobos';
 import { postExecutarRobo, type RoboParametrosType } from './postExecutarRobo';
 import { getRoboRotinasById } from './getRoboRotinasById';
-export type { RoboParametrosType }  from './postExecutarRobo';
+import { CriarRoboType } from '@/utils/types/criar_robo';
+import { postParametros } from './postParametros';
+import { CriarParametroType } from '@/utils/types/criar_parametro';
+import { CriarRotinaType } from '@/utils/types/criar_rotina';
+import { postRotinas } from './postRotinas';
+export type { RoboParametrosType } from './postExecutarRobo';
 
 export function useRobos() {
-  return useQuery({
-    queryKey: ['robos'],
-    queryFn: () => getRobos(),
-  });
+    return useQuery({
+        queryKey: ['robos'],
+        queryFn: () => getRobos(),
+    });
 }
 
 export function useRoboById({ roboId }: { roboId: string }) {
-  return useQuery({
-    queryKey: ['robo', roboId],
-    queryFn: () => getRoboById({ robo_id: roboId }),
-    enabled: !!roboId,
-  });
+    return useQuery({
+        queryKey: [`robo/${roboId}`],
+        queryFn: () => getRoboById({ robo_id: roboId }),
+        enabled: !!roboId,
+    });
 }
 
 export function useRoboParametrosById({ roboId }: { roboId: string }) {
-  return useQuery({
-    queryKey: ['robo', roboId, 'parametros'],
-    queryFn: () => getRoboParametrosById({ robo_id: roboId }),
-    enabled: !!roboId,
-  });
+    return useQuery({
+        queryKey: [`robo/${roboId}/parametros`],
+        queryFn: () => getRoboParametrosById({ robo_id: roboId }),
+        enabled: !!roboId,
+    });
 }
 
-export function useSeedRobos() {
-  return useMutation({
-    mutationKey: ['robos'],
-    mutationFn: () => {
-      return postRobos();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['robos'] });
-    },
-  });
+export function useCreateRobo() {
+    return useMutation({
+        mutationKey: ['robos'],
+        mutationFn: (data: CriarRoboType) => {
+            return postRobos(data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['robos'] });
+        },
+    });
 }
 
-export function useDeleteRobos() {
-  return useMutation({
-    mutationKey: ['robos'],
-    mutationFn: () => {
-      return deleteRobos();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['robos'] });
-    },
-  });
+export function useDeleteRobo() {
+    return useMutation({
+        mutationKey: ['robos'],
+        mutationFn: (id: number) => {
+            return deleteRobos(id);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['robos'] });
+        },
+    });
 }
 
 export function useExecutarRobo({ roboId }: { roboId: string }) {
-  return useMutation({
-    mutationKey: ['robo', roboId, 'executar'],
-    mutationFn: (data: RoboParametrosType) => {
-      return postExecutarRobo({ roboId, data });
-    },
-  });
+    return useMutation({
+        mutationKey: [`robo/${roboId}/executar`],
+        mutationFn: (data: RoboParametrosType) => {
+            return postExecutarRobo({ roboId, data });
+        },
+    });
+}
+
+export function useCriarParametro({ roboId }: { roboId: string }) {
+    return useMutation({
+        mutationKey: [`robo/${roboId}/parametros/new`],
+        mutationFn: (data: CriarParametroType) => {
+            return postParametros(parseInt(roboId), data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros`] });
+        },
+    });
+}
+
+export function useCriarRotina({ roboId }: { roboId: string }) {
+    return useMutation({
+        mutationKey: [`robo/${roboId}/rotinas/new`],
+        mutationFn: (data: CriarRotinaType) => {
+            return postRotinas(parseInt(roboId), data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas`] });
+        },
+    });
 }
 
 export function useGetRoboRotinasById({ roboId }: { roboId: string }) {
-  return useQuery({
-    queryKey: ['robo', roboId, 'rotinas'],
-    queryFn: () => getRoboRotinasById({ robo_id: roboId }),
-    enabled: !!roboId,
-  });
+    return useQuery({
+        queryKey: [`robo/${roboId}/rotinas`],
+        queryFn: () => getRoboRotinasById({ robo_id: roboId }),
+        enabled: !!roboId,
+    });
 }
