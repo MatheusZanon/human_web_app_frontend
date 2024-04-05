@@ -1,42 +1,85 @@
-function TableHead({ children }: tableProps) {
-  return <thead className='align-middle'>{children}</thead>;
-}
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
-function TableBody({ children }: tableProps) {
-  return <tbody className='align-middle'>{children}</tbody>;
-}
-
-function TableFooter({ children }: tableProps) {
-  return <tfoot className='align-middle'>{children}</tfoot>;
-}
-
-function TableRow({ children }: tableProps) {
-  return <tr>{children}</tr>;
-}
-
-function TableHeader({ children }: tableProps) {
-  return (
-    <th colSpan={1} rowSpan={1}>
-      {children}
-    </th>
-  );
-}
-
-type tableDataProps = {
-  children: React.ReactNode;
-  colSpan?: number;
+type TableProps = {
+    children: React.ReactNode;
 };
 
-function TableData({ children, colSpan }: tableDataProps) {
-  return <td colSpan={colSpan}>{children}</td>;
-}
-
-type tableProps = {
-  children: React.ReactNode;
+type TableRowProps = {
+    children: React.ReactNode;
 };
 
-function Table({ children }: tableProps) {
-  return <table className='table table-hover'>{children}</table>;
+type TableHeaderProps = {
+    children: React.ReactNode;
+    sortable?: boolean;
+    columnKey?: string;
+    sortDirection?: string;
+    onSort?: () => void;
+};
+
+type TableDataProps = {
+    children: React.ReactNode;
+    colSpan?: number;
+};
+
+function Table({ children }: TableProps) {
+    return <table className='table table-hover'>{children}</table>;
 }
 
-export { Table, TableRow, TableHeader, TableHead, TableBody, TableData, TableFooter };
+function TableHeader({ children, sortable, columnKey, sortDirection, onSort }: TableHeaderProps) {
+    const handleSort = () => {
+        if (sortable && columnKey && onSort) {
+            onSort();
+        }
+    };
+    return (
+        <th colSpan={1} rowSpan={1} onClick={handleSort} style={{ cursor: sortable ? 'pointer' : 'default' }}>
+            <div className='d-flex justify-content-between align-items-center'>
+                {children}
+                {sortable && (
+                    <div className='d-flex flex-column'>
+                        <ChevronUp size={18} opacity={sortDirection === 'asc' ? 1 : 0.3} />
+                        <ChevronDown size={18} opacity={sortDirection === 'desc' ? 1 : 0.3} />
+                    </div>
+                )}
+            </div>
+        </th>
+    );
+}
+
+function TableHead({ children }: TableProps) {
+    return <thead className='align-middle'>{children}</thead>;
+}
+
+function TableBody({ children }: TableProps) {
+    return <tbody className='align-middle'>{children}</tbody>;
+}
+
+function TableRow({ children }: TableRowProps) {
+    return <tr>{children}</tr>;
+}
+
+function TableData({ children, colSpan }: TableDataProps) {
+    return <td colSpan={colSpan}>{children}</td>;
+}
+
+function TableFooter({ children }: TableProps) {
+    return <tfoot className='align-middle'>{children}</tfoot>;
+}
+
+function TableFilter({ children }: TableProps) {
+    return (
+        <td colSpan={1} rowSpan={1}>
+            {children}
+        </td>
+    );
+}
+
+function TableSort({ children }: TableProps) {
+    return (
+        <td colSpan={1} rowSpan={1}>
+            {children}
+        </td>
+    );
+}
+
+export { Table, TableRow, TableHeader, TableHead, TableBody, TableData, TableFooter, TableFilter, TableSort };

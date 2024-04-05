@@ -1,10 +1,15 @@
-.dropdownItem {
-  &:hover {
-    color: var(--bs-primary);
-    background-color: var(--bs-tertiary-bg);
-  }
+.profileInitials {
+    background-color: cornflowerblue;
+    color: black;
+}
 
-  &.focus {
-    background-color: var(--bs-tertiary-bg);
-  }
+.dropdownItem {
+    &:hover {
+        color: var(--bs-primary);
+        background-color: var(--bs-tertiary-bg);
+    }
+
+    &.focus {
+        background-color: var(--bs-tertiary-bg);
+    }
 }

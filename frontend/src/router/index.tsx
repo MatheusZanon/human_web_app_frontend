@@ -35,6 +35,7 @@ import RH from '@/pages/robos/rh';
 import Relatorios from '@/pages/relatorios';
 import ValoresFinanceiro from '@/pages/relatorios/valores-financeiro';
 import Dashboard from '@/pages/dashboard';
+import ActivateUsersTable from '@/pages/activate-users-table';
 
 type route = {
     path: string;
@@ -77,6 +78,10 @@ const allRoutes: route[] = [
     {
         path: 'profile',
         element: <Profile />,
+    },
+    {
+        path: 'activate-users',
+        element: <ActivateUsersTable />,
     },
 ];
 

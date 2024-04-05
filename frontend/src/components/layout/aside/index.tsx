@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, Bot, UserRoundPlus, LineChart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, Bot, UserRoundPlus, LineChart, ChevronLeft, ChevronRight, UsersRound } from 'lucide-react';
 import logo from '@/assets/react.svg';
 import SubMenu from '@/components/sub-menu';
 import styles from './aside.module.scss';
@@ -119,6 +119,13 @@ function Sidebar() {
                             />
                         </SubMenu>
                     </li>
+                )}
+                {hasRole('ADMIN') && (
+                    <NavItem
+                        icon={<UsersRound className={open ? 'me-2' : ''} />}
+                        title={open ? 'Ativar Funcionários' : ''}
+                        to='activate-users'
+                    />
                 )}
                 <NavItem
                     icon={<UserRoundPlus className={open ? 'me-2' : ''} />}

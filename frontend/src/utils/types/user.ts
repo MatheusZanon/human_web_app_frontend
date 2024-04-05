@@ -7,8 +7,10 @@ export type User = {
     rg: string;
     cpf: string;
     telefone_celular: string;
+    profile_picture: string;
     is_staff: boolean;
     is_superuser: boolean;
+    is_active: boolean;
     groups: string[];
     permissions: string[];
 };
