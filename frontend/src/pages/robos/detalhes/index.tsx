@@ -52,6 +52,7 @@ function RoboDetalhes() {
             {isRoboParametrosLoading || (isRoboDetalhesLoading && <div>Loading...</div>)}
             {isRoboDetalhesSuccess && isRoboParametrosSuccess && (
                 <>
+                <div className='px-3 pb-3 shadow rounded'>
                     <h1>Robo - {roboDetalhes?.nome}</h1>
                     <div className='d-flex gap-2'>
                         {hasPermission('Can add parametros') && (
@@ -228,6 +229,7 @@ function RoboDetalhes() {
                             </p>
                         </div>
                     </div>
+                </div>
                 </>
             )}
             {isRoboDetalhesStale && isRoboParametrosStale && timeout && (
