@@ -19,7 +19,7 @@ import Register from '@/pages/register';
 /**
  * Paginas
  */
-import Home from '@/pages/home';
+import Funcionarios from '@/pages/rh/funcionarios';
 import Robos from '@/pages/robos';
 import Profile from '@/pages/profile';
 
@@ -33,8 +33,8 @@ import RH from '@/pages/robos/rh';
 /**
  * Relatorios
  */
-import Relatorios from '@/pages/relatorios';
-import ValoresFinanceiro from '@/pages/relatorios/valores-financeiro';
+import Relatorios from '@/pages/financeiro/relatorios';
+import Clientes from '@/pages/financeiro/clientes';
 import Dashboard from '@/pages/dashboard';
 
 type route = {
@@ -45,10 +45,6 @@ type route = {
 const allRoutes: route[] = [
   {
     path: '',
-    element: <Home />
-  },
-  {
-    path: 'dashboard',
     element: <Dashboard />
 
   },
@@ -69,12 +65,16 @@ const allRoutes: route[] = [
     element: <RH />
   },
   {
-    path: 'relatorios',
+    path: 'financeiro/clientes',
+    element: <Clientes />
+  },
+  {
+    path: 'financeiro/relatorios',
     element: <Relatorios />
   },
   {
-    path: 'relatorios/valores-financeiro',
-    element: <ValoresFinanceiro />
+    path: 'rh/funcionarios',
+    element: <Funcionarios />
   },
   {
     path: 'profile',

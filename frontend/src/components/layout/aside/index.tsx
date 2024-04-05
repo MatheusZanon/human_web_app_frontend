@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, Bot, UserRoundPlus, LineChart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LineChart, Bot, Dot, DollarSign, UserCog2Icon, ChevronLeft, ChevronRight } from 'lucide-react';
 import logo from '@/assets/react.svg';
 import SubMenu from '@/components/sub-menu';
 import styles from './aside.module.scss';
@@ -92,33 +92,25 @@ function Sidebar() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <NavItem icon={<Home className={open ? 'me-2' : ''} />} title={open ? 'Home' : ''} to='' />
+        <NavItem icon={<LineChart className={open ? 'me-2' : ''} />} title={open ? 'Dashboard' : ''} to='' />
         <li className='nav-item'>
           <SubMenu sbmIcon={<Bot className={open ? 'me-2' : ''} />} sbmTitle='Robôs' parentOpen={open}>
-            <NavItem icon={<Bot className={'me-2'} />} title={'Todos'} to='robos' />
-            <NavItem
-              icon={<Bot className={'me-2'} />}
-              title={'Financeiro'}
-              to='robos/financeiro'
-            />
-            <NavItem icon={<Bot className={'me-2'} />} title={'RH'} to='robos/rh' />
+            <NavItem icon={<Dot className={'me-2'} />} title={'Todos'} to='robos' />
+            <NavItem icon={<Dot className={'me-2'} />} title={'Financeiro'} to='robos/financeiro'/>
+            <NavItem icon={<Dot className={'me-2'} />} title={'RH'} to='robos/rh' />
           </SubMenu>
         </li>
         <li className='nav-item'>
-          <SubMenu sbmIcon={<LineChart className={open ? 'me-2' : ''} />} sbmTitle='Relatórios' parentOpen={open}>
-            <NavItem icon={<LineChart className={'me-2'} />} title={'Todos'} to='relatorios' />
-            <NavItem
-              icon={<LineChart className={'me-2'} />}
-              title={'Valores Financeiro'}
-              to='relatorios/valores-financeiro'
-            />
+          <SubMenu sbmIcon={<DollarSign className={open ? 'me-2' : ''} />} sbmTitle='Finanças' parentOpen={open}>
+            <NavItem icon={<Dot className={'me-2'} />} title={'Clientes'} to='financeiro/clientes' />
+            <NavItem icon={<Dot className={'me-2'} />} title={'Relatorios'} to='financeiro/relatorios'/>
           </SubMenu>
         </li>
-        <NavItem
-          icon={<UserRoundPlus className={open ? 'me-2' : ''} />}
-          title={open ? 'Registrar' : ''}
-          to='/register'
-        />
+        <li className='nav-item'>
+          <SubMenu sbmIcon={<UserCog2Icon className={open ? 'me-2' : ''} />} sbmTitle='RH' parentOpen={open}>
+            <NavItem icon={<Dot className={open ? 'me-2' : ''} />} title={open ? 'Funcionários' : ''} to='rh/funcionarios'/>
+          </SubMenu>
+        </li>
       </motion.ul>
     </motion.nav>
   );

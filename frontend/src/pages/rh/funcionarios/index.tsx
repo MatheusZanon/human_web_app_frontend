@@ -4,7 +4,7 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { useGetAllUsers } from '@/api/http/user';
 
 
-function Home() {
+function Funcionarios() {
   const users = useGetAllUsers();
   if (users.isSuccess && users.data.length > 0) {
     return (
@@ -50,4 +50,4 @@ function Home() {
   }
 };
 
-export default Home;
+export default Funcionarios;

@@ -44,9 +44,7 @@ function Login() {
             headers: {
               Authorization: `Bearer ${access}`,
             },
-          }).then(response => {
-            const usuario = response.data;
-            console.log(usuario)
+          }).then(() => {
             setTimeout(() => {
               navigate('/main');
             }, 1000);
