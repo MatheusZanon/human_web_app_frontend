@@ -12,6 +12,7 @@ import { postParametros } from './postParametros';
 import { CriarParametroType } from '@/utils/types/criar_parametro';
 import { CriarRotinaType } from '@/utils/types/criar_rotina';
 import { postRotinas } from './postRotinas';
+import { deleteParametros } from './deleteParametros';
 export type { RoboParametrosType } from './postExecutarRobo';
 
 export function useRobos() {
@@ -31,7 +32,7 @@ export function useRoboById({ roboId }: { roboId: string }) {
 
 export function useRoboParametrosById({ roboId }: { roboId: string }) {
     return useQuery({
-        queryKey: [`robo/${roboId}/parametros`],
+        queryKey: [`robo/${roboId}/parametros/listar`],
         queryFn: () => getRoboParametrosById({ robo_id: roboId }),
         enabled: !!roboId,
     });
@@ -72,19 +73,19 @@ export function useExecutarRobo({ roboId }: { roboId: string }) {
 
 export function useCriarParametro({ roboId }: { roboId: string }) {
     return useMutation({
-        mutationKey: [`robo/${roboId}/parametros/new`],
+        mutationKey: [`robo/${roboId}/parametros/criar/`],
         mutationFn: (data: CriarParametroType) => {
             return postParametros(parseInt(roboId), data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros`] });
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
         },
     });
 }
 
 export function useCriarRotina({ roboId }: { roboId: string }) {
     return useMutation({
-        mutationKey: [`robo/${roboId}/rotinas/new`],
+        mutationKey: [`robo/${roboId}/rotinas/criar/`],
         mutationFn: (data: CriarRotinaType) => {
             return postRotinas(parseInt(roboId), data);
         },
@@ -94,9 +95,21 @@ export function useCriarRotina({ roboId }: { roboId: string }) {
     });
 }
 
+export function useDeleteParametro({ roboId }: { roboId: string }) {
+    return useMutation({
+        mutationKey: [`robo/${roboId}/parametros/excluir/`],
+        mutationFn: (parametroId: number) => {
+            return deleteParametros(parseInt(roboId), parametroId);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
+        },
+    });
+}
+
 export function useGetRoboRotinasById({ roboId }: { roboId: string }) {
     return useQuery({
-        queryKey: [`robo/${roboId}/rotinas`],
+        queryKey: [`robo/${roboId}/rotinas/listar`],
         queryFn: () => getRoboRotinasById({ robo_id: roboId }),
         enabled: !!roboId,
     });

@@ -1,4 +1,10 @@
-import { useRoboById, useRoboParametrosById, useGetRoboRotinasById, useExecutarRobo } from '@/api/http/robos';
+import {
+    useRoboById,
+    useRoboParametrosById,
+    useGetRoboRotinasById,
+    useExecutarRobo,
+    useDeleteParametro,
+} from '@/api/http/robos';
 import { RoboParametrosType } from '@/api/http';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -7,6 +13,8 @@ import { useState } from 'react';
 import { CriarRoboParametro } from '../criar_robo_parametro';
 import { fromNowDays } from '@/libs';
 import { CriarRoboRotina } from '../criar_robo_rotina';
+import { Pencil, X } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 function RoboDetalhes() {
     const { roboId } = useParams();
@@ -46,190 +54,274 @@ function RoboDetalhes() {
             : null;
 
     const { hasPermission } = useAuthenticatedUser();
+    const {
+        mutate: deleteParametro,
+        isSuccess: isDeleteParametroSuccess,
+        isError: isDeleteParametroError,
+    } = useDeleteParametro({
+        roboId: roboId ? roboId : '',
+    });
+
+    const handleDeleteParametro = (event: MouseEvent, parametroId: number) => {
+        event.preventDefault();
+        deleteParametro(parametroId);
+
+        if (isDeleteParametroSuccess) {
+            toast.success('Parâmetro excluído com sucesso!');
+        }
+
+        if (isDeleteParametroError) {
+            toast.error('Erro ao excluir parâmetro!');
+        }
+    };
 
     return (
         <>
             {isRoboParametrosLoading || (isRoboDetalhesLoading && <div>Loading...</div>)}
             {isRoboDetalhesSuccess && isRoboParametrosSuccess && (
                 <>
-                <div className='px-3 pb-3 shadow rounded'>
-                    <h1>Robo - {roboDetalhes?.nome}</h1>
-                    <div className='d-flex gap-2'>
-                        {hasPermission('Can add parametros') && (
-                            <>
-                                <button className='btn btn-primary' onClick={() => setShowCreateParametroModal(true)}>
-                                    Criar Parâmetro
-                                </button>
-                                <div
-                                    className={`modal ${showCreateParametroModal ? 'd-block' : 'd-none'}`}
-                                    id='modalTeste'
-                                >
-                                    <div className='modal-dialog modal-dialog-centered'>
-                                        <div className='modal-content'>
-                                            <div className='modal-header'>
-                                                <h5 className='modal-title'>{'Criar Parâmetro'}</h5>
-                                                <button
-                                                    type='button'
-                                                    className='btn-close'
-                                                    data-bs-dismiss='modal'
-                                                    aria-label='Close'
-                                                    onClick={() => setShowCreateParametroModal(false)}
-                                                ></button>
-                                            </div>
-                                            <div className='modal-body'>
-                                                <CriarRoboParametro roboId={roboId ? roboId : ''} />
-                                            </div>
-                                            <div className='modal-footer'>
-                                                <button
-                                                    type='button'
-                                                    className='btn'
-                                                    data-bs-dismiss='modal'
-                                                    onClick={() => setShowCreateParametroModal(false)}
-                                                >
-                                                    Fechar
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                        {hasPermission('Can add rotinas') && (
-                            <>
-                                <button className='btn btn-secondary' onClick={() => setShowCreateRotinaModal(true)}>
-                                    Criar Rotina
-                                </button>
-                                <div
-                                    className={`modal ${showCreateRotinaModal ? 'd-block' : 'd-none'}`}
-                                    id='modalTeste'
-                                >
-                                    <div className='modal-dialog modal-dialog-centered'>
-                                        <div className='modal-content'>
-                                            <div className='modal-header'>
-                                                <h5 className='modal-title'>{'Criar Rotina'}</h5>
-                                                <button
-                                                    type='button'
-                                                    className='btn-close'
-                                                    data-bs-dismiss='modal'
-                                                    aria-label='Close'
-                                                    onClick={() => setShowCreateRotinaModal(false)}
-                                                ></button>
-                                            </div>
-                                            <div className='modal-body'>
-                                                <CriarRoboRotina roboId={roboId ? roboId : ''} />
-                                            </div>
-                                            <div className='modal-footer'>
-                                                <button
-                                                    type='button'
-                                                    className='btn'
-                                                    data-bs-dismiss='modal'
-                                                    onClick={() => setShowCreateRotinaModal(false)}
-                                                >
-                                                    Fechar
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                    <div className='d-flex gap-2 w-100'>
-                        <div className='w-50'>
-                            {roboParametros && roboParametros.length > 0 ? (
+                    <div className='px-3 pb-3 shadow rounded'>
+                        <h1>Robo - {roboDetalhes?.nome}</h1>
+                        <div className='d-flex gap-2'>
+                            {hasPermission('Can add parametros') && (
                                 <>
-                                    <h2>Parametros</h2>
-                                    <form className='d-flex flex-column gap-2'>
-                                        {roboParametros.map((parametro) => (
-                                            <div key={parametro.id}>
-                                                <label className='form-label'>{parametro.parametro_info.nome}</label>
-                                                <input
-                                                    type={
-                                                        parametro.parametro_info.tipo.toLowerCase().trim() === 'integer'
-                                                            ? 'number'
-                                                            : parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                'float'
-                                                              ? 'number'
-                                                              : parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                  'boolean'
-                                                                ? 'checkbox'
-                                                                : 'text'
-                                                    }
-                                                    defaultValue={parametro.valor}
-                                                    {...register(parametro.parametro_info.nome)}
-                                                    className={`${parametro.parametro_info.tipo.toLowerCase().trim() !== 'boolean' ? 'form-control' : 'form-check-input'}`}
-                                                />
-                                            </div>
-                                        ))}
-                                        {isRoboRotinasSuccess && (
-                                            <div>
-                                                <label className='form-label'>Rotina</label>
-                                                <select
-                                                    id='rotinas'
-                                                    className='form-select'
-                                                    defaultValue=''
-                                                    {...register('rotina')}
-                                                >
-                                                    <option value=''>Selecione uma rotina</option>
-                                                    {roboRotinas.map((rotina) => (
-                                                        <option key={rotina.id} value={rotina.nome}>
-                                                            {rotina.nome}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        )}
-                                        <div className='d-flex gap-2 mt-2'>
-                                            {hasPermission('Can change robos') && (
-                                                <>
+                                    <button
+                                        className='btn btn-primary'
+                                        onClick={() => setShowCreateParametroModal(true)}
+                                    >
+                                        Criar Parâmetro
+                                    </button>
+                                    <div
+                                        className={`modal ${showCreateParametroModal ? 'd-block' : 'd-none'}`}
+                                        id='modalTeste'
+                                    >
+                                        <div className='modal-dialog modal-dialog-centered'>
+                                            <div className='modal-content'>
+                                                <div className='modal-header'>
+                                                    <h5 className='modal-title'>{'Criar Parâmetro'}</h5>
                                                     <button
-                                                        className='btn btn-primary'
-                                                        onClick={(event) => {
-                                                            event.preventDefault();
-                                                            executarRobo(getValues());
-                                                        }}
+                                                        type='button'
+                                                        className='btn-close'
+                                                        data-bs-dismiss='modal'
+                                                        aria-label='Close'
+                                                        onClick={() => setShowCreateParametroModal(false)}
+                                                    ></button>
+                                                </div>
+                                                <div className='modal-body'>
+                                                    <CriarRoboParametro roboId={roboId ? roboId : ''} />
+                                                </div>
+                                                <div className='modal-footer'>
+                                                    <button
+                                                        type='button'
+                                                        className='btn'
+                                                        data-bs-dismiss='modal'
+                                                        onClick={() => setShowCreateParametroModal(false)}
                                                     >
-                                                        Executar
+                                                        Fechar
                                                     </button>
-                                                    <button className='btn btn-warning' onClick={() => {}}>
-                                                        Modificar
-                                                    </button>
-                                                </>
-                                            )}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </form>
+                                    </div>
                                 </>
-                            ) : (
-                                <div className='d-flex justify-content-center align-items-center w-100 h-100'>
-                                    <h3 className='text-center'>O robo não tem parâmetros</h3>
-                                    {timeout && <div>{timeout.message}</div>}
-                                </div>
+                            )}
+                            {hasPermission('Can add rotinas') && (
+                                <>
+                                    <button
+                                        className='btn btn-secondary'
+                                        onClick={() => setShowCreateRotinaModal(true)}
+                                    >
+                                        Criar Rotina
+                                    </button>
+                                    <div
+                                        className={`modal ${showCreateRotinaModal ? 'd-block' : 'd-none'}`}
+                                        id='modalTeste'
+                                    >
+                                        <div className='modal-dialog modal-dialog-centered'>
+                                            <div className='modal-content'>
+                                                <div className='modal-header'>
+                                                    <h5 className='modal-title'>{'Criar Rotina'}</h5>
+                                                    <button
+                                                        type='button'
+                                                        className='btn-close'
+                                                        data-bs-dismiss='modal'
+                                                        aria-label='Close'
+                                                        onClick={() => setShowCreateRotinaModal(false)}
+                                                    ></button>
+                                                </div>
+                                                <div className='modal-body'>
+                                                    <CriarRoboRotina roboId={roboId ? roboId : ''} />
+                                                </div>
+                                                <div className='modal-footer'>
+                                                    <button
+                                                        type='button'
+                                                        className='btn'
+                                                        data-bs-dismiss='modal'
+                                                        onClick={() => setShowCreateRotinaModal(false)}
+                                                    >
+                                                        Fechar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
                             )}
                         </div>
-                        <div className='w-50'>
-                            <h2>Informações</h2>
-                            <p className='text-muted fw-bold'>
-                                Descricão: <span className='fw-normal'>{roboDetalhes?.descricao}</span>
-                            </p>
-                            <p className='text-muted fw-bold'>
-                                Categoria: <span className='fw-normal'>{roboDetalhes?.categoria}</span>
-                            </p>
-                            <p className='text-muted fw-bold'>
-                                Execucões: <span className='fw-normal'>{roboDetalhes?.execucoes}</span>
-                            </p>
-                            <p className='text-muted fw-bold'>
-                                Ultima execução:{' '}
-                                <span className='fw-normal'>
-                                    {fromNowDays(new Date(roboDetalhes?.ultima_execucao)) != 0 ? (
-                                        <>{fromNowDays(new Date(roboDetalhes?.ultima_execucao))} dias</>
-                                    ) : (
-                                        <>Hoje</>
-                                    )}
-                                </span>
-                            </p>
+                        <div className='d-flex gap-2 w-100'>
+                            <div className='w-50'>
+                                {roboParametros && roboParametros.length > 0 ? (
+                                    <>
+                                        <h2>Parametros</h2>
+                                        <form className='d-flex flex-column gap-2'>
+                                            {roboParametros.map((parametro) => (
+                                                <div key={parametro.id} className='d-flex'>
+                                                    <div className='flex-grow-1'>
+                                                        <label
+                                                            className='form-label d-flex justify-content-between'
+                                                            htmlFor={`parametro_${parametro.id}`}
+                                                        >
+                                                            <span className='flex-grow-1'>
+                                                                {parametro.parametro_info.nome}
+                                                            </span>
+                                                            <div className='d-flex gap-2'>
+                                                                <button
+                                                                    className='btn py-0 px-2'
+                                                                    key={`update-${parametro.id}`}
+                                                                >
+                                                                    <Pencil size={18} />
+                                                                </button>
+
+                                                                <button
+                                                                    className='btn py-0 px-2'
+                                                                    key={`delete-${parametro.id}`}
+                                                                    onClick={(event) =>
+                                                                        handleDeleteParametro(event, parametro.id)
+                                                                    }
+                                                                >
+                                                                    <X size={18} />
+                                                                </button>
+                                                            </div>
+                                                        </label>
+                                                        {parametro.parametro_info.tipo.toLowerCase().trim() ===
+                                                            'date' && (
+                                                            <input
+                                                                type='date'
+                                                                id={`parametro_${parametro.id}`}
+                                                                defaultValue={parametro.valor}
+                                                                {...register(parametro.parametro_info.nome)}
+                                                                className={`form-control`}
+                                                            />
+                                                        )}
+                                                        {parametro.parametro_info.tipo.toLowerCase().trim() ===
+                                                            'integer' && (
+                                                            <input
+                                                                type='number'
+                                                                id={`parametro_${parametro.id}`}
+                                                                defaultValue={parametro.valor}
+                                                                {...register(parametro.parametro_info.nome)}
+                                                                className={`form-control`}
+                                                            />
+                                                        )}
+                                                        {parametro.parametro_info.tipo.toLowerCase().trim() ===
+                                                            'float' && (
+                                                            <input
+                                                                type='number'
+                                                                id={`parametro_${parametro.id}`}
+                                                                defaultValue={parametro.valor}
+                                                                {...register(parametro.parametro_info.nome)}
+                                                                className={`form-control`}
+                                                            />
+                                                        )}
+                                                        {parametro.parametro_info.tipo.toLowerCase().trim() ===
+                                                            'boolean' && (
+                                                            <input
+                                                                type='checkbox'
+                                                                id={`parametro_${parametro.id}`}
+                                                                defaultValue={parametro.valor}
+                                                                {...register(parametro.parametro_info.nome)}
+                                                                className={`form-check-input`}
+                                                            />
+                                                        )}
+                                                        {parametro.parametro_info.tipo.toLowerCase().trim() ===
+                                                            'text' && (
+                                                            <input
+                                                                type='text'
+                                                                id={`parametro_${parametro.id}`}
+                                                                defaultValue={parametro.valor}
+                                                                {...register(parametro.parametro_info.nome)}
+                                                                className={`form-control`}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {isRoboRotinasSuccess && (
+                                                <div>
+                                                    <label className='form-label'>Rotina</label>
+                                                    <select
+                                                        id='rotinas'
+                                                        className='form-select'
+                                                        defaultValue=''
+                                                        {...register('rotina')}
+                                                    >
+                                                        <option value=''>Selecione uma rotina</option>
+                                                        {roboRotinas.map((rotina) => (
+                                                            <option key={rotina.id} value={rotina.nome}>
+                                                                {rotina.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
+                                            <div className='d-flex gap-2 mt-2'>
+                                                {hasPermission('Can change robos') && (
+                                                    <>
+                                                        <button
+                                                            className='btn btn-primary'
+                                                            onClick={(event) => {
+                                                                event.preventDefault();
+                                                                executarRobo(getValues());
+                                                            }}
+                                                        >
+                                                            Executar
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </form>
+                                    </>
+                                ) : (
+                                    <div className='d-flex justify-content-center align-items-center w-100 h-100'>
+                                        <h3 className='text-center'>O robo não tem parâmetros</h3>
+                                        {timeout && <div>{timeout.message}</div>}
+                                    </div>
+                                )}
+                            </div>
+                            <div className='w-50'>
+                                <h2>Informações</h2>
+                                <p className='text-muted fw-bold'>
+                                    Descricão: <span className='fw-normal'>{roboDetalhes?.descricao}</span>
+                                </p>
+                                <p className='text-muted fw-bold'>
+                                    Categoria: <span className='fw-normal'>{roboDetalhes?.categoria}</span>
+                                </p>
+                                <p className='text-muted fw-bold'>
+                                    Execucões: <span className='fw-normal'>{roboDetalhes?.execucoes}</span>
+                                </p>
+                                <p className='text-muted fw-bold'>
+                                    Ultima execução:{' '}
+                                    <span className='fw-normal'>
+                                        {fromNowDays(new Date(roboDetalhes?.ultima_execucao)) != 0 ? (
+                                            <>{fromNowDays(new Date(roboDetalhes?.ultima_execucao))} dias</>
+                                        ) : (
+                                            <>Hoje</>
+                                        )}
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </>
             )}
             {isRoboDetalhesStale && isRoboParametrosStale && timeout && (
