@@ -1,4 +1,4 @@
-import Card from '@/components/card';
+import Card from '@/components/robo-card';
 import logo from '@/assets/react.svg';
 import { useRobos, useSeedRobos, useDeleteRobos } from '@/api/http/robos';
 import Parametros from './robo_parametros';
@@ -10,7 +10,7 @@ function Robos() {
 
   return (
     <>
-      <div className='px-3 pb-3 shadow rounded'>
+      <div className='px-3 pb-3 shadow rounded mb-2'>
         <h1 className='my-2'>Robôs</h1>
         <div className='d-flex gap-2'>
           <button className='btn btn-primary' onClick={() => seedRobos()}>

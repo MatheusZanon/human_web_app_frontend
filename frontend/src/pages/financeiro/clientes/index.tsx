@@ -6,7 +6,7 @@ function Clientes() {
   const clientes = useGetClientes();
     if (clientes.isSuccess && clientes.data.length > 0) {
       return (
-        <div className='px-3 pb-3 shadow rounded'>
+        <div className='px-3 pb-3 shadow rounded mb-2'>
         <h1 className='my-3'>Clientes</h1>
           <Table>
             <TableHead>

@@ -9,8 +9,8 @@ function Profile() {
     return <div>Nenhum usuário encontrado!</div>;
   } else if (user.isSuccess) {
     return (
-      <div className='px-3 pb-3 shadow rounded'>
-        <h1>Perfil</h1>
+      <div className='px-3 pb-3 shadow rounded mb-2'>
+        <h1 className="my-3">Perfil</h1>
         <div className='row'>
           <ProfileCard />
         </div>

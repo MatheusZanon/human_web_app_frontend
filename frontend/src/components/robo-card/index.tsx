@@ -1,5 +1,5 @@
 import { fromNow } from '@/libs';
-import styles from './card.module.scss';
+import styles from './robo-card.module.scss';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 
