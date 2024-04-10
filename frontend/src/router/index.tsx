@@ -2,7 +2,6 @@ import { createBrowserRouter } from 'react-router-dom';
 import React from 'react';
 import RequireAuth from './require_auth';
 
-
 /**
  * Layout
  */
@@ -36,10 +35,11 @@ import RH from '@/pages/robos/rh';
 import Relatorios from '@/pages/financeiro/relatorios';
 import Clientes from '@/pages/financeiro/clientes';
 import Dashboard from '@/pages/dashboard';
+import ActivateUsersTable from '@/pages/activate-users-table';
 
 type route = {
-  path: string;
-  element: React.ReactNode;
+    path: string;
+    element: React.ReactNode;
 };
 
 const allRoutes: route[] = [
@@ -80,41 +80,45 @@ const allRoutes: route[] = [
     path: 'profile',
     element: <Profile />
   },
+  {
+    path: 'activate-users',
+    element: <ActivateUsersTable />,
+},
 ];
 
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: (
-      <BlankLayout>
-        <Login />
-      </BlankLayout>
-    ),
-  },
-  {
-    path: '/register',
-    element: (
-      <BlankLayout>
-        <Register />
-      </BlankLayout>
-    ),
-  },
-  {
-    path: '/main',
-    element: (
-      <RequireAuth>
-        <MainLayout />
-      </RequireAuth>
-    ),
-    children: allRoutes.map(({ path, element }) => ({
-      path,
-      element,
-    })),
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+    {
+        path: '/',
+        element: (
+            <BlankLayout>
+                <Login />
+            </BlankLayout>
+        ),
+    },
+    {
+        path: '/register',
+        element: (
+            <BlankLayout>
+                <Register />
+            </BlankLayout>
+        ),
+    },
+    {
+        path: '/main',
+        element: (
+            <RequireAuth>
+                <MainLayout />
+            </RequireAuth>
+        ),
+        children: allRoutes.map(({ path, element }) => ({
+            path,
+            element,
+        })),
+    },
+    {
+        path: '*',
+        element: <NotFound />,
+    },
 ]);
 
 export default router;

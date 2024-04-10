@@ -1,9 +1,11 @@
 import { useExecutarRobo, useRoboParametrosById, useGetRoboRotinasById } from '@/api/http/robos';
+import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 function Parametros({ id }: { id: string }) {
+    const { hasPermission } = useAuthenticatedUser();
     const {
         data: roboParametros,
         isLoading,
@@ -119,9 +121,11 @@ function Parametros({ id }: { id: string }) {
                         </div>
                     )}
                     <div>
-                        <button onClick={handleSubmit(onSubmit)} className='btn btn-primary'>
-                            Executar
-                        </button>
+                        {hasPermission('Can change robos') && (
+                            <button onClick={handleSubmit(onSubmit)} className='btn btn-primary'>
+                                Executar
+                            </button>
+                        )}
                     </div>
                 </form>
             ) : null}
