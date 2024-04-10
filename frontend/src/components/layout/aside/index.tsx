@@ -103,9 +103,9 @@ function Sidebar() {
                 {hasPermission('Can view robos') && (
                     <li className='nav-item'>
                         <SubMenu sbmIcon={<Bot className={open ? 'me-2' : ''} />} sbmTitle='Robôs' parentOpen={open}>
-                            <NavItem icon={<Bot className={'me-2'} />} title={'Todos'} to='robos' />
-                            <NavItem icon={<Bot className={'me-2'} />} title={'Financeiro'} to='robos/financeiro' />
-                            <NavItem icon={<Bot className={'me-2'} />} title={'RH'} to='robos/rh' />
+                            <NavItem icon={<Dot className={'me-2'} />} title={'Todos'} to='robos' />
+                            <NavItem icon={<Dot className={'me-2'} />} title={'Financeiro'} to='robos/financeiro' />
+                            <NavItem icon={<Dot className={'me-2'} />} title={'RH'} to='robos/rh' />
                         </SubMenu>
                     </li>
                 )}
