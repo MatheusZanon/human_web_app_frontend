@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { CriarRoboParametro } from '../criar_robo_parametro';
 import { fromNowDays } from '@/libs';
 import { CriarRoboRotina } from '../criar_robo_rotina';
-import { Pencil, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 function RoboDetalhes() {
@@ -84,8 +84,8 @@ function RoboDetalhes() {
 
     return (
         <>
-            {isRoboParametrosLoading || (isRoboDetalhesLoading && <div>Loading...</div>)}
-            {isRoboDetalhesSuccess && isRoboParametrosSuccess && (
+            {(isRoboParametrosLoading || isRoboDetalhesLoading) && <div>Loading...</div>}
+            {(isRoboDetalhesSuccess || isRoboParametrosSuccess) && (
                 <>
                     <div className='px-3 pb-3 shadow rounded'>
                         <h1>Robo - {roboDetalhes?.nome}</h1>
@@ -196,7 +196,7 @@ function RoboDetalhes() {
                                                                     className='btn py-0 px-2'
                                                                     key={`update-${parametro.id}`}
                                                                 >
-                                                                    <Pencil size={18} />
+                                                                    <Search size={18} />
                                                                 </button>
 
                                                                 <button
@@ -299,10 +299,46 @@ function RoboDetalhes() {
                                         </form>
                                     </>
                                 ) : (
-                                    <div className='d-flex justify-content-center align-items-center w-100 h-100'>
-                                        <h3 className='text-center'>O robo não tem parâmetros</h3>
-                                        {timeout && <div>{timeout.message}</div>}
-                                    </div>
+                                    <>
+                                        <p className='text-muted my-4'>Nenhum parametro encontrado</p>
+                                        {roboRotinas && roboRotinas.length > 0 && (
+                                            <>
+                                                <form>
+                                                    <div>
+                                                        <label className='form-label'>Rotina</label>
+                                                        <select
+                                                            id='rotinas'
+                                                            className='form-select'
+                                                            defaultValue=''
+                                                            {...register('rotina')}
+                                                        >
+                                                            <option value=''>Selecione uma rotina</option>
+                                                            {roboRotinas.map((rotina) => (
+                                                                <option key={rotina.id} value={rotina.nome}>
+                                                                    {rotina.nome}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    <div className='d-flex gap-2 mt-2'>
+                                                        {hasPermission('Can change robos') && (
+                                                            <>
+                                                                <button
+                                                                    className='btn btn-primary'
+                                                                    onClick={(event) => {
+                                                                        event.preventDefault();
+                                                                        executarRobo(getValues());
+                                                                    }}
+                                                                >
+                                                                    Executar
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </form>
+                                            </>
+                                        )}
+                                    </>
                                 )}
                             </div>
                             <div className='w-50'>
@@ -319,8 +355,8 @@ function RoboDetalhes() {
                                 <p className='text-muted fw-bold'>
                                     Ultima execução:{' '}
                                     <span className='fw-normal'>
-                                        {fromNowDays(new Date(roboDetalhes?.ultima_execucao)) != 0 ? (
-                                            <>{fromNowDays(new Date(roboDetalhes?.ultima_execucao))} dias</>
+                                        {fromNowDays(new Date(roboDetalhes?.ultima_execucao || 0)) != 0 ? (
+                                            <>{fromNowDays(new Date(roboDetalhes?.ultima_execucao || 0))} dias</>
                                         ) : (
                                             <>Hoje</>
                                         )}

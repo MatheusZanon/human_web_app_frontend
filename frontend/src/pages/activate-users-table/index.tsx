@@ -18,6 +18,7 @@ function ActivateUsersTable() {
     const [sortBy, setSortBy] = useState<keyof User>('id');
     const [sortDirection, setSortDirection] = useState('asc');
     const [showModal, setShowModal] = useState<number | null>(null);
+    const [showActivateModal, setShowActivateModal] = useState<number | null>(null);
 
     const schema = z.object({
         id: z.array(z.coerce.number(), { required_error: 'Selecione pelo menos um grupo' }),
@@ -141,7 +142,7 @@ function ActivateUsersTable() {
                                     <TableRow key={funcionario.id}>
                                         <TableData>{funcionario.id}</TableData>
                                         <TableData>
-                                            {`${funcionario.username} —
+                                            {`${`${funcionario.first_name} ${funcionario.last_name}`} —
                                             ${
                                                 funcionario.groups.length > 0
                                                     ? funcionario.groups.map((group, index) =>
@@ -161,16 +162,68 @@ function ActivateUsersTable() {
                                                         <>
                                                             <button
                                                                 className='btn btn-success btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                                onClick={() =>
-                                                                    funcionario.groups.length > 0
-                                                                        ? handleActivate(funcionario.id, {
-                                                                              id: findGroupsIds(funcionario, groups!),
-                                                                          })
-                                                                        : setShowModal(funcionario.id)
-                                                                }
+                                                                onClick={funcionario.groups.length > 0 ? () => setShowActivateModal(funcionario.id) : () => setShowModal(funcionario.id)}
                                                             >
                                                                 <ShieldCheck width={22} height={16} />
                                                             </button>
+                                                            <div
+                                                                className={`modal ${showActivateModal === funcionario.id ? 'd-block' : 'd-none'}`}
+                                                                id='modalActivate'
+                                                            >
+                                                                <div className='modal-dialog modal-dialog-centered'>
+                                                                    <div className='modal-content'>
+                                                                        <div className='modal-header'>
+                                                                            <h5 className='modal-title'>
+                                                                                Ativar Funcionário
+                                                                            </h5>
+                                                                            <button
+                                                                                type='button'
+                                                                                className='btn-close'
+                                                                                data-bs-dismiss='modal'
+                                                                                aria-label='Close'
+                                                                                onClick={() => setShowActivateModal(null)}
+                                                                            ></button>
+                                                                        </div>
+                                                                        <div className='modal-body'>
+                                                                            <p>
+                                                                                Tem certeza que deseja ativar o
+                                                                                funcionário{' '}
+                                                                                {`${funcionario.first_name} ${funcionario.last_name}`}
+                                                                                ?
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className='modal-footer'>
+                                                                            <button
+                                                                                className='btn btn-success'
+                                                                                type='submit'
+                                                                                onClick={() =>
+                                                                                    funcionario.groups.length > 0
+                                                                                        ? handleActivate(
+                                                                                              funcionario.id,
+                                                                                              {
+                                                                                                  id: findGroupsIds(
+                                                                                                      funcionario,
+                                                                                                      groups!,
+                                                                                                  ),
+                                                                                              },
+                                                                                          )
+                                                                                        : setShowModal(funcionario.id)
+                                                                                }
+                                                                            >
+                                                                                Ativar
+                                                                            </button>
+                                                                            <button
+                                                                                type='button'
+                                                                                className='btn'
+                                                                                data-bs-dismiss='modal'
+                                                                                onClick={() => setShowActivateModal(null)}
+                                                                            >
+                                                                                Fechar
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                             <div
                                                                 className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
                                                                 id={`modal_${funcionario.id}`}

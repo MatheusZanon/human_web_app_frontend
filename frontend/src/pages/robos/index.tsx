@@ -1,6 +1,5 @@
 import Card from '@/components/robo-card';
 import logo from '@/assets/react.svg';
-import Parametros from './robo_parametros';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { useState } from 'react';
 import { CriarRobo } from './criar_robo';
@@ -102,6 +101,7 @@ function Robos() {
                             robos.data.map((robo) => (
                                 <Card
                                     key={robo.id}
+                                    id={robo.id.toString()}
                                     title={robo.nome}
                                     image={logo}
                                     text={robo.descricao}
@@ -110,9 +110,7 @@ function Robos() {
                                     btn={'Executar'}
                                     executions={robo.execucoes}
                                     last_execution={robo.ultima_execucao}
-                                >
-                                    <Parametros id={robo.id.toString()} />
-                                </Card>
+                                />
                             ))}
                     </div>
                 </div>

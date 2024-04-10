@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableData } from '@/components/table';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { User } from '@/utils/types/user';
 import { useNavigate } from 'react-router-dom';
@@ -95,7 +95,7 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                 <TableRow key={funcionario.id}>
                                     <TableData>{funcionario.id}</TableData>
                                     <TableData>
-                                        {funcionario.username} —{' '}
+                                        {`${funcionario.first_name} ${funcionario.last_name}`} —{' '}
                                         {funcionario.groups.length > 0
                                             ? funcionario.groups.map((group, index) =>
                                                   index !== funcionario.groups.length - 1
@@ -115,7 +115,7 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                             className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
                                                             onClick={() => handleEdit(funcionario.id)}
                                                         >
-                                                            <Pencil width={16} height={16} />
+                                                            <Search width={16} height={16} />
                                                         </button>
                                                         <button
                                                             className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'
@@ -125,7 +125,7 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                         </button>
                                                         <div
                                                             className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
-                                                            id='modalTeste'
+                                                            id='modalDeactivate'
                                                         >
                                                             <div className='modal-dialog modal-dialog-centered'>
                                                                 <div className='modal-content'>
@@ -144,14 +144,18 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                                     <div className='modal-body'>
                                                                         <p>
                                                                             Tem certeza que deseja desativar o
-                                                                            funcionário {funcionario.username}?
+                                                                            funcionário{' '}
+                                                                            {`${funcionario.first_name} ${funcionario.last_name}`}
+                                                                            ?
                                                                         </p>
                                                                     </div>
                                                                     <div className='modal-footer'>
                                                                         <button
                                                                             className='btn btn-danger'
                                                                             type='submit'
-                                                                            onClick={() => handleDeactivate(funcionario.id)}
+                                                                            onClick={() =>
+                                                                                handleDeactivate(funcionario.id)
+                                                                            }
                                                                         >
                                                                             Desativar
                                                                         </button>

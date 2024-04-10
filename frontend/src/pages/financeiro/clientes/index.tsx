@@ -1,5 +1,5 @@
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
 import { useGetClientes } from "@/api/http";
 
 function Clientes() {
@@ -32,7 +32,7 @@ function Clientes() {
                   <TableData>
                     <div className='d-flex gap-2'>
                       <button className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'>
-                        <Pencil width={16} height={16} />
+                        <Search width={16} height={16} />
                       </button>
                       <button className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'>
                         <Trash2 width={16} height={16} />

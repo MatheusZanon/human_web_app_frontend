@@ -43,8 +43,6 @@ const SubMenu: React.FC<SubMenuProps> = ({ children, sbmIcon, sbmTitle, parentOp
         delay: 0.1,
     };
 
-    console.log();
-
     return (
         <motion.div className={`w-100 ${styles.subMenuContainer}`}>
             <>
