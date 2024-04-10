@@ -33,8 +33,8 @@ function CriarRobo() {
         create(data);
         if (isSuccess) {
             toast.success('Robo criado com sucesso', {
+                autoClose: 3000,
                 position: 'bottom-right',
-                autoClose: 5000,
             });
             reset({
                 nome: '',

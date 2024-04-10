@@ -13,6 +13,7 @@ import { CriarParametroType } from '@/utils/types/criar_parametro';
 import { CriarRotinaType } from '@/utils/types/criar_rotina';
 import { postRotinas } from './postRotinas';
 import { deleteParametros } from './deleteParametros';
+import { IAppError } from '@/utils/types/app_error';
 export type { RoboParametrosType } from './postExecutarRobo';
 
 export function useRobos() {
@@ -47,6 +48,7 @@ export function useCreateRobo() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['robos'] });
         },
+        onError: (err: IAppError) => err,
     });
 }
 
@@ -59,6 +61,7 @@ export function useDeleteRobo() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['robos'] });
         },
+        onError: (err: IAppError) => err,
     });
 }
 
@@ -68,6 +71,7 @@ export function useExecutarRobo({ roboId }: { roboId: string }) {
         mutationFn: (data: RoboParametrosType) => {
             return postExecutarRobo({ roboId, data });
         },
+        onError: (err: IAppError) => err,
     });
 }
 
@@ -80,6 +84,7 @@ export function useCriarParametro({ roboId }: { roboId: string }) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
         },
+        onError: (err: IAppError) => err,
     });
 }
 
@@ -92,6 +97,7 @@ export function useCriarRotina({ roboId }: { roboId: string }) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas`] });
         },
+        onError: (err: IAppError) => err,
     });
 }
 
@@ -104,6 +110,7 @@ export function useDeleteParametro({ roboId }: { roboId: string }) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
         },
+        onError: (err: IAppError) => err,
     });
 }
 

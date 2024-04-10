@@ -22,7 +22,7 @@ function CardValesSST({ ...props }) {
                     </TableHead>
                     <TableBody>
                         {valesSST.isSuccess && valesSST.data.length > 0 && valesSST.data.map(vale => (
-                            <TableRow>
+                            <TableRow key={vale.id}>
                             <TableData>{vale.id}</TableData>
                             <TableData>{vale.nome_razao_social}</TableData>
                             <TableData>{vale.vale_transporte.toFixed(2).toString().replace('.',',')}</TableData>

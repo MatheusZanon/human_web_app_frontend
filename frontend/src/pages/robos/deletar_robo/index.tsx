@@ -30,8 +30,8 @@ function DeletarRobo({ Robos }: { Robos: Robo[] }) {
             Robos.map((robo) => {
                 if (robo.id === id) {
                     toast.success(`Robo ${robo.nome} deletado com sucesso`, {
+                        autoClose: 3000,
                         position: 'bottom-right',
-                        autoClose: 5000,
                     });
                 }
             });

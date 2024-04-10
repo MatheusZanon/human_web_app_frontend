@@ -19,7 +19,7 @@ function CardReembolsos({ ...props }) {
                     </TableHead>
                     <TableBody>
                         {reembolsos.isSuccess && reembolsos.data.length > 0 && reembolsos.data.map(reembolso => (
-                        <TableRow>
+                        <TableRow key={reembolso.id}>
                             <TableData>{reembolso.id}</TableData>
                             <TableData>{reembolso.nome_razao_social}</TableData>
                             <TableData>{reembolso.descricao}</TableData>

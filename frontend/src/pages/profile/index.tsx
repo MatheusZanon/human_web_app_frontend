@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import ProfileCard from '@/components/profile-card';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 
@@ -9,7 +8,7 @@ function Profile() {
         <div className='px-3 pb-3 shadow rounded mb-2'>
             <h1 className="my-3">Perfil</h1>
             <div className='row'>
-                <ProfileCard />
+                <ProfileCard profilePicture='' name={authenticatedUser?.username || ''} roles={authenticatedUser?.groups || []} email={authenticatedUser?.email || ''} />
             </div>
             <div className='row py-2'>
                 <div className='col'>

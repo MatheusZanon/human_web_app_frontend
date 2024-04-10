@@ -1,6 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import React from 'react';
 import RequireAuth from './require_auth';
+import { AuthenticatedUserProvider } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
+
 
 /**
  * Layout
@@ -36,6 +38,7 @@ import Relatorios from '@/pages/financeiro/relatorios';
 import Clientes from '@/pages/financeiro/clientes';
 import Dashboard from '@/pages/dashboard';
 import ActivateUsersTable from '@/pages/activate-users-table';
+import FuncionarioProfile from '@/pages/funcionario-profile';
 
 type route = {
     path: string;
@@ -84,6 +87,10 @@ const allRoutes: route[] = [
     path: 'activate-users',
     element: <ActivateUsersTable />,
 },
+{
+    path: 'rh/funcionarios/:funcionarioId',
+    element: <FuncionarioProfile />,
+}
 ];
 
 const router = createBrowserRouter([
@@ -106,9 +113,12 @@ const router = createBrowserRouter([
     {
         path: '/main',
         element: (
-            <RequireAuth>
-                <MainLayout />
-            </RequireAuth>
+            <AuthenticatedUserProvider>
+                <RequireAuth>
+                    <MainLayout />
+                </RequireAuth>
+            </AuthenticatedUserProvider>
+            
         ),
         children: allRoutes.map(({ path, element }) => ({
             path,

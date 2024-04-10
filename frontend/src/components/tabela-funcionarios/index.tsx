@@ -4,18 +4,41 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { User } from '@/utils/types/user';
 import { useNavigate } from 'react-router-dom';
+import { useDeactivateUser } from '@/api/http';
+import { toast } from 'react-toastify';
 
 function TabelaFuncionarios({ data }: { data: User[] }) {
     const { hasPermission } = useAuthenticatedUser();
-    const [sortBy, setSortBy] = useState('');
+    const [sortBy, setSortBy] = useState<keyof User>('id');
     const [sortDirection, setSortDirection] = useState('asc');
+    const [showModal, setShowModal] = useState<number | null>(null);
+    const { mutate: deactivateUser, isSuccess, isError, error } = useDeactivateUser();
     const navigate = useNavigate();
+
+    const handleDeactivate = (id: number) => {
+        deactivateUser(id);
+        setShowModal(null);
+
+        if (isSuccess) {
+            toast.success('Funcionário desativado com sucesso!', {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+
+        if (isError) {
+            toast.error(`Erro ao desativar funcionário ${error?.response?.data}`, {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+    };
 
     const handleSort = (columnKey: string) => {
         if (sortBy === columnKey) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
-            setSortBy(columnKey);
+            setSortBy(columnKey as keyof User);
             setSortDirection('asc');
         }
     };
@@ -27,8 +50,8 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
     });
 
     const handleEdit = (id: number) => {
-        navigate(`/funcionarios/${id}`);
-    }
+        navigate(`${id}`);
+    };
 
     return (
         <div className='px-3 pb-3 shadow rounded'>
@@ -75,7 +98,9 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                         {funcionario.username} —{' '}
                                         {funcionario.groups.length > 0
                                             ? funcionario.groups.map((group, index) =>
-                                                  index !== funcionario.groups.length - 1 ? `${group}, ` : `${group}`,
+                                                  index !== funcionario.groups.length - 1
+                                                      ? `${group.replace('_', ' ')}, `
+                                                      : `${group.replace('_', ' ')}`,
                                               )
                                             : 'Sem Cargo'}
                                     </TableData>
@@ -92,9 +117,56 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                         >
                                                             <Pencil width={16} height={16} />
                                                         </button>
-                                                        <button className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'>
+                                                        <button
+                                                            className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'
+                                                            onClick={() => setShowModal(funcionario.id)}
+                                                        >
                                                             <Trash2 width={16} height={16} />
                                                         </button>
+                                                        <div
+                                                            className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
+                                                            id='modalTeste'
+                                                        >
+                                                            <div className='modal-dialog modal-dialog-centered'>
+                                                                <div className='modal-content'>
+                                                                    <div className='modal-header'>
+                                                                        <h5 className='modal-title'>
+                                                                            Desativar Funcionário
+                                                                        </h5>
+                                                                        <button
+                                                                            type='button'
+                                                                            className='btn-close'
+                                                                            data-bs-dismiss='modal'
+                                                                            aria-label='Close'
+                                                                            onClick={() => setShowModal(null)}
+                                                                        ></button>
+                                                                    </div>
+                                                                    <div className='modal-body'>
+                                                                        <p>
+                                                                            Tem certeza que deseja desativar o
+                                                                            funcionário {funcionario.username}?
+                                                                        </p>
+                                                                    </div>
+                                                                    <div className='modal-footer'>
+                                                                        <button
+                                                                            className='btn btn-danger'
+                                                                            type='submit'
+                                                                            onClick={() => handleDeactivate(funcionario.id)}
+                                                                        >
+                                                                            Desativar
+                                                                        </button>
+                                                                        <button
+                                                                            type='button'
+                                                                            className='btn'
+                                                                            data-bs-dismiss='modal'
+                                                                            onClick={() => setShowModal(null)}
+                                                                        >
+                                                                            Fechar
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </>
                                                 )}
                                             </div>
