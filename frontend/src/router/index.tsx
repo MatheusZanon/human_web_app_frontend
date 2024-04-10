@@ -36,6 +36,7 @@ import Relatorios from '@/pages/relatorios';
 import ValoresFinanceiro from '@/pages/relatorios/valores-financeiro';
 import Dashboard from '@/pages/dashboard';
 import ActivateUsersTable from '@/pages/activate-users-table';
+import FuncionarioProfile from '@/pages/funcionario-profile';
 
 type route = {
     path: string;
@@ -83,6 +84,10 @@ const allRoutes: route[] = [
         path: 'activate-users',
         element: <ActivateUsersTable />,
     },
+    {
+        path: 'funcionarios/:funcionarioId',
+        element: <FuncionarioProfile />,
+    }
 ];
 
 const router = createBrowserRouter([

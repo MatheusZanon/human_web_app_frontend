@@ -5,7 +5,7 @@ import { useGetUser } from '@/api/http';
 
 type AuthenticatedUserProviderState = {
     authenticatedUser: User | null;
-    defineUser: (User: User) => void;
+    defineUser: (User: User | null) => void;
     hasRole: (role: string) => boolean;
     hasPermission: (permission: string) => boolean;
 };
@@ -23,7 +23,7 @@ function AuthenticatedUserProvider({ children, ...props }: { children: React.Rea
     const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null);
     const authUser = useGetUser();
 
-    const defineUser = (User: User) => setAuthenticatedUser(User);
+    const defineUser = (User: User | null) => setAuthenticatedUser(User);
     const hasRole = (role: string) => authenticatedUser?.groups.includes(role) ?? false;
     const hasPermission = (permission: string) => authenticatedUser?.permissions.includes(permission) ?? false;
     const value = {

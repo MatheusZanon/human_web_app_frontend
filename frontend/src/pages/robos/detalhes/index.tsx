@@ -58,6 +58,7 @@ function RoboDetalhes() {
         mutate: deleteParametro,
         isSuccess: isDeleteParametroSuccess,
         isError: isDeleteParametroError,
+        error,
     } = useDeleteParametro({
         roboId: roboId ? roboId : '',
     });
@@ -67,11 +68,17 @@ function RoboDetalhes() {
         deleteParametro(parametroId);
 
         if (isDeleteParametroSuccess) {
-            toast.success('Parâmetro excluído com sucesso!');
+            toast.success('Parâmetro excluído com sucesso!', {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
         }
 
         if (isDeleteParametroError) {
-            toast.error('Erro ao excluir parâmetro!');
+            toast.error(`Erro ao excluir parametro rotina! ${error?.response?.data}`, {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
         }
     };
 

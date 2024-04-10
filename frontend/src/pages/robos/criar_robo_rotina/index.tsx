@@ -16,14 +16,21 @@ function CriarRoboRotina({ roboId }: { roboId: string }) {
         resolver: zodResolver(criarRotinaSchema),
     });
 
-    const { mutate: criarRotina, isSuccess } = useCriarRotina({ roboId });
+    const { mutate: criarRotina, isSuccess, isError, error } = useCriarRotina({ roboId });
 
     const onSubmit = (data: CriarRotinaType) => {
         criarRotina(data);
         if (isSuccess) {
             toast.success('Rotina criada com sucesso!', {
+                autoClose: 3000,
                 position: 'bottom-right',
-                autoClose: 5000,
+            });
+        }
+
+        if (isError) {
+            toast.error(`Erro ao criar rotina! ${error?.response?.data}`, {
+                autoClose: 3000,
+                position: 'bottom-right',
             });
         }
     };

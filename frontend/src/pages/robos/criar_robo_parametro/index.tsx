@@ -17,14 +17,21 @@ function CriarRoboParametro({ roboId }: { roboId: string }) {
     });
     const tipos = Object.keys(criarParametroSchema.shape.tipo.Values);
 
-    const { mutate: criarParametro, isSuccess } = useCriarParametro({ roboId });
+    const { mutate: criarParametro, isSuccess, isError, error } = useCriarParametro({ roboId });
 
     const onSubmit = (data: CriarParametroType) => {
         criarParametro(data);
         if (isSuccess) {
             toast.success('Parâmetro criado com sucesso!', {
+                autoClose: 3000,
                 position: 'bottom-right',
-                autoClose: 5000,
+            });
+        }
+
+        if (isError) {
+            toast.error(`Erro ao criar parâmetro! ${error?.response?.data}`, {
+                autoClose: 3000,
+                position: 'bottom-right',
             });
         }
     };
