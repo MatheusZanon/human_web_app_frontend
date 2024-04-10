@@ -5,6 +5,7 @@ export type RoboParametrosType = {
 };
 
 export async function postExecutarRobo({ roboId, data }: { roboId: string; data: RoboParametrosType }) {
-  const response = await api.post(`robos/${roboId}/executar/`, data).then((res) => res.data);
+  const token = localStorage.getItem('accessToken');
+  const response = await api.post(`robos/${roboId}/executar/`, {headers: {Authorization: `Bearer ${token}`}, data}).then((res) => res.data);
   return response;
 }
