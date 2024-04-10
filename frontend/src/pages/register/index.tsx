@@ -65,7 +65,7 @@ function Register() {
         const parsedData = schema.safeParse(data);
         if (parsedData.success) {
             axios
-                .post('http://localhost:8000/api/funcionarios/', {
+                .post('http://localhost:8000/user/register/', {
                     username: parsedData.data.username,
                     first_name: parsedData.data.firstname,
                     last_name: parsedData.data.lastname,

@@ -99,8 +99,8 @@ function ActivateUsersTable() {
 
     return (
         <div>
-            <h1>Activate Users Table</h1>
-            <div className='px-3 pb-3 shadow rounded'>
+            <div className='px-3 pb-3 shadow rounded mb-2'>
+                <h1 className='my-3'>Ativação de Funcionários</h1>
                 <Table>
                     <TableHead>
                         <TableRow>

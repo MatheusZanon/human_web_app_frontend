@@ -54,130 +54,128 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
     };
 
     return (
-        <div className='px-3 pb-3 shadow rounded'>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableHeader columnKey='id' onSort={() => handleSort('id')}>
-                            ID
-                        </TableHeader>
-                        <TableHeader
-                            sortable
-                            sortDirection={sortBy === 'username' ? sortDirection : ''}
-                            columnKey='username'
-                            onSort={() => handleSort('username')}
-                        >
-                            Nome
-                        </TableHeader>
-                        <TableHeader
-                            sortable
-                            sortDirection={sortBy === 'cpf' ? sortDirection : ''}
-                            columnKey='cpf'
-                            onSort={() => handleSort('cpf')}
-                        >
-                            CPF
-                        </TableHeader>
-                        <TableHeader
-                            sortable
-                            sortDirection={sortBy === 'telefone_celular' ? sortDirection : ''}
-                            columnKey='telefone_celular'
-                            onSort={() => handleSort('telefone_celular')}
-                        >
-                            Telefone
-                        </TableHeader>
-                        {hasPermission('Can change funcionarios') && <TableHeader>Actions</TableHeader>}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {sortedData.map(
-                        (funcionario) =>
-                            funcionario.is_active && (
-                                <TableRow key={funcionario.id}>
-                                    <TableData>{funcionario.id}</TableData>
+        <Table>
+            <TableHead>
+                <TableRow>
+                    <TableHeader columnKey='id' onSort={() => handleSort('id')}>
+                        ID
+                    </TableHeader>
+                    <TableHeader
+                        sortable
+                        sortDirection={sortBy === 'username' ? sortDirection : ''}
+                        columnKey='username'
+                        onSort={() => handleSort('username')}
+                    >
+                        Nome
+                    </TableHeader>
+                    <TableHeader
+                        sortable
+                        sortDirection={sortBy === 'cpf' ? sortDirection : ''}
+                        columnKey='cpf'
+                        onSort={() => handleSort('cpf')}
+                    >
+                        CPF
+                    </TableHeader>
+                    <TableHeader
+                        sortable
+                        sortDirection={sortBy === 'telefone_celular' ? sortDirection : ''}
+                        columnKey='telefone_celular'
+                        onSort={() => handleSort('telefone_celular')}
+                    >
+                        Telefone
+                    </TableHeader>
+                    {hasPermission('Can change funcionarios') && <TableHeader>Actions</TableHeader>}
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {sortedData.map(
+                    (funcionario) =>
+                        funcionario.is_active && (
+                            <TableRow key={funcionario.id}>
+                                <TableData>{funcionario.id}</TableData>
+                                <TableData>
+                                    {funcionario.username} —{' '}
+                                    {funcionario.groups.length > 0
+                                        ? funcionario.groups.map((group, index) =>
+                                                index !== funcionario.groups.length - 1
+                                                    ? `${group.replace('_', ' ')}, `
+                                                    : `${group.replace('_', ' ')}`,
+                                            )
+                                        : 'Sem Cargo'}
+                                </TableData>
+                                <TableData>{funcionario.cpf}</TableData>
+                                <TableData>{funcionario.telefone_celular}</TableData>
+                                {hasPermission('Can change funcionarios') && (
                                     <TableData>
-                                        {funcionario.username} —{' '}
-                                        {funcionario.groups.length > 0
-                                            ? funcionario.groups.map((group, index) =>
-                                                  index !== funcionario.groups.length - 1
-                                                      ? `${group.replace('_', ' ')}, `
-                                                      : `${group.replace('_', ' ')}`,
-                                              )
-                                            : 'Sem Cargo'}
-                                    </TableData>
-                                    <TableData>{funcionario.cpf}</TableData>
-                                    <TableData>{funcionario.telefone_celular}</TableData>
-                                    {hasPermission('Can change funcionarios') && (
-                                        <TableData>
-                                            <div className='d-flex gap-2'>
-                                                {hasPermission('Can change funcionarios') && (
-                                                    <>
-                                                        <button
-                                                            className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                            onClick={() => handleEdit(funcionario.id)}
-                                                        >
-                                                            <Pencil width={16} height={16} />
-                                                        </button>
-                                                        <button
-                                                            className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                            onClick={() => setShowModal(funcionario.id)}
-                                                        >
-                                                            <Trash2 width={16} height={16} />
-                                                        </button>
-                                                        <div
-                                                            className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
-                                                            id='modalTeste'
-                                                        >
-                                                            <div className='modal-dialog modal-dialog-centered'>
-                                                                <div className='modal-content'>
-                                                                    <div className='modal-header'>
-                                                                        <h5 className='modal-title'>
-                                                                            Desativar Funcionário
-                                                                        </h5>
-                                                                        <button
-                                                                            type='button'
-                                                                            className='btn-close'
-                                                                            data-bs-dismiss='modal'
-                                                                            aria-label='Close'
-                                                                            onClick={() => setShowModal(null)}
-                                                                        ></button>
-                                                                    </div>
-                                                                    <div className='modal-body'>
-                                                                        <p>
-                                                                            Tem certeza que deseja desativar o
-                                                                            funcionário {funcionario.username}?
-                                                                        </p>
-                                                                    </div>
-                                                                    <div className='modal-footer'>
-                                                                        <button
-                                                                            className='btn btn-danger'
-                                                                            type='submit'
-                                                                            onClick={() => handleDeactivate(funcionario.id)}
-                                                                        >
-                                                                            Desativar
-                                                                        </button>
-                                                                        <button
-                                                                            type='button'
-                                                                            className='btn'
-                                                                            data-bs-dismiss='modal'
-                                                                            onClick={() => setShowModal(null)}
-                                                                        >
-                                                                            Fechar
-                                                                        </button>
-                                                                    </div>
+                                        <div className='d-flex gap-2'>
+                                            {hasPermission('Can change funcionarios') && (
+                                                <>
+                                                    <button
+                                                        className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
+                                                        onClick={() => handleEdit(funcionario.id)}
+                                                    >
+                                                        <Pencil width={16} height={16} />
+                                                    </button>
+                                                    <button
+                                                        className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'
+                                                        onClick={() => setShowModal(funcionario.id)}
+                                                    >
+                                                        <Trash2 width={16} height={16} />
+                                                    </button>
+                                                    <div
+                                                        className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
+                                                        id='modalTeste'
+                                                    >
+                                                        <div className='modal-dialog modal-dialog-centered'>
+                                                            <div className='modal-content'>
+                                                                <div className='modal-header'>
+                                                                    <h5 className='modal-title'>
+                                                                        Desativar Funcionário
+                                                                    </h5>
+                                                                    <button
+                                                                        type='button'
+                                                                        className='btn-close'
+                                                                        data-bs-dismiss='modal'
+                                                                        aria-label='Close'
+                                                                        onClick={() => setShowModal(null)}
+                                                                    ></button>
+                                                                </div>
+                                                                <div className='modal-body'>
+                                                                    <p>
+                                                                        Tem certeza que deseja desativar o
+                                                                        funcionário {funcionario.username}?
+                                                                    </p>
+                                                                </div>
+                                                                <div className='modal-footer'>
+                                                                    <button
+                                                                        className='btn btn-danger'
+                                                                        type='submit'
+                                                                        onClick={() => handleDeactivate(funcionario.id)}
+                                                                    >
+                                                                        Desativar
+                                                                    </button>
+                                                                    <button
+                                                                        type='button'
+                                                                        className='btn'
+                                                                        data-bs-dismiss='modal'
+                                                                        onClick={() => setShowModal(null)}
+                                                                    >
+                                                                        Fechar
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </TableData>
-                                    )}
-                                </TableRow>
-                            ),
-                    )}
-                </TableBody>
-            </Table>
-        </div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </TableData>
+                                )}
+                            </TableRow>
+                        ),
+                )}
+            </TableBody>
+        </Table>
     );
 }
 

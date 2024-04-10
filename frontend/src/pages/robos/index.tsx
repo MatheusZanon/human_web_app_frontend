@@ -16,8 +16,8 @@ function Robos() {
     if (hasPermission('Can view robos')) {
         return (
             <>
-                <div className='px-3 pb-3 shadow rounded'>
-                    <h1 className='my-2'>Robôs</h1>
+                <div className='px-3 pb-3 shadow rounded mb-2'>
+                    <h1 className='my-3'>Robôs</h1>
                     <div className='d-flex gap-2 mb-2'>
                         {hasPermission('Can add robos') && (
                             <>
