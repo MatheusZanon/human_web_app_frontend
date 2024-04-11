@@ -4,7 +4,9 @@ import { useGetClientes } from "@/api/http";
 
 function Clientes() {
   const clientes = useGetClientes();
-    if (clientes.isSuccess && clientes.data.length > 0) {
+  const clienteResults = clientes.isSuccess && clientes.data && 'results' in clientes.data ? clientes.data.results : [];
+  console.log(clientes.data?.next)
+    if (clientes.isSuccess && clienteResults.length > 0) {
       return (
         <div className='px-3 pb-3 shadow rounded mb-2'>
         <h1 className='my-3'>Clientes</h1>
@@ -21,7 +23,7 @@ function Clientes() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {clientes.data.map(cliente => (
+              {clienteResults.map(cliente => (
                 <TableRow key={cliente.id}>
                   <TableData>{cliente.id}</TableData>
                   <TableData>{cliente.nome_razao_social}</TableData>
@@ -43,11 +45,19 @@ function Clientes() {
               ))}
             </TableBody>
           </Table>
+          <div>
+            {clientes.data.previous && (
+                <button onClick={() => setUrl(clientes.data.previous)}>Anterior</button>
+            )}
+            {clientes.data.next && (
+                <button onClick={() => setUrl(clientes.data.next)}>Próximo</button>
+            )}
+        </div>
       </div>
       );
     } else {
       return (
-          <div>Não há funcionarios!</div>
+          <div>Não há clientes!</div>
       );
     }
 }
