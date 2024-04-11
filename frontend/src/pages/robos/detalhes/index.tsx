@@ -9,13 +9,11 @@ import { RoboParametrosType } from '@/api/http';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
-import { useState } from 'react';
 import { fromNowDays } from '@/libs';
-import { CriarRoboRotina } from '../criar_robo_rotina';
 import { Pencil, X } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { CriarRoboParametroModal } from '@/components/criar-robo-parametro';
-import { CriarRoboRotinaModal } from '@/components/criar-robo-rotina';
+import { CriarRoboParametroModal } from '@/components/robos/criar-robo-parametro';
+import { CriarRoboRotinaModal } from '@/components/robos/criar-robo-rotina';
 
 function RoboDetalhes() {
     const { roboId } = useParams();
@@ -52,7 +50,7 @@ function RoboDetalhes() {
               }
             : null;
 
-    const { hasPermission } = useAuthenticatedUser();
+    const { hasRole } = useAuthenticatedUser();
     const {
         mutate: deleteParametro,
         isSuccess: isDeleteParametroSuccess,
@@ -89,11 +87,11 @@ function RoboDetalhes() {
                     <div className='px-3 pb-3 shadow rounded'>
                         <h1>Robo - {roboDetalhes?.nome}</h1>
                         <div className='d-flex gap-2'>
-                            {hasPermission('Can add parametros') && (
-                                <CriarRoboParametroModal roboId={roboId ? roboId : ''} />
-                            )}
-                            {hasPermission('Can add rotinas') && (
-                                <CriarRoboRotinaModal roboId={roboId ? roboId : ''} />
+                            {hasRole('TI') && (
+                                <>
+                                    <CriarRoboParametroModal roboId={roboId ? roboId : ''} />
+                                    <CriarRoboRotinaModal roboId={roboId ? roboId : ''} />
+                                </>
                             )}
                         </div>
                         <div className='d-flex gap-2 w-100'>
@@ -113,22 +111,29 @@ function RoboDetalhes() {
                                                                 {parametro.parametro_info.nome}
                                                             </span>
                                                             <div className='d-flex gap-2'>
-                                                                <button
-                                                                    className='btn py-0 px-2'
-                                                                    key={`update-${parametro.id}`}
-                                                                >
-                                                                    <Pencil size={18} />
-                                                                </button>
+                                                                {hasRole('TI') && (
+                                                                    <>
+                                                                        <button
+                                                                            className='btn py-0 px-2'
+                                                                            key={`update-${parametro.id}`}
+                                                                        >
+                                                                            <Pencil size={18} />
+                                                                        </button>
 
-                                                                <button
-                                                                    className='btn py-0 px-2'
-                                                                    key={`delete-${parametro.id}`}
-                                                                    onClick={(event) =>
-                                                                        handleDeleteParametro(event, parametro.id)
-                                                                    }
-                                                                >
-                                                                    <X size={18} />
-                                                                </button>
+                                                                        <button
+                                                                            className='btn py-0 px-2'
+                                                                            key={`delete-${parametro.id}`}
+                                                                            onClick={(event) =>
+                                                                                handleDeleteParametro(
+                                                                                    event,
+                                                                                    parametro.id,
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <X size={18} />
+                                                                        </button>
+                                                                    </>
+                                                                )}
                                                             </div>
                                                         </label>
                                                         {parametro.parametro_info.tipo.toLowerCase().trim() ===
@@ -203,19 +208,15 @@ function RoboDetalhes() {
                                                 </div>
                                             )}
                                             <div className='d-flex gap-2 mt-2'>
-                                                {hasPermission('Can change robos') && (
-                                                    <>
-                                                        <button
-                                                            className='btn btn-primary'
-                                                            onClick={(event) => {
-                                                                event.preventDefault();
-                                                                executarRobo(getValues());
-                                                            }}
-                                                        >
-                                                            Executar
-                                                        </button>
-                                                    </>
-                                                )}
+                                                <button
+                                                    className='btn btn-primary'
+                                                    onClick={(event) => {
+                                                        event.preventDefault();
+                                                        executarRobo(getValues());
+                                                    }}
+                                                >
+                                                    Executar
+                                                </button>
                                             </div>
                                         </form>
                                     </>
@@ -245,19 +246,15 @@ function RoboDetalhes() {
                                                         </select>
                                                     </div>
                                                     <div className='d-flex gap-2 mt-2'>
-                                                        {hasPermission('Can change robos') && (
-                                                            <>
-                                                                <button
-                                                                    className='btn btn-primary'
-                                                                    onClick={(event) => {
-                                                                        event.preventDefault();
-                                                                        executarRobo(getValues());
-                                                                    }}
-                                                                >
-                                                                    Executar
-                                                                </button>
-                                                            </>
-                                                        )}
+                                                        <button
+                                                            className='btn btn-primary'
+                                                            onClick={(event) => {
+                                                                event.preventDefault();
+                                                                executarRobo(getValues());
+                                                            }}
+                                                        >
+                                                            Executar
+                                                        </button>
                                                     </div>
                                                 </form>
                                             </>
@@ -280,7 +277,12 @@ function RoboDetalhes() {
                                     Ultima execução:{' '}
                                     <span className='fw-normal'>
                                         {fromNowDays(new Date(roboDetalhes?.ultima_execucao || 0)) != 0 ? (
-                                            <>{fromNowDays(new Date(roboDetalhes?.ultima_execucao || 0))} dias</>
+                                            <>
+                                                {fromNowDays(new Date(roboDetalhes?.ultima_execucao || 0))}{' '}
+                                                {fromNowDays(new Date(roboDetalhes?.ultima_execucao || 0)) === 1
+                                                    ? 'dia'
+                                                    : 'dias'}
+                                            </>
                                         ) : (
                                             <>Hoje</>
                                         )}

@@ -14,7 +14,7 @@ function ActivateUsersTable() {
     const { data, isSuccess, isLoading, isError } = useGetAllUsers();
     const { data: groups } = useGetAllGroups();
     const { mutate: activate, isSuccess: activateSuccess, isError: activateError, error } = useActivateUser();
-    const { hasPermission } = useAuthenticatedUser();
+    const { hasRole } = useAuthenticatedUser();
     const [sortBy, setSortBy] = useState<keyof User>('id');
     const [sortDirection, setSortDirection] = useState('asc');
     const [showModal, setShowModal] = useState<number | null>(null);
@@ -132,7 +132,9 @@ function ActivateUsersTable() {
                             >
                                 Telefone
                             </TableHeader>
-                            {hasPermission('Can change funcionarios') && <TableHeader>Actions</TableHeader>}
+                            {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
+                                <TableHeader>Actions</TableHeader>
+                            )}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -155,178 +157,168 @@ function ActivateUsersTable() {
                                         </TableData>
                                         <TableData>{funcionario.cpf}</TableData>
                                         <TableData>{funcionario.telefone_celular}</TableData>
-                                        {hasPermission('Can change funcionarios') && (
+                                        {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
                                             <TableData>
                                                 <div className='d-flex gap-2'>
-                                                    {hasPermission('Can change funcionarios') && (
-                                                        <>
-                                                            <button
-                                                                className='btn btn-success btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                                onClick={funcionario.groups.length > 0 ? () => setShowActivateModal(funcionario.id) : () => setShowModal(funcionario.id)}
-                                                            >
-                                                                <ShieldCheck width={22} height={16} />
-                                                            </button>
-                                                            <div
-                                                                className={`modal ${showActivateModal === funcionario.id ? 'd-block' : 'd-none'}`}
-                                                                id='modalActivate'
-                                                            >
-                                                                <div className='modal-dialog modal-dialog-centered'>
-                                                                    <div className='modal-content'>
-                                                                        <div className='modal-header'>
-                                                                            <h5 className='modal-title'>
-                                                                                Ativar Funcionário
-                                                                            </h5>
-                                                                            <button
-                                                                                type='button'
-                                                                                className='btn-close'
-                                                                                data-bs-dismiss='modal'
-                                                                                aria-label='Close'
-                                                                                onClick={() => setShowActivateModal(null)}
-                                                                            ></button>
-                                                                        </div>
-                                                                        <div className='modal-body'>
+                                                    <>
+                                                        <button
+                                                            className='btn btn-success btn-sm p-1 d-flex justify-content-center align-items-center'
+                                                            onClick={
+                                                                funcionario.groups.length > 0
+                                                                    ? () => setShowActivateModal(funcionario.id)
+                                                                    : () => setShowModal(funcionario.id)
+                                                            }
+                                                        >
+                                                            <ShieldCheck width={22} height={16} />
+                                                        </button>
+                                                        <div
+                                                            className={`modal ${showActivateModal === funcionario.id ? 'd-block' : 'd-none'}`}
+                                                            id='modalActivate'
+                                                        >
+                                                            <div className='modal-dialog modal-dialog-centered'>
+                                                                <div className='modal-content'>
+                                                                    <div className='modal-header'>
+                                                                        <h5 className='modal-title'>
+                                                                            Ativar Funcionário
+                                                                        </h5>
+                                                                        <button
+                                                                            type='button'
+                                                                            className='btn-close'
+                                                                            data-bs-dismiss='modal'
+                                                                            aria-label='Close'
+                                                                            onClick={() => setShowActivateModal(null)}
+                                                                        ></button>
+                                                                    </div>
+                                                                    <div className='modal-body'>
+                                                                        <p>
+                                                                            Tem certeza que deseja ativar o funcionário{' '}
+                                                                            {`${funcionario.first_name} ${funcionario.last_name}`}
+                                                                            ?
+                                                                        </p>
+                                                                    </div>
+                                                                    <div className='modal-footer'>
+                                                                        <button
+                                                                            className='btn btn-success'
+                                                                            type='submit'
+                                                                            onClick={() =>
+                                                                                funcionario.groups.length > 0
+                                                                                    ? handleActivate(funcionario.id, {
+                                                                                          id: findGroupsIds(
+                                                                                              funcionario,
+                                                                                              groups!,
+                                                                                          ),
+                                                                                      })
+                                                                                    : setShowModal(funcionario.id)
+                                                                            }
+                                                                        >
+                                                                            Ativar
+                                                                        </button>
+                                                                        <button
+                                                                            type='button'
+                                                                            className='btn'
+                                                                            data-bs-dismiss='modal'
+                                                                            onClick={() => setShowActivateModal(null)}
+                                                                        >
+                                                                            Fechar
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
+                                                            id={`modal_${funcionario.id}`}
+                                                        >
+                                                            <div className='modal-dialog modal-dialog-centered'>
+                                                                <div className='modal-content'>
+                                                                    <div className='modal-header'>
+                                                                        <h5 className='modal-title'>
+                                                                            Ativação — {funcionario.username}
+                                                                        </h5>
+                                                                        <button
+                                                                            type='button'
+                                                                            className='btn-close'
+                                                                            data-bs-dismiss='modal'
+                                                                            aria-label='Close'
+                                                                            onClick={() => setShowModal(null)}
+                                                                        />
+                                                                    </div>
+                                                                    <div className='modal-body'>
+                                                                        <form
+                                                                            className='d-flex flex-column gap-2'
+                                                                            onSubmit={handleSubmit((data) =>
+                                                                                handleActivate(funcionario.id, data),
+                                                                            )}
+                                                                        >
                                                                             <p>
-                                                                                Tem certeza que deseja ativar o
-                                                                                funcionário{' '}
-                                                                                {`${funcionario.first_name} ${funcionario.last_name}`}
-                                                                                ?
+                                                                                Para ativar um funcionário selecione ao
+                                                                                menos um cargo
                                                                             </p>
-                                                                        </div>
-                                                                        <div className='modal-footer'>
-                                                                            <button
-                                                                                className='btn btn-success'
-                                                                                type='submit'
-                                                                                onClick={() =>
-                                                                                    funcionario.groups.length > 0
-                                                                                        ? handleActivate(
-                                                                                              funcionario.id,
-                                                                                              {
-                                                                                                  id: findGroupsIds(
-                                                                                                      funcionario,
-                                                                                                      groups!,
-                                                                                                  ),
-                                                                                              },
-                                                                                          )
-                                                                                        : setShowModal(funcionario.id)
-                                                                                }
-                                                                            >
-                                                                                Ativar
-                                                                            </button>
-                                                                            <button
-                                                                                type='button'
-                                                                                className='btn'
-                                                                                data-bs-dismiss='modal'
-                                                                                onClick={() => setShowActivateModal(null)}
-                                                                            >
-                                                                                Fechar
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div
-                                                                className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
-                                                                id={`modal_${funcionario.id}`}
-                                                            >
-                                                                <div className='modal-dialog modal-dialog-centered'>
-                                                                    <div className='modal-content'>
-                                                                        <div className='modal-header'>
-                                                                            <h5 className='modal-title'>
-                                                                                Ativação — {funcionario.username}
-                                                                            </h5>
-                                                                            <button
-                                                                                type='button'
-                                                                                className='btn-close'
-                                                                                data-bs-dismiss='modal'
-                                                                                aria-label='Close'
-                                                                                onClick={() => setShowModal(null)}
-                                                                            />
-                                                                        </div>
-                                                                        <div className='modal-body'>
-                                                                            <form
-                                                                                className='d-flex flex-column gap-2'
-                                                                                onSubmit={handleSubmit((data) =>
-                                                                                    handleActivate(
-                                                                                        funcionario.id,
-                                                                                        data,
-                                                                                    ),
-                                                                                )}
-                                                                            >
-                                                                                <p>
-                                                                                    Para ativar um funcionário selecione
-                                                                                    ao menos um cargo
-                                                                                </p>
-                                                                                <div>
-                                                                                    <h5>Cargo</h5>
-                                                                                    {groups &&
-                                                                                        groups.map(
-                                                                                            (group) =>
-                                                                                                group.name
-                                                                                                    .trim()
-                                                                                                    .toLocaleLowerCase() !==
-                                                                                                    'admin' &&
-                                                                                                group.name
-                                                                                                    .trim()
-                                                                                                    .toLocaleLowerCase() !==
-                                                                                                    'ti' && (
-                                                                                                    <div
-                                                                                                        key={group.id}
-                                                                                                        className='form-check'
+                                                                            <div>
+                                                                                <h5>Cargo</h5>
+                                                                                {groups &&
+                                                                                    groups.map(
+                                                                                        (group) =>
+                                                                                            group.name
+                                                                                                .trim()
+                                                                                                .toLocaleLowerCase() !==
+                                                                                                'admin' &&
+                                                                                            group.name
+                                                                                                .trim()
+                                                                                                .toLocaleLowerCase() !==
+                                                                                                'ti' && (
+                                                                                                <div
+                                                                                                    key={group.id}
+                                                                                                    className='form-check'
+                                                                                                >
+                                                                                                    <input
+                                                                                                        className='form-check-input'
+                                                                                                        type='checkbox'
+                                                                                                        {...register(
+                                                                                                            'id',
+                                                                                                        )}
+                                                                                                        value={group.id}
+                                                                                                        id={`group_${group.id}`}
+                                                                                                    />
+                                                                                                    <label
+                                                                                                        className='form-check-label'
+                                                                                                        htmlFor={`group_${group.id}`}
                                                                                                     >
-                                                                                                        <input
-                                                                                                            className='form-check-input'
-                                                                                                            type='checkbox'
-                                                                                                            {...register(
-                                                                                                                'id',
-                                                                                                            )}
-                                                                                                            value={
-                                                                                                                group.id
-                                                                                                            }
-                                                                                                            id={`group_${group.id}`}
-                                                                                                        />
-                                                                                                        <label
-                                                                                                            className='form-check-label'
-                                                                                                            htmlFor={`group_${group.id}`}
-                                                                                                        >
-                                                                                                            {group.name}
-                                                                                                        </label>
-                                                                                                    </div>
-                                                                                                ),
-                                                                                        )}
-                                                                                    {errors.id && (
-                                                                                        <p className='text-danger'>
-                                                                                            {errors.id.message}
-                                                                                        </p>
+                                                                                                        {group.name}
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                            ),
                                                                                     )}
-                                                                                </div>
-                                                                                <div>
-                                                                                    <button
-                                                                                        className='btn btn-success'
-                                                                                        type='submit'
-                                                                                    >
-                                                                                        Ativar
-                                                                                    </button>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-                                                                        <div className='modal-footer'>
-                                                                            <button
-                                                                                type='button'
-                                                                                className='btn'
-                                                                                data-bs-dismiss='modal'
-                                                                                onClick={() => setShowModal(null)}
-                                                                            >
-                                                                                Fechar
-                                                                            </button>
-                                                                        </div>
+                                                                                {errors.id && (
+                                                                                    <p className='text-danger'>
+                                                                                        {errors.id.message}
+                                                                                    </p>
+                                                                                )}
+                                                                            </div>
+                                                                            <div>
+                                                                                <button
+                                                                                    className='btn btn-success'
+                                                                                    type='submit'
+                                                                                >
+                                                                                    Ativar
+                                                                                </button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                    <div className='modal-footer'>
+                                                                        <button
+                                                                            type='button'
+                                                                            className='btn'
+                                                                            data-bs-dismiss='modal'
+                                                                            onClick={() => setShowModal(null)}
+                                                                        >
+                                                                            Fechar
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'>
-                                                                <ShieldX width={22} height={16} />
-                                                            </button>
-                                                        </>
-                                                    )}
+                                                        </div>
+                                                    </>
                                                 </div>
                                             </TableData>
                                         )}

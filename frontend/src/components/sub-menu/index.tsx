@@ -14,7 +14,6 @@ type SubMenuProps = {
 const SubMenu: React.FC<SubMenuProps> = ({ children, sbmIcon, sbmTitle, parentOpen }) => {
     const [open, setOpen] = useState(false);
     const [hover, setHover] = useState(false);
-    const { hasPermission } = useAuthenticatedUser();
     const location = useLocation();
 
     const toggleMinimized = () => setOpen(!open);

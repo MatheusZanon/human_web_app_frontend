@@ -8,7 +8,7 @@ import { useDeactivateUser } from '@/api/http';
 import { toast } from 'react-toastify';
 
 function TabelaFuncionarios({ data }: { data: User[] }) {
-    const { hasPermission, authenticatedUser } = useAuthenticatedUser();
+    const { hasRole, authenticatedUser } = useAuthenticatedUser();
     const [sortBy, setSortBy] = useState<keyof User>('id');
     const [sortDirection, setSortDirection] = useState('asc');
     const [showModal, setShowModal] = useState<number | null>(null);
@@ -85,7 +85,9 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                         >
                             Telefone
                         </TableHeader>
-                        {hasPermission('Can change funcionarios') && <TableHeader>Actions</TableHeader>}
+                        {(hasRole('RH_GERENCIA') || hasRole('RH_OPERACAO') || hasRole('ADMIN') || hasRole('TI')) && (
+                            <TableHeader>Actions</TableHeader>
+                        )}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -107,18 +109,23 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                     </TableData>
                                     <TableData>{funcionario.cpf}</TableData>
                                     <TableData>{funcionario.telefone_celular}</TableData>
-                                    {hasPermission('Can change funcionarios') && (
+                                    {(hasRole('RH_GERENCIA') ||
+                                        hasRole('RH_OPERACAO') ||
+                                        hasRole('ADMIN') ||
+                                        hasRole('TI')) && (
                                         <TableData>
                                             <div className='d-flex gap-2'>
-                                                {hasPermission('Can change funcionarios') && (
-                                                    <>
-                                                        <button
-                                                            className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                            onClick={() => handleEdit(funcionario.id)}
-                                                        >
-                                                            <Search width={16} height={16} />
-                                                        </button>
-                                                        {funcionario.id !== authenticatedUser?.id && (
+                                                <>
+                                                    <button
+                                                        className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
+                                                        onClick={() => handleEdit(funcionario.id)}
+                                                    >
+                                                        <Search width={16} height={16} />
+                                                    </button>
+                                                    {funcionario.id !== authenticatedUser?.id &&
+                                                        (hasRole('ADMIN') ||
+                                                            hasRole('RH_GERENCIA') ||
+                                                            hasRole('TI')) && (
                                                             <button
                                                                 className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'
                                                                 onClick={() => setShowModal(funcionario.id)}
@@ -126,56 +133,52 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                                 <Trash2 width={16} height={16} />
                                                             </button>
                                                         )}
-                                                        <div
-                                                            className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
-                                                            id='modalDeactivate'
-                                                        >
-                                                            <div className='modal-dialog modal-dialog-centered'>
-                                                                <div className='modal-content'>
-                                                                    <div className='modal-header'>
-                                                                        <h5 className='modal-title'>
-                                                                            Desativar Funcionário
-                                                                        </h5>
-                                                                        <button
-                                                                            type='button'
-                                                                            className='btn-close'
-                                                                            data-bs-dismiss='modal'
-                                                                            aria-label='Close'
-                                                                            onClick={() => setShowModal(null)}
-                                                                        ></button>
-                                                                    </div>
-                                                                    <div className='modal-body'>
-                                                                        <p>
-                                                                            Tem certeza que deseja desativar o
-                                                                            funcionário{' '}
-                                                                            {`${funcionario.first_name} ${funcionario.last_name}`}
-                                                                            ?
-                                                                        </p>
-                                                                    </div>
-                                                                    <div className='modal-footer'>
-                                                                        <button
-                                                                            className='btn btn-danger'
-                                                                            type='submit'
-                                                                            onClick={() =>
-                                                                                handleDeactivate(funcionario.id)
-                                                                            }
-                                                                        >
-                                                                            Desativar
-                                                                        </button>
-                                                                        <button
-                                                                            type='button'
-                                                                            className='btn'
-                                                                            data-bs-dismiss='modal'
-                                                                            onClick={() => setShowModal(null)}
-                                                                        >
-                                                                            Fechar
-                                                                        </button>
-                                                                    </div>
+                                                    <div
+                                                        className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
+                                                        id='modalDeactivate'
+                                                    >
+                                                        <div className='modal-dialog modal-dialog-centered'>
+                                                            <div className='modal-content'>
+                                                                <div className='modal-header'>
+                                                                    <h5 className='modal-title'>
+                                                                        Desativar Funcionário
+                                                                    </h5>
+                                                                    <button
+                                                                        type='button'
+                                                                        className='btn-close'
+                                                                        data-bs-dismiss='modal'
+                                                                        aria-label='Close'
+                                                                        onClick={() => setShowModal(null)}
+                                                                    ></button>
+                                                                </div>
+                                                                <div className='modal-body'>
+                                                                    <p>
+                                                                        Tem certeza que deseja desativar o funcionário{' '}
+                                                                        {`${funcionario.first_name} ${funcionario.last_name}`}
+                                                                        ?
+                                                                    </p>
+                                                                </div>
+                                                                <div className='modal-footer'>
+                                                                    <button
+                                                                        className='btn btn-danger'
+                                                                        type='submit'
+                                                                        onClick={() => handleDeactivate(funcionario.id)}
+                                                                    >
+                                                                        Desativar
+                                                                    </button>
+                                                                    <button
+                                                                        type='button'
+                                                                        className='btn'
+                                                                        data-bs-dismiss='modal'
+                                                                        onClick={() => setShowModal(null)}
+                                                                    >
+                                                                        Fechar
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </>
-                                                )}
+                                                    </div>
+                                                </>
                                             </div>
                                         </TableData>
                                     )}

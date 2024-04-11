@@ -52,7 +52,7 @@ function NavItem({ icon, title, to }: { icon: React.ReactNode; title: string; to
 
 function Sidebar() {
     const { open, toggleMinimized } = useContext(SidebarContext);
-    const { hasRole, hasPermission } = useAuthenticatedUser();
+    const { hasRole } = useAuthenticatedUser();
 
     return (
         <motion.nav
@@ -94,35 +94,57 @@ function Sidebar() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                {hasRole('ADMIN') && (
-                    <NavItem icon={<LineChart className={open ? 'me-2' : ''} />} title={open ? 'Dashboard' : ''} to='' />
+                {(hasRole('ADMIN') || hasRole('TI')) && (
+                    <NavItem
+                        icon={<LineChart className={open ? 'me-2' : ''} />}
+                        title={open ? 'Dashboard' : ''}
+                        to=''
+                    />
                 )}
-                {hasRole('ADMIN') && (
-                    <NavItem icon={<UsersRound className={open ? 'me-2' : ''} />} title={open ? 'Ativar Funcionários' : ''} to='activate-users'/>
+                {(hasRole('ADMIN') || hasRole('TI') || hasRole('RH_GERENCIA')) && (
+                    <NavItem
+                        icon={<UsersRound className={open ? 'me-2' : ''} />}
+                        title={open ? 'Ativar Funcionários' : ''}
+                        to='activate-users'
+                    />
                 )}
-                {hasPermission('Can view robos') && (
+                <li className='nav-item'>
+                    <SubMenu sbmIcon={<Bot className={open ? 'me-2' : ''} />} sbmTitle='Robôs' parentOpen={open}>
+                        <NavItem icon={<Dot className={'me-2'} />} title={'Todos'} to='robos' />
+                        <NavItem icon={<Dot className={'me-2'} />} title={'Financeiro'} to='robos/financeiro' />
+                        <NavItem icon={<Dot className={'me-2'} />} title={'RH'} to='robos/rh' />
+                    </SubMenu>
+                </li>
+                {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO') || hasRole('TI')) && (
                     <li className='nav-item'>
-                        <SubMenu sbmIcon={<Bot className={open ? 'me-2' : ''} />} sbmTitle='Robôs' parentOpen={open}>
-                            <NavItem icon={<Dot className={'me-2'} />} title={'Todos'} to='robos' />
-                            <NavItem icon={<Dot className={'me-2'} />} title={'Financeiro'} to='robos/financeiro' />
-                            <NavItem icon={<Dot className={'me-2'} />} title={'RH'} to='robos/rh' />
+                        <SubMenu
+                            sbmIcon={<DollarSign className={open ? 'me-2' : ''} />}
+                            sbmTitle='Finanças'
+                            parentOpen={open}
+                        >
+                            <NavItem icon={<Dot className={'me-2'} />} title={'Clientes'} to='financeiro/clientes' />
+                            <NavItem
+                                icon={<Dot className={'me-2'} />}
+                                title={'Relatorios'}
+                                to='financeiro/relatorios'
+                            />
                         </SubMenu>
                     </li>
                 )}
-                {(hasRole('ADMIN') || hasRole('RH_GERENCIA')) && (
+                {(hasRole('ADMIN') || hasRole('RH_OPERACAO') || hasRole('RH_GERENCIA') || hasRole('TI')) && (
                     <li className='nav-item'>
-                    <SubMenu sbmIcon={<DollarSign className={open ? 'me-2' : ''} />} sbmTitle='Finanças' parentOpen={open}>
-                    <NavItem icon={<Dot className={'me-2'} />} title={'Clientes'} to='financeiro/clientes' />
-                    <NavItem icon={<Dot className={'me-2'} />} title={'Relatorios'} to='financeiro/relatorios'/>
-                    </SubMenu>
-                </li>
-                )}
-                {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO')) && (
-                <li className='nav-item'>
-                    <SubMenu sbmIcon={<UserCog2Icon className={open ? 'me-2' : ''} />} sbmTitle='RH' parentOpen={open}>
-                        <NavItem icon={<Dot className={open ? 'me-2' : ''} />} title={open ? 'Funcionários' : ''} to='rh/funcionarios'/>
-                    </SubMenu>
-                </li>
+                        <SubMenu
+                            sbmIcon={<UserCog2Icon className={open ? 'me-2' : ''} />}
+                            sbmTitle='RH'
+                            parentOpen={open}
+                        >
+                            <NavItem
+                                icon={<Dot className={open ? 'me-2' : ''} />}
+                                title={open ? 'Funcionários' : ''}
+                                to='rh/funcionarios'
+                            />
+                        </SubMenu>
+                    </li>
                 )}
             </motion.ul>
         </motion.nav>

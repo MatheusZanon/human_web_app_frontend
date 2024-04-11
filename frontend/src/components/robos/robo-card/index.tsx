@@ -3,7 +3,6 @@ import styles from './robo-card.module.scss';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 import { useExecutarRobo, useRoboParametrosById, useGetRoboRotinasById } from '@/api/http/robos';
-import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -35,7 +34,6 @@ function Card({
 }: CardProps) {
     const [showModal, setShowModal] = useState(false);
 
-    const { hasPermission } = useAuthenticatedUser();
     const { data: roboParametros } = useRoboParametrosById({
         roboId: id,
     });
@@ -222,7 +220,10 @@ function Card({
                                                         )}
                                                         {errors[parametro.parametro_info.nome] && (
                                                             <p className='text-danger'>
-                                                                {errors[parametro.parametro_info.nome]?.message as string}
+                                                                {
+                                                                    errors[parametro.parametro_info.nome]
+                                                                        ?.message as string
+                                                                }
                                                             </p>
                                                         )}
                                                     </div>
@@ -278,11 +279,9 @@ function Card({
                                 {children}
                             </div>
                             <div className='modal-footer'>
-                                {hasPermission('Can change robos') && (
-                                    <button onClick={handleSubmit(onSubmit)} className='btn btn-primary'>
-                                        Executar
-                                    </button>
-                                )}
+                                <button onClick={handleSubmit(onSubmit)} className='btn btn-primary'>
+                                    Executar
+                                </button>
                                 <button
                                     type='button'
                                     className='btn'
