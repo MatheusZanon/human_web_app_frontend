@@ -228,7 +228,7 @@ function Card({
                                                     </div>
                                                 </div>
                                             ))}
-                                            {isRoboRotinasSuccess && (
+                                            {isRoboRotinasSuccess && roboRotinas.length > 0 && (
                                                 <div>
                                                     <label className='form-label'>Rotina</label>
                                                     <select

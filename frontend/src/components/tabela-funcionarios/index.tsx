@@ -8,7 +8,7 @@ import { useDeactivateUser } from '@/api/http';
 import { toast } from 'react-toastify';
 
 function TabelaFuncionarios({ data }: { data: User[] }) {
-    const { hasPermission } = useAuthenticatedUser();
+    const { hasPermission, authenticatedUser } = useAuthenticatedUser();
     const [sortBy, setSortBy] = useState<keyof User>('id');
     const [sortDirection, setSortDirection] = useState('asc');
     const [showModal, setShowModal] = useState<number | null>(null);
@@ -91,7 +91,8 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                 <TableBody>
                     {sortedData.map(
                         (funcionario) =>
-                            funcionario.is_active && (
+                            funcionario.is_active &&
+                            !funcionario.groups.map((group) => group.toLocaleLowerCase()).includes('admin') && (
                                 <TableRow key={funcionario.id}>
                                     <TableData>{funcionario.id}</TableData>
                                     <TableData>
@@ -117,12 +118,14 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                         >
                                                             <Search width={16} height={16} />
                                                         </button>
-                                                        <button
-                                                            className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                            onClick={() => setShowModal(funcionario.id)}
-                                                        >
-                                                            <Trash2 width={16} height={16} />
-                                                        </button>
+                                                        {funcionario.id !== authenticatedUser?.id && (
+                                                            <button
+                                                                className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'
+                                                                onClick={() => setShowModal(funcionario.id)}
+                                                            >
+                                                                <Trash2 width={16} height={16} />
+                                                            </button>
+                                                        )}
                                                         <div
                                                             className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
                                                             id='modalDeactivate'
