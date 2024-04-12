@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import styles from './vales-sst.module.scss';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead  } from "@/components/table";
 import { useGetValesSST } from '@/api/http/financeiro_valores';
 
 function CardValesSST({ ...props }) {
-    const valesSST = useGetValesSST();
+    const [url, setUrl] = useState<string>('financeiro_valores/vales_sst/?limit=15&offset=0');
+    const valesSST = useGetValesSST(url);
+    const valesSSTResults = valesSST.isSuccess && valesSST.data && 'results' in valesSST.data ? valesSST.data.results : [];
+    
     return (
         <div className={`card ${styles.card}`}>
             <div className="card-body">
@@ -21,7 +25,7 @@ function CardValesSST({ ...props }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {valesSST.isSuccess && valesSST.data.length > 0 && valesSST.data.map(vale => (
+                        {valesSSTResults.map(vale => (
                             <TableRow key={vale.id}>
                             <TableData>{vale.id}</TableData>
                             <TableData>{vale.nome_razao_social}</TableData>
@@ -34,6 +38,17 @@ function CardValesSST({ ...props }) {
                         ))}
                     </TableBody>
                 </Table>
+                <div className='d-flex gap-2'>
+                    {valesSST.data && valesSST.data.previous ? 
+                    <button type='button' className='btn btn-primary' onClick={() => valesSST.data.previous && setUrl(valesSST.data.previous)}>Anterior</button>
+                        : 
+                    <button type='button' className='btn btn-primary' disabled={true}>Anterior</button>}
+        
+                    {valesSST.data && valesSST.data.next ?
+                    <button type='button' className='btn btn-primary' onClick={() => valesSST.data.next && setUrl(valesSST.data.next)}>Próximo</button>
+                        :
+                    <button type='button' className='btn btn-primary' disabled={true}>Próximo</button>}
+                </div>
             </div>
         </div>
     );

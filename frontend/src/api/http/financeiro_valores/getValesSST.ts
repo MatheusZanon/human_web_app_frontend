@@ -1,8 +1,8 @@
 import { api } from '@/utils/axios';
 import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
+import PaginatedResponse from '@/utils/types/paginated_response';
 
-export async function getValesSST() {
-    const token = localStorage.getItem('accessToken');
-    const data = await api.get<FinanceiroValesSST[]>('financeiro_valores/vales_sst', {headers: {Authorization: `Bearer ${token}`}}).then((res) => res.data);
-    return data;
+export async function getValesSST(url: string) {
+    const response = await api.get<PaginatedResponse<FinanceiroValesSST>>(url);
+    return response.data;
 }

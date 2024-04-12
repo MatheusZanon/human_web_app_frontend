@@ -10,16 +10,16 @@ export function useGetFinanceiroValores() {
     });
 }
 
-export function useGetReembolsos() {
+export function useGetReembolsos(url:string) {
     return useQuery({
-        queryKey: ['reembolsos'],
-        queryFn: () => getReembolsos(),
+        queryKey: ['reembolsos', url],
+        queryFn: () => getReembolsos(url),
     });
 }
 
-export function useGetValesSST() {
+export function useGetValesSST(url:string) {
     return useQuery({
-        queryKey: ['vales_sst'],
-        queryFn: () => getValesSST(),
+        queryKey: ['vales_sst', url],
+        queryFn: () => getValesSST(url),
     });
 }

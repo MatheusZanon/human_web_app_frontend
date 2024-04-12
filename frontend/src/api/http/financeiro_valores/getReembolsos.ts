@@ -1,8 +1,8 @@
 import { api } from '@/utils/axios';
 import { FinanceiroReembolsos } from '@/utils/types/financeiro_reembolsos';
+import PaginatedResponse from '@/utils/types/paginated_response';
 
-export async function getReembolsos() {
-    const token = localStorage.getItem('accessToken');
-    const data = await api.get<FinanceiroReembolsos[]>('financeiro_valores/reembolsos', {headers: {Authorization: `Bearer ${token}`}}).then((res) => res.data);
-    return data;
+export async function getReembolsos(url:string) {
+    const response = await api.get<PaginatedResponse<FinanceiroReembolsos>>(url);
+    return response.data;
 }

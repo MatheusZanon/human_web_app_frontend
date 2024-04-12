@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getClientes } from './getClientes';
 
-export function useGetClientes() {
+export function useGetClientes(url: string) {
     return useQuery({
-        queryKey: ['clientes'],
-        queryFn: () => getClientes(),
+        queryKey: ['clientes', url],
+        queryFn: () => getClientes(url),
     });
 }

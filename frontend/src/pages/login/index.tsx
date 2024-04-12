@@ -41,7 +41,7 @@ function Login() {
             password: parsedData.data.password,
         }).then(response => {
             if (response.status == 200) {
-            const { refresh, access } = response.data;
+            const { access } = response.data;
             localStorage.setItem('accessToken', access);
             axios.get('http://localhost:8000/api/token/verify/', {
                 headers: {
@@ -50,7 +50,7 @@ function Login() {
             }).then(() => {
                 setTimeout(() => {
                 navigate('/main');
-                }, 1000);
+                }, 1500);
             });
             }    
         }).catch(error => {
