@@ -4,20 +4,23 @@ import {
     useGetRoboRotinasById,
     useExecutarRobo,
     useDeleteParametro,
+    useDeleteRotina,
 } from '@/api/http/robos';
 import { RoboParametrosType } from '@/api/http';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { fromNowDays } from '@/libs';
-import { Pencil, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { CriarRoboParametroModal } from '@/components/robos/criar-robo-parametro';
 import { CriarRoboRotinaModal } from '@/components/robos/criar-robo-rotina';
+import { AlterarRoboParametro } from '@/components/robos/alterar-robo-parametro';
+import { AlterarRoboRotina } from '@/components/robos/alterar-robo-rotinas';
 
 function RoboDetalhes() {
     const { roboId } = useParams();
-    const { register, getValues } = useForm<RoboParametrosType>();
+    const { register, getValues, watch } = useForm<RoboParametrosType>();
 
     const {
         data: roboParametros,
@@ -59,9 +62,15 @@ function RoboDetalhes() {
     } = useDeleteParametro({
         roboId: roboId ? roboId : '',
     });
+    const {
+        mutate: deleteRotina,
+        isSuccess: isDeleteRotinaSuccess,
+        isError: isDeleteRotinaError,
+    } = useDeleteRotina({
+        roboId: roboId ? roboId : '',
+    });
 
-    const handleDeleteParametro = (event: MouseEvent, parametroId: number) => {
-        event.preventDefault();
+    const handleDeleteParametro = (parametroId: number) => {
         deleteParametro(parametroId);
 
         if (isDeleteParametroSuccess) {
@@ -73,6 +82,23 @@ function RoboDetalhes() {
 
         if (isDeleteParametroError) {
             toast.error(`Erro ao excluir parametro rotina! ${error?.response?.data}`, {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+    };
+
+    const handleDeleteRotina = (rotinaId: number) => {
+        deleteRotina(rotinaId);
+        if (isDeleteRotinaSuccess) {
+            toast.success('Rotina excluída com sucesso!', {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+
+        if (isDeleteRotinaError) {
+            toast.error(`Erro ao excluir rotina! ${error?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
@@ -101,7 +127,7 @@ function RoboDetalhes() {
                                         <h2>Parametros</h2>
                                         <form className='d-flex flex-column gap-2'>
                                             {roboParametros.map((parametro) => (
-                                                <div key={parametro.id} className='d-flex'>
+                                                <div key={parametro.id}>
                                                     <div className='flex-grow-1'>
                                                         <label
                                                             className='form-label d-flex justify-content-between'
@@ -110,23 +136,20 @@ function RoboDetalhes() {
                                                             <span className='flex-grow-1'>
                                                                 {parametro.parametro_info.nome}
                                                             </span>
-                                                            <div className='d-flex gap-2'>
+                                                            <div className={`d-flex gap-2`}>
                                                                 {hasRole('TI') && (
                                                                     <>
-                                                                        <button
-                                                                            className='btn py-0 px-2'
-                                                                            key={`update-${parametro.id}`}
-                                                                        >
-                                                                            <Pencil size={18} />
-                                                                        </button>
-
+                                                                        <AlterarRoboParametro
+                                                                            roboId={roboId ? roboId : ''}
+                                                                            parametro={parametro}
+                                                                        />
                                                                         <button
                                                                             className='btn py-0 px-2'
                                                                             key={`delete-${parametro.id}`}
-                                                                            onClick={(event) =>
+                                                                            type='button'
+                                                                            onClick={() =>
                                                                                 handleDeleteParametro(
-                                                                                    event,
-                                                                                    parametro.id,
+                                                                                    parseInt(parametro.id),
                                                                                 )
                                                                             }
                                                                         >
@@ -191,7 +214,48 @@ function RoboDetalhes() {
                                             ))}
                                             {isRoboRotinasSuccess && roboRotinas.length > 0 && (
                                                 <div>
-                                                    <label className='form-label'>Rotina</label>
+                                                    <label className='form-label d-flex justify-content-between'>
+                                                        <span className='flex-grow-1'>Rotina</span>
+                                                        <div className={`d-flex gap-2`}>
+                                                            {hasRole('TI') && (
+                                                                <>
+                                                                    {roboRotinas.filter(
+                                                                        (rotina) => rotina.nome === watch('rotina'),
+                                                                    )[0] && (
+                                                                        <>
+                                                                            <AlterarRoboRotina
+                                                                                roboId={roboId ? roboId : ''}
+                                                                                rotina={
+                                                                                    roboRotinas.filter(
+                                                                                        (rotina) =>
+                                                                                            rotina.nome ===
+                                                                                            watch('rotina'),
+                                                                                    )[0]
+                                                                                }
+                                                                            />
+
+                                                                            <button
+                                                                                className='btn py-0 px-2'
+                                                                                key={`delete-rotina`}
+                                                                                type='button'
+                                                                                onClick={() =>
+                                                                                    handleDeleteRotina(
+                                                                                        roboRotinas.filter(
+                                                                                            (rotina) =>
+                                                                                                rotina.nome ===
+                                                                                                getValues('rotina'),
+                                                                                        )[0].id,
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                <X size={18} />
+                                                                            </button>
+                                                                        </>
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </label>
                                                     <select
                                                         id='rotinas'
                                                         className='form-select'
@@ -210,8 +274,8 @@ function RoboDetalhes() {
                                             <div className='d-flex gap-2 mt-2'>
                                                 <button
                                                     className='btn btn-primary'
-                                                    onClick={(event) => {
-                                                        event.preventDefault();
+                                                    type='button'
+                                                    onClick={() => {
                                                         executarRobo(getValues());
                                                     }}
                                                 >
