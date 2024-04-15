@@ -1,7 +1,7 @@
 import { api } from '@/utils/axios';
 
 export type RoboParametrosType = {
-  [x: string]: unknown;
+    [x: string]: unknown;
 };
 
 export async function postExecutarRobo({ roboId, data }: { roboId: string; data: RoboParametrosType }) {

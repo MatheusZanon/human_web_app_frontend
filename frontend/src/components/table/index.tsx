@@ -14,6 +14,7 @@ type TableHeaderProps = {
     columnKey?: string;
     sortDirection?: string;
     onSort?: () => void;
+    className?: string;
 };
 
 type TableDataProps = {
@@ -25,7 +26,7 @@ function Table({ children }: TableProps) {
     return <table className='table table-hover'>{children}</table>;
 }
 
-function TableHeader({ children, sortable, columnKey, sortDirection, onSort }: TableHeaderProps) {
+function TableHeader({ children, sortable, columnKey, sortDirection, onSort , className}: TableHeaderProps) {
     const handleSort = () => {
         if (sortable && columnKey && onSort) {
             onSort();
@@ -33,7 +34,7 @@ function TableHeader({ children, sortable, columnKey, sortDirection, onSort }: T
     };
     return (
         <th colSpan={1} rowSpan={1} onClick={handleSort} style={{ cursor: sortable ? 'pointer' : 'default' }}>
-            <div className='d-flex justify-content-between align-items-center'>
+            <div className={`d-flex justify-content-between align-items-center ${className}`}>
                 {children}
                 {sortable && (
                     <div className='d-flex flex-column'>

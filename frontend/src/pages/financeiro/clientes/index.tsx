@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useGetClientes } from "@/api/http";
 import { Search, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';

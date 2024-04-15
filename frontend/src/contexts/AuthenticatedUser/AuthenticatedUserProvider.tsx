@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { User } from '@/utils/types/user';
 import { createContext } from 'react';
 import { useGetUser } from '@/api/http';
@@ -33,11 +33,11 @@ function AuthenticatedUserProvider({ children, ...props }: { children: React.Rea
         hasPermission,
     };
 
-    useEffect(() => {
+    useMemo(() => {
         if (authUser.isSuccess) {
-            value.defineUser(authUser.data);
+            defineUser(authUser.data);
         }
-    });
+    }, [authUser.data, authUser.isSuccess]);
 
     return (
         <authenticatedUserContext.Provider value={value} {...props}>

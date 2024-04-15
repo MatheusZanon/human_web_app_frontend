@@ -14,6 +14,9 @@ import { CriarRotinaType } from '@/utils/types/criar_rotina';
 import { postRotinas } from './postRotinas';
 import { deleteParametros } from './deleteParametros';
 import { IAppError } from '@/utils/types/app_error';
+import { putParametros } from './putParametros';
+import { deleteRotina } from './deleteRotinas';
+import { putRotinas } from './putRotinas';
 export type { RoboParametrosType } from './postExecutarRobo';
 
 export function useRobos() {
@@ -95,7 +98,33 @@ export function useCriarRotina({ roboId }: { roboId: string }) {
             return postRotinas(parseInt(roboId), data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas`] });
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas/listar`] });
+        },
+        onError: (err: IAppError) => err,
+    });
+}
+
+export function useAlterarParametro({ roboId }: { roboId: string }) {
+    return useMutation({
+        mutationKey: [`robo/${roboId}/parametros/atualizar/`],
+        mutationFn: ({parametroId, data}: { parametroId: number; data: RoboParametrosType }) => {
+            return putParametros({ roboId: parseInt(roboId), parametroId, data });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
+        },
+        onError: (err: IAppError) => err,
+    });
+}
+
+export function useAlterarRotina({ roboId }: { roboId: string }) {
+    return useMutation({
+        mutationKey: [`robo/${roboId}/rotinas/atualizar/`],
+        mutationFn: ({rotinaId, data}: { rotinaId: number; data: CriarRotinaType }) => {
+            return putRotinas({ roboId: parseInt(roboId), rotinaId, data });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas/listar`] });
         },
         onError: (err: IAppError) => err,
     });
@@ -109,6 +138,19 @@ export function useDeleteParametro({ roboId }: { roboId: string }) {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
+        },
+        onError: (err: IAppError) => err,
+    });
+}
+
+export function useDeleteRotina({ roboId }: { roboId: string }) {
+    return useMutation({
+        mutationKey: [`robo/${roboId}/rotinas/excluir/`],
+        mutationFn: (rotinaId: number) => {
+            return deleteRotina(parseInt(roboId), rotinaId);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas/listar`] });
         },
         onError: (err: IAppError) => err,
     });

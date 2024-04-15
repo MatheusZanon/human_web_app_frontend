@@ -14,7 +14,6 @@ type SubMenuProps = {
 const SubMenu: React.FC<SubMenuProps> = ({ children, sbmIcon, sbmTitle, parentOpen }) => {
     const [open, setOpen] = useState(false);
     const [hover, setHover] = useState(false);
-    const { hasPermission } = useAuthenticatedUser();
     const location = useLocation();
 
     const toggleMinimized = () => setOpen(!open);
@@ -42,8 +41,6 @@ const SubMenu: React.FC<SubMenuProps> = ({ children, sbmIcon, sbmTitle, parentOp
         ease: 'easeInOut',
         delay: 0.1,
     };
-
-    console.log();
 
     return (
         <motion.div className={`w-100 ${styles.subMenuContainer}`}>
