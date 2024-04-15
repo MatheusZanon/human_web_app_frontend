@@ -71,11 +71,11 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                         </TableHeader>
                         <TableHeader
                             sortable
-                            sortDirection={sortBy === 'cpf' ? sortDirection : ''}
-                            columnKey='cpf'
-                            onSort={() => handleSort('cpf')}
+                            sortDirection={sortBy === 'groups' ? sortDirection : ''}
+                            columnKey='groups'
+                            onSort={() => handleSort('groups')}
                         >
-                            CPF
+                            Cargo
                         </TableHeader>
                         <TableHeader
                             sortable
@@ -98,16 +98,17 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                 <TableRow key={funcionario.id}>
                                     <TableData>{funcionario.id}</TableData>
                                     <TableData>
-                                        {`${funcionario.first_name} ${funcionario.last_name}`} —{' '}
+                                        {`${funcionario.first_name} ${funcionario.last_name}`}
+                                    </TableData>
+                                    <TableData>                                   
                                         {funcionario.groups.length > 0
                                             ? funcionario.groups.map((group, index) =>
                                                   index !== funcionario.groups.length - 1
-                                                      ? `${group.replace('_', ' ')}, `
-                                                      : `${group.replace('_', ' ')}`,
+                                                      ? `${group}, `
+                                                      : `${group}`,
                                               )
                                             : 'Sem Cargo'}
                                     </TableData>
-                                    <TableData>{funcionario.cpf}</TableData>
                                     <TableData>{funcionario.telefone_celular}</TableData>
                                     {(hasRole('RH_GERENCIA') ||
                                         hasRole('RH_OPERACAO') ||
