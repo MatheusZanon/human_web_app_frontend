@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './vales-sst.module.scss';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead  } from "@/components/table";
+import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useGetValesSST } from '@/api/http/financeiro_valores';
 
 function CardValesSST({ ...props }) {
@@ -12,6 +13,17 @@ function CardValesSST({ ...props }) {
         <div className={`card ${styles.card}`}>
             <div className="card-body">
                 <h5 className="card-title">{props.title}</h5>
+                <div className='d-flex gap-2'>
+                    {valesSST.data && valesSST.data.previous ? 
+                    <button type='button' className='btn btn-primary' onClick={() => valesSST.data.previous && setUrl(valesSST.data.previous)}><ArrowBigLeftDash/></button>
+                        : 
+                    <button type='button' className='btn btn-primary' disabled={true}><ArrowBigLeftDash/></button>}
+        
+                    {valesSST.data && valesSST.data.next ?
+                    <button type='button' className='btn btn-primary' onClick={() => valesSST.data.next && setUrl(valesSST.data.next)}><ArrowBigRightDash/></button>
+                        :
+                    <button type='button' className='btn btn-primary' disabled={true}><ArrowBigRightDash/></button>}
+                </div>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -22,6 +34,8 @@ function CardValesSST({ ...props }) {
                         <TableHeader>Vale Refeição</TableHeader>
                         <TableHeader>Ponto Eletrônico</TableHeader>
                         <TableHeader>Saúde/Segurança do Trabalho</TableHeader>
+                        <TableHeader>Mês</TableHeader>
+                        <TableHeader>Ano</TableHeader>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -34,21 +48,12 @@ function CardValesSST({ ...props }) {
                             <TableData>{vale.vale_refeicao.toFixed(2).toString().replace('.',',')}</TableData>
                             <TableData>{vale.mensal_ponto_elet.toFixed(2).toString().replace('.',',')}</TableData>
                             <TableData>{vale.saude_seguranca_trabalho.toFixed(2).toString().replace('.',',')}</TableData>
+                            <TableData>{vale.mes}</TableData>
+                            <TableData>{vale.ano}</TableData>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
-                <div className='d-flex gap-2'>
-                    {valesSST.data && valesSST.data.previous ? 
-                    <button type='button' className='btn btn-primary' onClick={() => valesSST.data.previous && setUrl(valesSST.data.previous)}>Anterior</button>
-                        : 
-                    <button type='button' className='btn btn-primary' disabled={true}>Anterior</button>}
-        
-                    {valesSST.data && valesSST.data.next ?
-                    <button type='button' className='btn btn-primary' onClick={() => valesSST.data.next && setUrl(valesSST.data.next)}>Próximo</button>
-                        :
-                    <button type='button' className='btn btn-primary' disabled={true}>Próximo</button>}
-                </div>
             </div>
         </div>
     );

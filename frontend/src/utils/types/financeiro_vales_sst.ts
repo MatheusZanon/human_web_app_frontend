@@ -6,4 +6,6 @@ export type FinanceiroValesSST = {
     vale_refeicao: number;
     mensal_ponto_elet: number;
     saude_seguranca_trabalho: number;
+    mes: number;
+    ano: number;
 }

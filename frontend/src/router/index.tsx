@@ -35,7 +35,8 @@ import RH from '@/pages/robos/rh';
  * Relatorios
  */
 import Relatorios from '@/pages/financeiro/relatorios';
-import Clientes from '@/pages/financeiro/clientes';
+import ClientesFinanceiro from '@/pages/financeiro/clientes';
+import ClienteFinanceiroProfile from '@/pages/clientes-financeiro-profile';
 import Dashboard from '@/pages/dashboard';
 import ActivateUsersTable from '@/pages/activate-users-table';
 import FuncionarioProfile from '@/pages/funcionario-profile';
@@ -69,7 +70,11 @@ const allRoutes: route[] = [
   },
   {
     path: 'financeiro/clientes',
-    element: <Clientes />
+    element: <ClientesFinanceiro />
+  },
+  {
+    path: 'financeiro/clientes/profile/:clienteId',
+    element: <ClienteFinanceiroProfile />
   },
   {
     path: 'financeiro/relatorios',
