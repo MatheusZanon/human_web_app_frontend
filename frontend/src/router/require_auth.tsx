@@ -24,7 +24,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (response.status == 200) {
-                    setIsAuthenticated(true);
+                        setIsAuthenticated(true);
                 }
             } catch (error) {
                 console.log(error);
@@ -43,9 +43,10 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
 
     if (!isAuthenticated) {
         return <Navigate to='/' state={{ from: location }} replace />;
+    } else {
+        return <>{children}</>; // Renderiza os filhos se o usuário estiver autenticado
     }
 
-    return <>{children}</>; // Renderiza os filhos se o usuário estiver autenticado
 };
 
 export default RequireAuth;

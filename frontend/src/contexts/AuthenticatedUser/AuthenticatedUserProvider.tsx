@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useState, useEffect, useMemo } from 'react';
 import { User } from '@/utils/types/user';
 import { createContext } from 'react';
 import { useGetUser } from '@/api/http';
@@ -19,28 +19,27 @@ const initialState: AuthenticatedUserProviderState = {
 
 const authenticatedUserContext = createContext<AuthenticatedUserProviderState>(initialState);
 
-function AuthenticatedUserProvider({ children, ...props }: { children: React.ReactNode }) {
+function AuthenticatedUserProvider({ children } : { children: React.ReactNode }) {
     const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null);
     const authUser = useGetUser();
-
     const defineUser = (User: User | null) => setAuthenticatedUser(User);
-    const hasRole = (role: string) => authenticatedUser?.groups.includes(role) ?? false;
-    const hasPermission = (permission: string) => authenticatedUser?.permissions.includes(permission) ?? false;
-    const value = {
+    const hasRole = (role: string) => !!authenticatedUser?.groups.includes(role);
+    const hasPermission = (permission: string) => !!authenticatedUser?.permissions.includes(permission);
+    const value = useMemo(() => ({
         authenticatedUser,
         defineUser,
         hasRole,
         hasPermission,
-    };
+    }), [authenticatedUser]);
 
-    useMemo(() => {
-        if (authUser.isSuccess) {
+    useEffect(() => {
+        if (authUser.isSuccess && authUser.data) {
             defineUser(authUser.data);
         }
     }, [authUser.data, authUser.isSuccess]);
-
+    
     return (
-        <authenticatedUserContext.Provider value={value} {...props}>
+        <authenticatedUserContext.Provider value={value}>
             {children}
         </authenticatedUserContext.Provider>
     );
