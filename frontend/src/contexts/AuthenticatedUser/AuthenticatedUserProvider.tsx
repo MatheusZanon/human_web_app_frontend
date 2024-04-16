@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useMemo } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { User } from '@/utils/types/user';
 import { createContext } from 'react';
 import { useGetUser } from '@/api/http';
@@ -25,12 +25,12 @@ function AuthenticatedUserProvider({ children } : { children: React.ReactNode })
     const defineUser = (User: User | null) => setAuthenticatedUser(User);
     const hasRole = (role: string) => !!authenticatedUser?.groups.includes(role);
     const hasPermission = (permission: string) => !!authenticatedUser?.permissions.includes(permission);
-    const value = useMemo(() => ({
+    const value =  {
         authenticatedUser,
         defineUser,
         hasRole,
         hasPermission,
-    }), [authenticatedUser]);
+    };
 
     useEffect(() => {
         if (authUser.isSuccess && authUser.data) {
