@@ -247,9 +247,6 @@ function ActivateUsersTable() {
                                                                     <div className='modal-body'>
                                                                         <form
                                                                             className='d-flex flex-column gap-2'
-                                                                            onSubmit={handleSubmit((data) =>
-                                                                                handleActivate(funcionario.id, data),
-                                                                            )}
                                                                         >
                                                                             <p>
                                                                                 Para ativar um funcionário selecione ao
@@ -301,7 +298,8 @@ function ActivateUsersTable() {
                                                                     <div className='modal-footer'>
                                                                         <button
                                                                             className='btn btn-success'
-                                                                            type='submit'
+                                                                            type='button'
+                                                                            onClick={handleSubmit((data) => handleActivate(funcionario.id, data))}
                                                                         >
                                                                             Ativar
                                                                         </button>
