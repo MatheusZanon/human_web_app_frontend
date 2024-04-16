@@ -15,7 +15,7 @@ function ClientesFinanceiro() {
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       setUrl(`clientes_financeiro/?limit=12&offset=0&search=${filtro}`);
-    }, 700);  // Delay de 700ms para evitar muitas requisições enquanto digita
+    }, 450);  // Delay de 450ms para evitar muitas requisições enquanto digita
 
     return () => clearTimeout(delayDebounce);
   }, [filtro]);

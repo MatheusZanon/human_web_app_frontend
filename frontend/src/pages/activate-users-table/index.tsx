@@ -155,7 +155,8 @@ function ActivateUsersTable() {
                                                               : `${group}`
                                                       )
                                                     : 'Sem Cargo'
-                                            }</TableData>
+                                            }
+                                        </TableData>
                                         <TableData>{funcionario.telefone_celular}</TableData>
                                         {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
                                             <TableData>
@@ -295,17 +296,15 @@ function ActivateUsersTable() {
                                                                                     </p>
                                                                                 )}
                                                                             </div>
-                                                                            <div>
-                                                                                <button
-                                                                                    className='btn btn-success'
-                                                                                    type='submit'
-                                                                                >
-                                                                                    Ativar
-                                                                                </button>
-                                                                            </div>
                                                                         </form>
                                                                     </div>
                                                                     <div className='modal-footer'>
+                                                                        <button
+                                                                            className='btn btn-success'
+                                                                            type='submit'
+                                                                        >
+                                                                            Ativar
+                                                                        </button>
                                                                         <button
                                                                             type='button'
                                                                             className='btn'
