@@ -23,7 +23,6 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
             } catch (error) {
                 console.log(error);
                 setIsAuthenticated(false);
-                localStorage.removeItem('accessToken'); // Remove o token inválido
             } finally {
                 setIsChecking(false);
             }
