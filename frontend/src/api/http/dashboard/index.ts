@@ -1,9 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { getTotalValesSSTPeriodo } from './getTotalValesSST';
+import { getProvisaoTrabalhista } from './getProvisaoDireitoTrabalhista';
+import { getClientesFinanceiro } from './getClientesFinanceiro';
 
-export function useGetTotalValesSST(url:string) {
+export function useGetProvisaoTrabalhista(url:string) {
   return useQuery({
-      queryKey: ['total_vales_sst', url],
-      queryFn: () => getTotalValesSSTPeriodo(url),
+      queryKey: ['total_provisao_trabalhista', url],
+      queryFn: () => getProvisaoTrabalhista(url),
+  });
+}
+
+export function useGetClientesFinanceiro() {
+  return useQuery({
+      queryKey: ['clientes_financeiro'],
+      queryFn: () => getClientesFinanceiro(),
   });
 }

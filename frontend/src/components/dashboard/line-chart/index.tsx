@@ -1,12 +1,13 @@
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 interface LineChartProps {
-    data: Record<string, unknown>[];
+    data: object[];
+    dataKeyX: string;
     title?: string;
     connectNulls?: boolean;
 }
 
-function LineChartCard({ data, title, connectNulls }: LineChartProps) {
+function LineChartCard({ data, dataKeyX, title, connectNulls }: LineChartProps) {
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF7043', '#942EE7', '#E5D7A9', '#EF4444'];
     const chartData =
         data.length > 0
@@ -27,15 +28,15 @@ function LineChartCard({ data, title, connectNulls }: LineChartProps) {
     }, []);
 
     // Remove a chave 'name' dos dados das chaves
-    const keys = allKeys.filter((key) => key !== 'name');
+    const keys = allKeys.filter((key) => key !== dataKeyX);
 
     return (
         <div>
             {title && <h5>{title}</h5>}
             <ResponsiveContainer width='100%' height={300}>
                 <LineChart width={500} height={300} data={chartData}>
-                    <XAxis dataKey='name' />
-                    <YAxis domain={chartData[0].name === 'Placeholder' ? [0, 1] : ['auto', 'auto']} />
+                    <XAxis dataKey={dataKeyX} />
+                    <YAxis domain={chartData.length > 0 ? [0, 1] : ['auto', 'auto']} />
                     <CartesianGrid strokeDasharray='5 5' />
                     <Tooltip />
                     <Legend />
