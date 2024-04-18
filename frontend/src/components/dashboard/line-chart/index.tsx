@@ -8,8 +8,16 @@ interface LineChartProps {
 
 function LineChartCard({ data, title, connectNulls }: LineChartProps) {
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF7043', '#942EE7', '#E5D7A9', '#EF4444'];
+    const chartData =
+        data.length > 0
+            ? data
+            : [
+                  { name: 'Placeholder', uv: 0.5 },
+                  { name: 'Placeholder', uv: 0.5 },
+                  { name: 'Placeholder', uv: 0.5 },
+              ];
 
-    const allKeys = data.reduce<string[]>((acc, obj) => {
+    const allKeys = chartData.reduce<string[]>((acc, obj) => {
         Object.keys(obj).forEach((key) => {
             if (!acc.includes(key)) {
                 acc.push(key);
@@ -22,12 +30,12 @@ function LineChartCard({ data, title, connectNulls }: LineChartProps) {
     const keys = allKeys.filter((key) => key !== 'name');
 
     return (
-        <div className='w-100 p-2 rounded shadow'>
+        <div>
             {title && <h5>{title}</h5>}
             <ResponsiveContainer width='100%' height={300}>
-                <LineChart width={500} height={300} data={data}>
+                <LineChart width={500} height={300} data={chartData}>
                     <XAxis dataKey='name' />
-                    <YAxis />
+                    <YAxis domain={chartData[0].name === 'Placeholder' ? [0, 1] : ['auto', 'auto']} />
                     <CartesianGrid strokeDasharray='5 5' />
                     <Tooltip />
                     <Legend />

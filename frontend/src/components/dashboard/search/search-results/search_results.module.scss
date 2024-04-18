@@ -1,0 +1,21 @@
+.SearchResultWrapper {
+    cursor: pointer;
+    :hover {
+        background-color: var(--bs-tertiary-bg);
+    }
+}
+
+.SearchResult {
+    :hover {
+        padding-left: 2rem !important;
+    }
+}
+
+.SearchResultList {
+    position: absolute;
+    background-color: var(--bs-body-bg);
+    width: fit-content;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+}
