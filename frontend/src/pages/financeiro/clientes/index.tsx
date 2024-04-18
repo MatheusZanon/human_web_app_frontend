@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useGetClientes } from "@/api/http";
 import { Search, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
-import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
+import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Content } from '@/components/layout/content';
 
 function ClientesFinanceiro() {
   const [url, setUrl] = useState<string>('clientes_financeiro/?limit=12&offset=0');
@@ -11,14 +12,23 @@ function ClientesFinanceiro() {
   const clienteResults = clientes.isSuccess && clientes.data && 'results' in clientes.data ? clientes.data.results : [];
   const [filtro, setFiltro] = useState<string>('');
   const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       setUrl(`clientes_financeiro/?limit=12&offset=0&search=${filtro}`);
-    }, 450);  // Delay de 450ms para evitar muitas requisições enquanto digita
-
-    return () => clearTimeout(delayDebounce);
+    }, 500);  // Delay de 500ms para evitar muitas requisições enquanto digita
+    
+    return () => {
+      clearTimeout(delayDebounce);
+    };
   }, [filtro]);
+
+  useEffect(() => {
+    if (clienteResults.length > 0 && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [clienteResults]);
   
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFiltro(event.target.value);
@@ -28,36 +38,34 @@ function ClientesFinanceiro() {
     navigate(`profile/${id}`);
   }
 
-
-  if (clientes.isSuccess && clienteResults.length > 0) {
-    return (
-      <div className='px-3 pb-3 shadow rounded mb-2'>
-      <h1 className='my-3'>Clientes</h1>
+  return (
+    <>
+    <Content title='Clientes'>
       <div className='d-flex gap-2 justify-content-left' style={{height: '7vh'}}>
-        {clientes.data.previous ? 
+        {clientes.data?.previous ? 
           <button type='button' className='btn btn-primary' onClick={() => clientes.data.previous && setUrl(clientes.data.previous)}><ArrowBigLeftDash/></button>
           : 
           <button type='button' className='btn btn-primary' disabled={true}><ArrowBigLeftDash/></button>}
 
-        {clientes.data.next ?
+        {clientes.data?.next ?
           <button type='button' className='btn btn-primary' onClick={() => clientes.data.next && setUrl(clientes.data.next)}><ArrowBigRightDash/></button>
           :
           <button type='button' className='btn btn-primary' disabled={true}><ArrowBigRightDash/></button>}
-        <input type="text" className='form-control mx-2 w-25' value={filtro} placeholder='Filtrar' onChange={handleSearchChange}/>
+        <input ref={inputRef} type="text" className='form-control mx-2 w-25 custom-input' value={filtro} placeholder='Filtrar' onChange={handleSearchChange}/>
       </div>  
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableHeader>ID</TableHeader>
-              <TableHeader>Razão Social</TableHeader>
-              <TableHeader>CNPJ</TableHeader>
-              <TableHeader>CPF</TableHeader>
-              <TableHeader>Região</TableHeader>
-              <TableHeader>Ações</TableHeader>
-            </TableRow>
-          </TableHead>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeader>ID</TableHeader>
+            <TableHeader>Razão Social</TableHeader>
+            <TableHeader>CNPJ</TableHeader>
+            <TableHeader>CPF</TableHeader>
+            <TableHeader>Região</TableHeader>
+            <TableHeader>Ações</TableHeader>
+          </TableRow>
+        </TableHead>
+          {clienteResults.length > 0 && clienteResults.map(cliente => (
           <TableBody>
-            {clienteResults.map(cliente => (
               <TableRow key={cliente.id}>
                 <TableData>{cliente.id}</TableData>
                 <TableData>{cliente.nome_razao_social}</TableData>
@@ -76,42 +84,27 @@ function ClientesFinanceiro() {
                   </div>
                 </TableData>
               </TableRow>
-            ))}
           </TableBody>
+          ))}
+          {!clienteResults.length && 
+          <TableBody>
+            <TableRow>
+              <TableData>-</TableData>
+              <TableData>-</TableData>
+              <TableData>-</TableData>
+              <TableData>-</TableData>
+              <TableData>-</TableData>
+              <TableData>-</TableData>
+            </TableRow>
+          </TableBody>
+          }
         </Table>
-      </div>
-    );
-  } else {
-    return (
-      <div className='px-3 pb-3 shadow rounded mb-2'>
-        <h1 className='my-3'>Clientes</h1>
-        <div className='d-flex gap-2 justify-content-left' style={{height: '7vh'}}>
-          {clientes.data?.previous ? 
-            <button type='button' className='btn btn-primary' onClick={() => clientes.data.previous && setUrl(clientes.data.previous)}><ArrowBigLeftDash/></button>
-            : 
-            <button type='button' className='btn btn-primary' disabled={true}><ArrowBigLeftDash/></button>}
+        {!clienteResults.length && 
+          <h6 className='text-center align-self-center'>Nenhum cliente encontrado <p className='mt-2'><AlertTriangle/></p></h6>
+        }
+    </Content>
+    </>
+  );
+} 
 
-          {clientes.data?.next ?
-            <button type='button' className='btn btn-primary' onClick={() => clientes.data.next && setUrl(clientes.data.next)}><ArrowBigRightDash/></button>
-            :
-            <button type='button' className='btn btn-primary' disabled={true}><ArrowBigRightDash/></button>}
-          <input type="text" className='form-control mx-2 w-25' value={filtro} placeholder='Filtrar' onChange={handleSearchChange}/>
-        </div>  
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeader>ID</TableHeader>
-                <TableHeader>Razão Social</TableHeader>
-                <TableHeader>CNPJ</TableHeader>
-                <TableHeader>CPF</TableHeader>
-                <TableHeader>Região</TableHeader>
-                <TableHeader>Actions</TableHeader>
-              </TableRow>
-            </TableHead>
-          </Table>
-          <div className='text-center'>Não há clientes com esse nome!</div>
-      </div>
-    );
-}
-}
 export default ClientesFinanceiro;

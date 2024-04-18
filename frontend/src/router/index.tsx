@@ -1,8 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import React from 'react';
 import RequireAuth from './require_auth';
-import { AuthenticatedUserProvider } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
-
 
 /**
  * Layout
@@ -18,28 +16,34 @@ import Login from '@/pages/login';
 import Register from '@/pages/register';
 
 /**
- * Paginas
+ * Funcionários
  */
 import Funcionarios from '@/pages/rh/funcionarios';
-import Robos from '@/pages/robos';
 import Profile from '@/pages/profile';
+import ActivateUsersTable from '@/pages/activate-users-table';
+import FuncionarioProfile from '@/pages/funcionario-profile';
 
 /**
  * Robos
- */
+*/
+import Robos from '@/pages/robos';
 import RoboDetalhes from '@/pages/robos/detalhes';
 import Financeiro from '@/pages/robos/financeiro';
 import RH from '@/pages/robos/rh';
 
 /**
- * Relatorios
+ * Financeiro
  */
 import Relatorios from '@/pages/financeiro/relatorios';
 import ClientesFinanceiro from '@/pages/financeiro/clientes';
 import ClienteFinanceiroProfile from '@/pages/clientes-financeiro-profile';
+import PastasGoogleDrive from '@/pages/financeiro/pastas-google-drive';
+
+/**
+ * Dashboard
+ */
 import Dashboard from '@/pages/dashboard';
-import ActivateUsersTable from '@/pages/activate-users-table';
-import FuncionarioProfile from '@/pages/funcionario-profile';
+
 
 type route = {
     path: string;
@@ -81,6 +85,10 @@ const allRoutes: route[] = [
     element: <Relatorios />
   },
   {
+    path: 'financeiro/drive',
+    element: <PastasGoogleDrive />
+  },
+  {
     path: 'rh/funcionarios',
     element: <Funcionarios />
   },
@@ -118,12 +126,9 @@ const router = createBrowserRouter([
     {
         path: '/main',
         element: (
-            <AuthenticatedUserProvider>
-                <RequireAuth>
-                    <MainLayout />
-                </RequireAuth>
-            </AuthenticatedUserProvider>
-            
+          <RequireAuth>
+              <MainLayout />
+          </RequireAuth>           
         ),
         children: allRoutes.map(({ path, element }) => ({
             path,

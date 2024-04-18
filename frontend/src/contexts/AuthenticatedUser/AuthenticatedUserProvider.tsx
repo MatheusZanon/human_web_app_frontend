@@ -2,19 +2,18 @@ import { useContext, useState, useEffect } from 'react';
 import { User } from '@/utils/types/user';
 import { createContext } from 'react';
 import { useGetUser } from '@/api/http';
+import LoadingScreen from '@/components/loading-screen';
 
 type AuthenticatedUserProviderState = {
     authenticatedUser: User | null;
     defineUser: (User: User | null) => void;
     hasRole: (role: string) => boolean;
-    hasPermission: (permission: string) => boolean;
 };
 
 const initialState: AuthenticatedUserProviderState = {
     authenticatedUser: null,
     defineUser: () => null,
     hasRole: () => false,
-    hasPermission: () => false,
 };
 
 const authenticatedUserContext = createContext<AuthenticatedUserProviderState>(initialState);
@@ -24,12 +23,11 @@ function AuthenticatedUserProvider({ children } : { children: React.ReactNode })
     const authUser = useGetUser();
     const defineUser = (User: User | null) => setAuthenticatedUser(User);
     const hasRole = (role: string) => !!authenticatedUser?.groups.includes(role);
-    const hasPermission = (permission: string) => !!authenticatedUser?.permissions.includes(permission);
+
     const value =  {
         authenticatedUser,
         defineUser,
         hasRole,
-        hasPermission,
     };
 
     useEffect(() => {
@@ -40,7 +38,7 @@ function AuthenticatedUserProvider({ children } : { children: React.ReactNode })
     
     return (
         <authenticatedUserContext.Provider value={value}>
-            {children}
+            {authenticatedUser ? children : <LoadingScreen />}
         </authenticatedUserContext.Provider>
     );
 }

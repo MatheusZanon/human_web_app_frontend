@@ -10,7 +10,7 @@ function CardReembolsos({ ...props }) {
     const reembolsosResults = reembolsos.isSuccess && reembolsos.data && 'results' in reembolsos.data ? reembolsos.data.results : [];
 
     return (
-        <div className={`card ${styles.card}`}>
+        <div className={`card ${styles.card} shadow`}>
             <div className="card-body">
                 <h5 className="card-title">{props.title}</h5>
                 <div className='d-flex gap-2'>
@@ -23,6 +23,7 @@ function CardReembolsos({ ...props }) {
                     <button type='button' className='btn btn-primary' onClick={() => reembolsos.data.next && setUrl(reembolsos.data.next)}><ArrowBigRightDash/></button>
                         :
                     <button type='button' className='btn btn-primary' disabled={true}><ArrowBigRightDash/></button>}
+                    <button type='button' className={`btn ${styles.addButton}`}>Adicionar Reembolso</button>
                 </div>
                 <Table>
                     <TableHead>

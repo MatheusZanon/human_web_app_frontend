@@ -123,11 +123,8 @@ function Sidebar() {
                             parentOpen={open}
                         >
                             <NavItem icon={<Dot className={'me-2'} />} title={'Clientes'} to='financeiro/clientes' />
-                            <NavItem
-                                icon={<Dot className={'me-2'} />}
-                                title={'Relatorios'}
-                                to='financeiro/relatorios'
-                            />
+                            <NavItem icon={<Dot className={'me-2'} />} title={'Relatorios'} to='financeiro/relatorios'/>
+                            <NavItem icon={<Dot className={'me-2'} />} title={'Arquivos Drive'} to='financeiro/drive' />
                         </SubMenu>
                     </li>
                 )}

@@ -1,4 +1,5 @@
 import { useGetAllUsers } from '@/api/http/user';
+import { Content } from '@/components/layout/content';
 import { TabelaFuncionarios } from '@/components/tabela-funcionarios';
 
 function Funcionarios() {
@@ -6,10 +7,9 @@ function Funcionarios() {
 
     if (users.isSuccess && users.data.length > 0) {
         return (
-            <div className='px-3 pb-3 shadow rounded mb-2'>
-                <h1 className='my-3'>Funcionários</h1>
+            <Content title="Funcionários">
                 <TabelaFuncionarios data={users.data} />
-            </div>
+            </Content>
         );
     } else {
         return <div>Não há funcionarios!</div>;

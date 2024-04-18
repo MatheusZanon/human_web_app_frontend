@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+
 type CardProps = {
     children?: React.ReactNode;
     id: string;
@@ -20,7 +21,7 @@ type CardProps = {
     last_execution: string;
 };
 
-function Card({
+function RoboCard({
     id,
     image,
     title,
@@ -103,8 +104,8 @@ function Card({
         executarRobo(data);
     };
     return (
-        <div className={`card ${styles.card}`}>
-            <img src={image} alt='dummy' className='card-img-top' />
+        <div className={`card ${styles.card} shadow`}>
+            <img src={image} alt='dummy' className={`card-img-top ${styles.img}`}/>
             <div className='card-body d-flex flex-column justify-content-between'>
                 <div className='row'>
                     <h5 className='card-title d-flex justify-content-between align-items-center'>
@@ -299,4 +300,4 @@ function Card({
     );
 }
 
-export default Card;
+export default RoboCard;

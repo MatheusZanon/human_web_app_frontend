@@ -10,7 +10,7 @@ function CardValesSST({ ...props }) {
     const valesSSTResults = valesSST.isSuccess && valesSST.data && 'results' in valesSST.data ? valesSST.data.results : [];
     
     return (
-        <div className={`card ${styles.card}`}>
+        <div className={`card ${styles.card} shadow`}>
             <div className="card-body">
                 <h5 className="card-title">{props.title}</h5>
                 <div className='d-flex gap-2'>
