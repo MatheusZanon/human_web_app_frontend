@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import LoadingScreen from '@/components/loading-screen';
 
 interface RequireAuthProps {
     children: React.ReactNode; // Define o tipo dos filhos como React.ReactNode
@@ -10,21 +11,14 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isChecking, setIsChecking] = useState(true);
     const location = useLocation();
-    const accessToken = localStorage.getItem('accessToken');
 
     useEffect(() => {
         const verifyToken = async () => {
-            if (!accessToken) {
-                setIsAuthenticated(false);
-                setIsChecking(false);
-                return;
-            }
             try {
-                const response = await axios.get('http://localhost:8000/api/token/verify/', {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
+                const response = await axios.get('http://localhost:8000/api/session/verify/',  {withCredentials: true});
                 if (response.status == 200) {
-                        setIsAuthenticated(true);
+                    console.log(response.data);
+                    setIsAuthenticated(true);
                 }
             } catch (error) {
                 console.log(error);
@@ -38,7 +32,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
     }, [location.pathname]);
 
     if (isChecking) {
-        return <div>Carregando...</div>; // Ou algum componente de loading
+        return <div><LoadingScreen /></div>;
     }
 
     if (!isAuthenticated) {
