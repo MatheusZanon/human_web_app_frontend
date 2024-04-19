@@ -103,7 +103,7 @@ function Card({
         executarRobo(data);
     };
     return (
-        <div className={`card ${styles.card}`}>
+        <div className={`card ${styles.card} shadow`}>
             <img src={image} alt='dummy' className='card-img-top' />
             <div className='card-body d-flex flex-column justify-content-between'>
                 <div className='row'>

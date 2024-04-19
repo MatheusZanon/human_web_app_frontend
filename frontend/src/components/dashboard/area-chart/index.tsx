@@ -1,7 +1,7 @@
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 interface AreaChartProps {
-    data: Record<string, unknown>[];
+    data: object[];
     title?: string;
     connectNulls?: boolean;
     stacked?: boolean;

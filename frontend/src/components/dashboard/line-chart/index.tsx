@@ -9,14 +9,7 @@ interface LineChartProps {
 
 function LineChartCard({ data, dataKeyX, title, connectNulls }: LineChartProps) {
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF7043', '#942EE7', '#E5D7A9', '#EF4444'];
-    const chartData =
-        data.length > 0
-            ? data
-            : [
-                  { name: 'Placeholder', uv: 0.5 },
-                  { name: 'Placeholder', uv: 0.5 },
-                  { name: 'Placeholder', uv: 0.5 },
-              ];
+    const chartData = data.length > 0 ? data : [{ uv: 0.5 }, { uv: 0.5 }, { uv: 0.5 }];
 
     const allKeys = chartData.reduce<string[]>((acc, obj) => {
         Object.keys(obj).forEach((key) => {
@@ -31,7 +24,7 @@ function LineChartCard({ data, dataKeyX, title, connectNulls }: LineChartProps) 
     const keys = allKeys.filter((key) => key !== dataKeyX);
 
     return (
-        <div>
+        <div className='d-flex flex-column gap-2 w-100'>
             {title && <h5>{title}</h5>}
             <ResponsiveContainer width='100%' height={300}>
                 <LineChart width={500} height={300} data={chartData}>
@@ -45,7 +38,7 @@ function LineChartCard({ data, dataKeyX, title, connectNulls }: LineChartProps) 
                         <Line
                             key={index}
                             connectNulls={connectNulls}
-                            type='monotone'
+                            type='bump'
                             dataKey={key}
                             stroke={COLORS[index % COLORS.length]}
                             fill={COLORS[index % COLORS.length]}
