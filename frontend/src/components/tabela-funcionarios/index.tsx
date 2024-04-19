@@ -54,7 +54,6 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
     };
 
     return (
-        <div className='px-3 pb-3 shadow rounded'>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -188,7 +187,6 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                     )}
                 </TableBody>
             </Table>
-        </div>
     );
 }
 

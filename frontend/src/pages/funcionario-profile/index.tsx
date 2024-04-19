@@ -1,6 +1,8 @@
 import { useGetUserById } from '@/api/http';
 import ProfileCard from '@/components/profile-card';
 import { useParams } from 'react-router-dom';
+import LoadingScreen from '@/components/loading-screen';
+import { Content } from '@/components/layout/content';
 
 function FuncionarioProfile() {
     const { funcionarioId } = useParams();
@@ -9,17 +11,17 @@ function FuncionarioProfile() {
 
     return (
         <>
-            {isLoading && <p>Carregando...</p>}
+            {isLoading && <LoadingScreen/>}
             {isSuccess && !user && <p>Funcionário não encontrado</p>}
             {isSuccess && user && (
-                <div>
+                <Content title="Profile">
                     <ProfileCard
                         name={`${user?.first_name} ${user?.last_name}` || ''}
                         roles={user?.groups || []}
                         email={user?.email || ''}
                     />
                     <p>profile {user.id}</p>
-                </div>
+                </Content>
             )}
         </>
     );

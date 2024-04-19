@@ -1,3 +1,4 @@
+import { Content } from '@/components/layout/content';
 import ProfileCard from '@/components/profile-card';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 
@@ -5,8 +6,7 @@ function Profile() {
     const { authenticatedUser } = useAuthenticatedUser();
 
     return (
-        <div className='px-3 pb-3 shadow rounded mb-2'>
-            <h1 className="my-3">Perfil</h1>
+        <Content title="Profile">
             <div className='row'>
                 <ProfileCard profilePicture='' name={authenticatedUser?.username || ''} roles={authenticatedUser?.groups || []} email={authenticatedUser?.email || ''} />
             </div>
@@ -101,7 +101,7 @@ function Profile() {
                     </form>
                 </div>
             </div>
-        </div>
+        </Content>
     );
 }
 

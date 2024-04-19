@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios';
+import { api } from '@/utils/axios';
 
 const schema = z.object({
     username: z.string().min(2, 'Nome de usuário inválido'),
@@ -36,23 +36,16 @@ function Login() {
     function onSubmit(data: LoginData) {
         const parsedData = schema.safeParse(data);
         if (parsedData.success) {
-        axios.post('http://localhost:8000/api/token/', {
+        api.post('token/', {
             username: parsedData.data.username,
             password: parsedData.data.password,
-        }).then(response => {
-            if (response.status == 200) {
-            const { access } = response.data;
-            localStorage.setItem('accessToken', access);
-            axios.get('http://localhost:8000/api/token/verify/', {
-                headers: {
-                Authorization: `Bearer ${access}`,
-                },
-            }).then(() => {
-                setTimeout(() => {
-                navigate('/main');
-                }, 1500);
-            });
-            }    
+        }, {withCredentials: true}).then(response => {
+                if (response.status == 200) {
+                    toast("Login efetuado com sucesso!");
+                    setTimeout(() => {
+                        navigate('/main');
+                    }, 1500);  
+                }  
         }).catch(error => {
             console.error('Houve um erro no login: ', error, error.response.status);
             if (error.response.status == 401) {

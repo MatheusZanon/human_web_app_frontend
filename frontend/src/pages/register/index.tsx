@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import { api } from '@/utils/axios';
 
 const schema = z
     .object({
@@ -64,8 +64,7 @@ function Register() {
     function onSubmit(data: RegisterData) {
         const parsedData = schema.safeParse(data);
         if (parsedData.success) {
-            axios
-                .post('http://localhost:8000/api/user/', {
+            api.post('user', {
                     username: parsedData.data.username,
                     first_name: parsedData.data.firstname,
                     last_name: parsedData.data.lastname,

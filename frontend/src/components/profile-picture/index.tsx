@@ -1,3 +1,4 @@
+import { api } from '@/utils/axios';
 import { UserRound, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import styles from './profilePicture.module.scss';
@@ -5,6 +6,7 @@ import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/Authenticated
 
 type ProfilePictureProps = {
     src?: string;
+    alt?: string;
 };
 
 function ProfilePicture({ src, alt }: ProfilePictureProps) {
@@ -12,7 +14,7 @@ function ProfilePicture({ src, alt }: ProfilePictureProps) {
 
     const logout = () => {
         return () => {
-            localStorage.removeItem('accessToken');
+            api.post('session/logout/');
         };
     };
     if (!authenticatedUser) return null;
