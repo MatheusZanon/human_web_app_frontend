@@ -64,44 +64,32 @@ function ClientesFinanceiro() {
             <TableHeader>Ações</TableHeader>
           </TableRow>
         </TableHead>
-          {clienteResults.length > 0 && clienteResults.map(cliente => (
-          <TableBody>
-              <TableRow key={cliente.id}>
-                <TableData>{cliente.id}</TableData>
-                <TableData>{cliente.nome_razao_social}</TableData>
-                {cliente.cnpj ? <TableData>{cliente.cnpj}</TableData> : <TableData>-</TableData>}
-                {cliente.cpf ? <TableData>{cliente.cpf}</TableData> : <TableData>-</TableData>}
-                <TableData>{cliente.regiao}</TableData>
-                <TableData>
-                  <div className='d-flex gap-2'>
-                    <button className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
-                    onClick={() => handleEdit(cliente.id)}>
-                      <Search width={16} height={16} />
-                    </button>
-                    <button className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'>
-                      <Trash2 width={16} height={16} />
-                    </button>
-                  </div>
-                </TableData>
-              </TableRow>
-          </TableBody>
-          ))}
-          {!clienteResults.length && 
-          <TableBody>
-            <TableRow>
-              <TableData>-</TableData>
-              <TableData>-</TableData>
-              <TableData>-</TableData>
-              <TableData>-</TableData>
-              <TableData>-</TableData>
-              <TableData>-</TableData>
+        {clienteResults.length > 0 && clienteResults.map(cliente => (
+        <TableBody>
+            <TableRow key={cliente.id}>
+              <TableData>{cliente.id}</TableData>
+              <TableData>{cliente.nome_razao_social}</TableData>
+              {cliente.cnpj ? <TableData>{cliente.cnpj}</TableData> : <TableData>-</TableData>}
+              {cliente.cpf ? <TableData>{cliente.cpf}</TableData> : <TableData>-</TableData>}
+              <TableData>{cliente.regiao}</TableData>
+              <TableData>
+                <div className='d-flex gap-2'>
+                  <button className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
+                  onClick={() => handleEdit(cliente.id)}>
+                    <Search width={16} height={16} />
+                  </button>
+                  <button className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'>
+                    <Trash2 width={16} height={16} />
+                  </button>
+                </div>
+              </TableData>
             </TableRow>
-          </TableBody>
-          }
-        </Table>
-        {!clienteResults.length && 
-          <h6 className='text-center align-self-center'>Nenhum cliente encontrado <p className='mt-2'><AlertTriangle/></p></h6>
-        }
+        </TableBody>
+        ))}
+      </Table>
+      {!clienteResults.length && 
+        <h6 className='text-center align-self-center'>Nenhum cliente encontrado <p className='mt-2'><AlertTriangle/></p></h6>
+      }
     </Content>
     </>
   );

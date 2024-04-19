@@ -14,7 +14,7 @@ function ProfilePicture({ src, alt }: ProfilePictureProps) {
 
     const logout = () => {
         return () => {
-            api.post('session/logout/', { withCredentials: true });
+            api.post('session/logout/');
         };
     };
     if (!authenticatedUser) return null;

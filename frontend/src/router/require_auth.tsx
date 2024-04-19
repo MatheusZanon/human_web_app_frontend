@@ -17,12 +17,11 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
             try {
                 const response = await api.get('session/verify/',  {withCredentials: true});
                 if (response.status == 200) {
-                    console.log(response)
                     setIsAuthenticated(true);
                 }
             } catch (error) {
                 console.log(error);
-                api.post('session/logout/', { withCredentials: true });
+                api.post('session/logout/');
                 setIsAuthenticated(false);
             } finally {
                 setIsChecking(false);

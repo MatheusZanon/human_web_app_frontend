@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 
-type CardProps = {
+type RoboCardProps = {
     children?: React.ReactNode;
     id: string;
     image: string;
@@ -32,7 +32,7 @@ function RoboCard({
     executions,
     last_execution,
     children,
-}: CardProps) {
+}: RoboCardProps) {
     const [showModal, setShowModal] = useState(false);
 
     const { data: roboParametros } = useRoboParametrosById({
