@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { api } from '@/utils/axios';
 import { UserRound, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import styles from './profilePicture.module.scss';
@@ -14,7 +14,7 @@ function ProfilePicture({ src, alt }: ProfilePictureProps) {
 
     const logout = () => {
         return () => {
-            axios.get('/api/logout', { withCredentials: true });
+            api.post('session/logout/', { withCredentials: true });
         };
     };
     if (!authenticatedUser) return null;

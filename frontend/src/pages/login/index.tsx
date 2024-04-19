@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios';
+import { api } from '@/utils/axios';
 
 const schema = z.object({
     username: z.string().min(2, 'Nome de usuário inválido'),
@@ -36,7 +36,7 @@ function Login() {
     function onSubmit(data: LoginData) {
         const parsedData = schema.safeParse(data);
         if (parsedData.success) {
-        axios.post('http://localhost:8000/api/token/', {
+        api.post('token/', {
             username: parsedData.data.username,
             password: parsedData.data.password,
         }, {withCredentials: true}).then(response => {

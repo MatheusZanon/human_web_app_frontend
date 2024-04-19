@@ -105,7 +105,7 @@ function RoboCard({
     };
     return (
         <div className={`card ${styles.card} shadow`}>
-            <img src={image} alt='dummy' className={`card-img-top ${styles.img}`}/>
+            <img src={image} alt='dummy' className={`mt-2 card-img-top ${styles.img}`}/>
             <div className='card-body d-flex flex-column justify-content-between'>
                 <div className='row'>
                     <h5 className='card-title d-flex justify-content-between align-items-center'>

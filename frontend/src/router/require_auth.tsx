@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import { api } from '@/utils/axios';
 import LoadingScreen from '@/components/loading-screen';
 
 interface RequireAuthProps {
@@ -15,13 +15,14 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
     useEffect(() => {
         const verifyToken = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/session/verify/',  {withCredentials: true});
+                const response = await api.get('session/verify/',  {withCredentials: true});
                 if (response.status == 200) {
-                    console.log(response.data);
+                    console.log(response)
                     setIsAuthenticated(true);
                 }
             } catch (error) {
                 console.log(error);
+                api.post('session/logout/', { withCredentials: true });
                 setIsAuthenticated(false);
             } finally {
                 setIsChecking(false);
