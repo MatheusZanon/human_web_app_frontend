@@ -2,31 +2,39 @@ import { useQuery } from '@tanstack/react-query';
 import { getProvisaoTrabalhista } from './getProvisaoDireitoTrabalhista';
 import { getClientesFinanceiro } from './getClientesFinanceiro';
 import { getAnos } from './getAnos';
+import { getEconomiaFormal } from './getEconomiaFormal';
 
-export function useGetProvisaoTrabalhista3487(url:string) {
-  return useQuery({
-      queryKey: ['total_provisao_trabalhista_3487', url],
-      queryFn: () => getProvisaoTrabalhista(url),
-  });
+export function useGetProvisaoTrabalhista3487(url: string) {
+    return useQuery({
+        queryKey: ['total_provisao_trabalhista_3487', url],
+        queryFn: () => getProvisaoTrabalhista(url),
+    });
 }
 
-export function useGetProvisaoTrabalhista0926(url:string) {
-  return useQuery({
-      queryKey: ['total_provisao_trabalhista_0926', url],
-      queryFn: () => getProvisaoTrabalhista(url),
-  });
+export function useGetProvisaoTrabalhista0926(url: string) {
+    return useQuery({
+        queryKey: ['total_provisao_trabalhista_0926', url],
+        queryFn: () => getProvisaoTrabalhista(url),
+    });
 }
 
 export function useGetClientesFinanceiro() {
-  return useQuery({
-      queryKey: ['clientes_financeiro'],
-      queryFn: () => getClientesFinanceiro(),
-  });
+    return useQuery({
+        queryKey: ['clientes_financeiro'],
+        queryFn: () => getClientesFinanceiro(),
+    });
 }
 
 export function useGetAnos() {
-  return useQuery({
-      queryKey: ['anos'],
-      queryFn: () => getAnos(),
-  });
+    return useQuery({
+        queryKey: ['anos'],
+        queryFn: () => getAnos(),
+    });
+}
+
+export function useGetEconomiaFormal(url: string) {
+    return useQuery({
+        queryKey: ['economia_formal', url],
+        queryFn: () => getEconomiaFormal(url),
+    });
 }

@@ -20,8 +20,13 @@ interface SearchResultsProps {
 }
 
 function SearchResultList({ results }: SearchResultsProps) {
+    const { searchOpen } = useSearch();
+    
     return (
-        <div className={`${search_results.SearchResultList}`}>
+        <div
+            className={`${search_results.SearchResultList}`}
+            style={{ display: results.length > 0 && searchOpen ? 'block' : 'none' }}
+        >
             {results.map((result) => (
                 <SearchResult key={result.id} id={result.id} nome={result.nome} />
             ))}

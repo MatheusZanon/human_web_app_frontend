@@ -1,14 +1,20 @@
+import { EconomiaFormal } from '@/components/dashboard/economia-formal';
 import { ProvisaoDireitoTrabalhista } from '@/components/dashboard/provisao-direito-trabalhista';
-import { ProvisaoDireitoTrabalhistaProvider } from '@/components/dashboard/provisao-direito-trabalhista/provisao-direito-trabalhista-provider';
+import { SearchProvider } from '@/components/dashboard/search/search-provider';
 
 function Dashboard() {
     return (
         <div className='d-flex flex-column gap-4 px-3 pb-3 shadow rounded mb-2'>
             <h1>Dashboard</h1>
             <div className='d-flex gap-4'>
-                <ProvisaoDireitoTrabalhistaProvider>
+                <SearchProvider>
                     <ProvisaoDireitoTrabalhista />
-                </ProvisaoDireitoTrabalhistaProvider>
+                </SearchProvider>
+            </div>
+            <div className='d-flex gap-4'>
+                <SearchProvider>
+                    <EconomiaFormal />
+                </SearchProvider>
             </div>
         </div>
     );

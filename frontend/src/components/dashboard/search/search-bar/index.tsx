@@ -2,10 +2,18 @@ import { SearchIcon } from 'lucide-react';
 import { useSearch } from '../search-provider';
 
 function SearchBar() {
-    const { search, setSearch } = useSearch();
+    const { search, setSearch, setSearchOpen } = useSearch();
 
     const handleSearch = (search: string) => {
         setSearch(search);
+    };
+
+    const handleFocus = () => {
+        setSearchOpen(true);
+    };
+
+    const handleBlur = () => {
+        setTimeout(() => setSearchOpen(false), 100);
     };
 
     return (
@@ -17,6 +25,8 @@ function SearchBar() {
                 placeholder='Search'
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
             />
         </div>
     );

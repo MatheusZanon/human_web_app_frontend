@@ -1,13 +1,11 @@
 import { LineChartCard } from '../line-chart';
 import { Search } from '@/components/dashboard/search';
-import { SearchProvider } from '../search/search-provider';
-import { useProvisaoDireitoTrabalhista } from './provisao-direito-trabalhista-provider';
+import { useSearch } from '../search/search-provider';
 import { useEffect, useState } from 'react';
 import { useGetProvisaoTrabalhista3487 } from '@/api/http/dashboard';
-import { unknown } from 'zod';
 
 function ProvisaoDireitoTrabalhista() {
-    const { selected, ano } = useProvisaoDireitoTrabalhista();
+    const { selected, ano } = useSearch();
     const [url3487, setUrl3487] = useState<string>(
         `dashboard/provisoes_direitos_trabalhistas_3487/?nome_razao_social=${selected}&ano=${ano}`,
     );
@@ -23,32 +21,45 @@ function ProvisaoDireitoTrabalhista() {
     const { data: provisoes3487 } = useGetProvisaoTrabalhista3487(url3487);
     const { data: provisoes0926 } = useGetProvisaoTrabalhista3487(url0926);
 
-    function mergeJsonArrays<T extends Record<U, unknown>, U extends keyof T>(array1: T[], array2: T[], key: U) {
+    /**
+     * Mescla dois arrays de objetos JSON usando uma chave comum.
+     * Se um objeto no segundo array tiver uma chave que já existe no primeiro array, adiciona um sufixo '2' para evitar conflito.
+     * @param array1 - Primeiro array de objetos
+     * @param array2 - Segundo array de objetos
+     * @param key - Chave comum usada para combinar objetos
+     * @returns Array de objetos mesclados
+     */
+    function mergeJsonArrays<T extends Record<string, any>, U extends keyof T>(array1: T[], array2: T[], key: U): T[] {
         // Criar um mapa para armazenar os objetos do primeiro array com base na chave
-        const map = new Map();
-        array1.forEach((obj) => map.set(obj[key as U], obj));
+        const map = new Map<T[U], T>();
 
-        // Percorrer o segundo array
+        // Adicionar objetos do primeiro array ao mapa usando a chave
+        array1.forEach((obj) => {
+            map.set(obj[key], { ...obj }); // Usa uma cópia para garantir que o objeto original não seja modificado
+        });
+
+        // Iterar sobre o segundo array
         array2.forEach((obj) => {
-            const keyValue = obj[key as U];
-            // Se o mapa já tiver um objeto com a mesma chave
+            const keyValue = obj[key];
             if (map.has(keyValue)) {
                 const existingObj = map.get(keyValue);
-                // Percorrer as chaves do objeto do segundo array
-                Object.entries(obj).forEach(([subKey, value]) => {
-                    // Ignorar a chave fornecida como parâmetro
-                    if (subKey !== key) {
-                        // Adicionar sufixo '2' ao nome da chave
-                        existingObj[subKey + '2'] = value;
-                    }
-                });
+
+                if (existingObj) {
+                    // Adicionar campos do segundo array ao objeto existente
+                    Object.keys(obj).forEach((subKey) => {
+                        if (subKey !== key) {
+                            const newKey = `${subKey}2`; // Adicionar sufixo '2' para evitar conflitos
+                            existingObj[newKey as U] = obj[subKey];
+                        }
+                    });
+                }
             } else {
-                // Se não houver um objeto com a mesma chave, adicionar ao mapa
-                map.set(keyValue, obj);
+                // Se a chave não existir, adicionar ao mapa
+                map.set(keyValue, { ...obj }); // Usa uma cópia para evitar efeitos colaterais
             }
         });
 
-        // Retornar os valores do mapa como um array
+        // Retornar todos os valores do mapa como um array
         return Array.from(map.values());
     }
 
@@ -97,9 +108,7 @@ function ProvisaoDireitoTrabalhista() {
             <h3>Provisão Direito Trabalhista</h3>
             <div className='d-flex flex-column gap-2'>
                 <div className='d-flex gap-2'>
-                    <SearchProvider>
-                        <Search />
-                    </SearchProvider>
+                    <Search companyFilter yearFilter />
                 </div>
                 <div className='d-flex gap-2 w-100'>
                     <LineChartCard data={provisoes || []} dataKeyX='mes' />

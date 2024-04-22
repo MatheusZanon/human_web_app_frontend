@@ -44,8 +44,8 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
     };
 
     const sortedData = [...data].sort((a, b) => {
-        if ((a as any)[sortBy] < (b as any)[sortBy]) return sortDirection === 'asc' ? -1 : 1;
-        if ((a as any)[sortBy] > (b as any)[sortBy]) return sortDirection === 'asc' ? 1 : -1;
+        if (a[sortBy] < b[sortBy]) return sortDirection === 'asc' ? -1 : 1;
+        if (a[sortBy] > b[sortBy]) return sortDirection === 'asc' ? 1 : -1;
         return 0;
     });
 
