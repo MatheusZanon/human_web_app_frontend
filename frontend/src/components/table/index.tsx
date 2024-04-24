@@ -18,7 +18,7 @@ type TableHeaderProps = {
 };
 
 type TableDataProps = {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     colSpan?: number;
 };
 

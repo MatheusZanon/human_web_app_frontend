@@ -41,7 +41,7 @@ const Search: React.FC<{ companyFilter?: boolean; monthFilter?: boolean; yearFil
                             </option>
                             <option value={1}>Janeiro</option>
                             <option value={2}>Fevereiro</option>
-                            <option value={3}>Marco</option>
+                            <option value={3}>Março</option>
                             <option value={4}>Abril</option>
                             <option value={5}>Maio</option>
                             <option value={6}>Junho</option>

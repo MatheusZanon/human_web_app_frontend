@@ -45,8 +45,6 @@ export function useActivateUser() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
         },
-
-        onError: (err: IAppError) => err,
     });
 }
 
@@ -57,7 +55,5 @@ export function useDeactivateUser() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
         },
-
-        onError: (err: IAppError) => err,
     });
 }

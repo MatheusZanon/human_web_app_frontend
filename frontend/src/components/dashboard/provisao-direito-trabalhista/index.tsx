@@ -7,15 +7,15 @@ import { useGetProvisaoTrabalhista3487 } from '@/api/http/dashboard';
 function ProvisaoDireitoTrabalhista() {
     const { selected, ano } = useSearch();
     const [url3487, setUrl3487] = useState<string>(
-        `dashboard/provisoes_direitos_trabalhistas_3487/?nome_razao_social=${selected}&ano=${ano}`,
+        `dashboard/provisoes_direitos_trabalhistas_3487/?nome_razao_social=${selected}&ano=${ano ?? ''}`,
     );
     const [url0926, setUrl0926] = useState<string>(
-        `dashboard/provisoes_direitos_trabalhistas_0926/?nome_razao_social=${selected}&ano=${ano}`,
+        `dashboard/provisoes_direitos_trabalhistas_0926/?nome_razao_social=${selected}&ano=${ano ?? ''}`,
     );
 
     useEffect(() => {
-        setUrl3487(`dashboard/provisoes_direitos_trabalhistas_3487/?nome_razao_social=${selected}&ano=${ano}`);
-        setUrl0926(`dashboard/provisoes_direitos_trabalhistas_0926/?nome_razao_social=${selected}&ano=${ano}`);
+        setUrl3487(`dashboard/provisoes_direitos_trabalhistas_3487/?nome_razao_social=${selected}&ano=${ano ?? ''}`);
+        setUrl0926(`dashboard/provisoes_direitos_trabalhistas_0926/?nome_razao_social=${selected}&ano=${ano ?? ''}`);
     }, [selected, ano]);
 
     const { data: provisoes3487 } = useGetProvisaoTrabalhista3487(url3487);

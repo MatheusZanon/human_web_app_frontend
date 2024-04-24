@@ -4,7 +4,7 @@ import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/Authenticated
 import { Group } from '@/utils/types/group';
 import { User } from '@/utils/types/user';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ShieldCheck, ShieldX } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';

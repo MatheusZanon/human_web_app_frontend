@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Table, TableBody, TableHeader, TableHead, TableData, TableRow } from '@/components/table';
+import { Table, TableBody, TableHeader, TableHead, TableData, TableRow, TableFooter } from '@/components/table';
 import type { getEconomiaFormal } from '@/utils/types/economia_formal';
 
-function EconomiaFormalTable({ data }: { data: getEconomiaFormal[] }) {
+function EconomiaFormalTable({ data }: { data?: getEconomiaFormal[] }) {
     const [sortBy, setSortBy] = useState<keyof getEconomiaFormal>('nome_razao_social');
     const [sortDirection, setSortDirection] = useState('asc');
     const handleSort = (columnKey: string) => {
@@ -14,11 +14,15 @@ function EconomiaFormalTable({ data }: { data: getEconomiaFormal[] }) {
         }
     };
 
-    const sortedData = [...data].sort((a, b) => {
+    const sortedData = [...(data || [])].sort((a, b) => {
         if (a[sortBy] < b[sortBy]) return sortDirection === 'asc' ? -1 : 1;
         if (a[sortBy] > b[sortBy]) return sortDirection === 'asc' ? 1 : -1;
         return 0;
     });
+
+    const somatorio = (values: number[]) => {
+        return values.reduce((a, b) => a + b, 0).toFixed(2);
+    }
 
     return (
         <Table>
@@ -41,12 +45,12 @@ function EconomiaFormalTable({ data }: { data: getEconomiaFormal[] }) {
                         Economia Formal
                     </TableHeader>
                     <TableHeader
-                        columnKey='mes'
-                        sortDirection={sortBy === 'mes' ? sortDirection : ''}
-                        onSort={() => handleSort('mes')}
+                        columnKey='regiao'
+                        sortDirection={sortBy === 'regiao' ? sortDirection : ''}
+                        onSort={() => handleSort('regiao')}
                         sortable
                     >
-                        Mês
+                        Região
                     </TableHeader>
                 </TableRow>
             </TableHead>
@@ -55,10 +59,19 @@ function EconomiaFormalTable({ data }: { data: getEconomiaFormal[] }) {
                     <TableRow key={`${row.nome_razao_social}_${index}`}>
                         <TableData>{row.nome_razao_social}</TableData>
                         <TableData>{row.economia_formal}</TableData>
-                        <TableData>{row.mes}</TableData>
+                        <TableData>{row.regiao}</TableData>
                     </TableRow>
                 ))}
             </TableBody>
+            <TableFooter>
+                <TableRow>
+                    <TableData>
+                        <span className='fw-bold'>Total:</span>
+                    </TableData>
+                    <TableData>{somatorio(sortedData.map((row) => row.economia_formal))}</TableData>
+                    <TableData></TableData>
+                </TableRow>
+            </TableFooter>
         </Table>
     );
 }

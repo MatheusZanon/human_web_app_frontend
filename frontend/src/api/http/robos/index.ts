@@ -51,7 +51,6 @@ export function useCreateRobo() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['robos'] });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
@@ -64,7 +63,6 @@ export function useDeleteRobo() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['robos'] });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
@@ -74,7 +72,6 @@ export function useExecutarRobo({ roboId }: { roboId: string }) {
         mutationFn: (data: RoboParametrosType) => {
             return postExecutarRobo({ roboId, data });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
@@ -87,7 +84,6 @@ export function useCriarParametro({ roboId }: { roboId: string }) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
@@ -100,33 +96,30 @@ export function useCriarRotina({ roboId }: { roboId: string }) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas/listar`] });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
 export function useAlterarParametro({ roboId }: { roboId: string }) {
     return useMutation({
         mutationKey: [`robo/${roboId}/parametros/atualizar/`],
-        mutationFn: ({parametroId, data}: { parametroId: number; data: RoboParametrosType }) => {
+        mutationFn: ({ parametroId, data }: { parametroId: number; data: RoboParametrosType }) => {
             return putParametros({ roboId: parseInt(roboId), parametroId, data });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
 export function useAlterarRotina({ roboId }: { roboId: string }) {
     return useMutation({
         mutationKey: [`robo/${roboId}/rotinas/atualizar/`],
-        mutationFn: ({rotinaId, data}: { rotinaId: number; data: CriarRotinaType }) => {
+        mutationFn: ({ rotinaId, data }: { rotinaId: number; data: CriarRotinaType }) => {
             return putRotinas({ roboId: parseInt(roboId), rotinaId, data });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas/listar`] });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
@@ -139,7 +132,6 @@ export function useDeleteParametro({ roboId }: { roboId: string }) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
@@ -152,7 +144,6 @@ export function useDeleteRotina({ roboId }: { roboId: string }) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas/listar`] });
         },
-        onError: (err: IAppError) => err,
     });
 }
 
