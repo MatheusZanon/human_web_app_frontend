@@ -23,10 +23,10 @@ type TableDataProps = {
 };
 
 function Table({ children }: TableProps) {
-    return <table className='table table-hover'>{children}</table>;
+    return <table className='table table-hover w-100'>{children}</table>;
 }
 
-function TableHeader({ children, sortable, columnKey, sortDirection, onSort , className}: TableHeaderProps) {
+function TableHeader({ children, sortable, columnKey, sortDirection, onSort, className }: TableHeaderProps) {
     const handleSort = () => {
         if (sortable && columnKey && onSort) {
             onSort();
@@ -52,7 +52,7 @@ function TableHead({ children }: TableProps) {
 }
 
 function TableBody({ children }: TableProps) {
-    return <tbody className='align-middle'>{children}</tbody>;
+    return <tbody className={`align-middle`}>{children}</tbody>;
 }
 
 function TableRow({ children }: TableRowProps) {
