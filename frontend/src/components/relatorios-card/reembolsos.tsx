@@ -5,7 +5,10 @@ import { ArrowBigLeftDash, ArrowBigRightDash, Pencil, Trash2 } from 'lucide-reac
 import styles from './reembolsos-card.module.scss';
 
 function CardReembolsos({ ...props }) {
+    const date = new Date();
     const [url, setUrl] = useState<string>('financeiro_valores/reembolsos/?limit=15&offset=0');
+    const [mes, setMes] = useState<number>(0);
+    const [ano, setAno] = useState<number>(date.getFullYear());
     const reembolsos = useGetReembolsos(url);
     const reembolsosResults = reembolsos.isSuccess && reembolsos.data && 'results' in reembolsos.data ? reembolsos.data.results : [];
 
@@ -23,7 +26,23 @@ function CardReembolsos({ ...props }) {
                     <button type='button' className='btn btn-primary' onClick={() => reembolsos.data.next && setUrl(reembolsos.data.next)}><ArrowBigRightDash/></button>
                         :
                     <button type='button' className='btn btn-primary' disabled={true}><ArrowBigRightDash/></button>}
-                    <button type='button' className={`btn ${styles.addButton}`}>Adicionar Reembolso</button>
+                    <select className="form-select w-25" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
+                        <option value="">Mês</option>
+                        <option value="1">Janeiro</option>
+                        <option value="2">Fevereiro</option>
+                        <option value="3">Março</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Maio</option>
+                        <option value="6">Junho</option>
+                        <option value="7">Julho</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                    <input type="number" className="form-control w-25" placeholder="Ano" value={ano} onChange={(e) => setAno(parseInt(e.target.value))}/>
+                    <button type='button' className="btn btn-secondary">Adicionar Reembolso</button>
                 </div>
                 <Table>
                     <TableHead>

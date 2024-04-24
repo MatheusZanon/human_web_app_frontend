@@ -17,9 +17,9 @@ export function useGetReembolsos(url:string) {
     });
 }
 
-export function useGetValesSST(url:string) {
+export function useGetValesSST(url:string, mes?: number, ano?: number) {
     return useQuery({
-        queryKey: ['vales_sst', url],
-        queryFn: () => getValesSST(url),
+        queryKey: ['vales_sst', url, mes, ano],
+        queryFn: () => getValesSST(url, mes, ano),
     });
 }

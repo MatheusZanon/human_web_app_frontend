@@ -1,15 +1,31 @@
 import { useState } from 'react';
 import styles from './vales-sst.module.scss';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead  } from "@/components/table";
-import { ArrowBigLeftDash, ArrowBigRightDash, Pencil, Trash2 } from 'lucide-react';
-import { useGetValesSST } from '@/api/http/financeiro_valores';
+import { ArrowBigLeftDash, ArrowBigRightDash, Pencil } from 'lucide-react';
 import LoadingScreen from '../loading-screen';
+import { api } from '@/utils/axios';
+import { useGetValesSST } from '@/api/http/financeiro_valores';
+import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
+import ValesSSTModal from './vales-sst-modal';
 
 
 function CardValesSST({ ...props }) {
+    const date = new Date();
     const [url, setUrl] = useState<string>('financeiro_valores/vales_sst/?limit=15&offset=0');
-    const valesSST = useGetValesSST(url);
+    const [mes, setMes] = useState<number>();
+    const [ano, setAno] = useState<number>(date.getFullYear());
+    const valesSST = useGetValesSST(url, mes, ano);
     const valesSSTResults = valesSST.isSuccess && valesSST.data && 'results' in valesSST.data ? valesSST.data.results : [];
+    const [selectedVale, setSelectedVale] = useState<FinanceiroValesSST | null>(null);
+
+    const updateVale = async (vale: FinanceiroValesSST) => {
+        try {
+          console.log('Atualizando o registro:', vale);
+        } catch (error) {
+          console.error('Erro ao atualizar o registro:', error);
+          throw error;
+        }
+    }
     
     return (
         <div className={`card ${styles.card} shadow`}>
@@ -25,6 +41,22 @@ function CardValesSST({ ...props }) {
                     <button type='button' className='btn btn-primary' onClick={() => valesSST.data.next && setUrl(valesSST.data.next)}><ArrowBigRightDash/></button>
                         :
                     <button type='button' className='btn btn-primary' disabled={true}><ArrowBigRightDash/></button>}
+                    <select className="form-select w-25" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
+                        <option value="">Mês</option>
+                        <option value="1">Janeiro</option>
+                        <option value="2">Fevereiro</option>
+                        <option value="3">Março</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Maio</option>
+                        <option value="6">Junho</option>
+                        <option value="7">Julho</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                    <input type="number" className="form-control w-25" placeholder="Ano" value={ano} onChange={(e) => setAno(parseInt(e.target.value))}/>
                 </div>
                 <Table>
                     <TableHead>
@@ -42,7 +74,7 @@ function CardValesSST({ ...props }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {valesSSTResults.map(vale => (
+                        {valesSSTResults.length > 0 && valesSSTResults.map(vale => (
                             <TableRow key={vale.id}>
                                 <TableData>{vale.id}</TableData>
                                 <TableData>{vale.nome_razao_social}</TableData>
@@ -56,7 +88,7 @@ function CardValesSST({ ...props }) {
                                 <TableData>
                                     <div className='d-flex gap-2 justify-content-center'>
                                         <button className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
-                                        onClick={() => {}}>
+                                        onClick={() => setSelectedVale(vale)}>
                                             <Pencil width={16} height={16} />
                                         </button>
                                     </div>
@@ -65,6 +97,7 @@ function CardValesSST({ ...props }) {
                         ))}
                     </TableBody>
                 </Table>
+                {selectedVale && <ValesSSTModal vale={selectedVale} onClose={() => setSelectedVale(null)} onUpdate={updateVale}/>}
             </div>
         </div>
     );
