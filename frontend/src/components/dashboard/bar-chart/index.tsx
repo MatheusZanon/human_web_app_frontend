@@ -42,10 +42,7 @@ function BarChartCard<T>({ data, dataKeyX, barKeys, title, stacked, xAxisAsMonth
             {title && <h5>{title}</h5>}
             <ResponsiveContainer width='100%' height={300}>
                 <BarChart width={500} height={300} data={chartData}>
-                    <XAxis
-                        dataKey={data.length > 0 ? (dataKeyX as string) : 'mes'}
-                        tickFormatter={xAxisAsMonths ? monthFormatter : undefined}
-                    />
+                    <XAxis dataKey={data.length > 0 ? dataKeyX as string : 'mes'} tickFormatter={xAxisAsMonths ? monthFormatter : undefined} />
                     <YAxis domain={chartData.length > 0 ? [0, 1] : ['auto', 'auto']} />
                     <CartesianGrid strokeDasharray='5 5' />
                     <Tooltip />
