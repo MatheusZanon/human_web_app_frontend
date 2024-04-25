@@ -12,9 +12,7 @@ function Dashboard() {
                 </SearchProvider>
             </div>
             <div className='d-flex gap-4'>
-                <SearchProvider>
-                    <EconomiaFormal />
-                </SearchProvider>
+                <EconomiaFormal />
             </div>
         </div>
     );

@@ -46,22 +46,13 @@ function EconomiaFormalTable({ data }: { data?: getEconomiaFormal[] }) {
                         >
                             Economia Formal
                         </TableHeader>
-                        <TableHeader
-                            columnKey='regiao'
-                            sortDirection={sortBy === 'regiao' ? sortDirection : ''}
-                            onSort={() => handleSort('regiao')}
-                            sortable
-                        >
-                            Região
-                        </TableHeader>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {sortedData.map((row, index) => (
                         <TableRow key={`${row.nome_razao_social}_${index}`}>
-                            <TableData>{row.nome_razao_social}</TableData>
-                            <TableData>{row.economia_formal}</TableData>
-                            <TableData>{row.regiao}</TableData>
+                            <TableData>{row.nome_razao_social ? row.nome_razao_social : 'Não informado'}</TableData>
+                            <TableData>{row.economia_formal ? row.economia_formal : 'Não informado'}</TableData>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -71,7 +62,6 @@ function EconomiaFormalTable({ data }: { data?: getEconomiaFormal[] }) {
                             <span className='fw-bold'>Total:</span>
                         </TableData>
                         <TableData>{somatorio(sortedData.map((row) => row.economia_formal))}</TableData>
-                        <TableData></TableData>
                     </TableRow>
                 </TableFooter>
             </Table>
