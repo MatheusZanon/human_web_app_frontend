@@ -2,7 +2,6 @@ import CardValesSST from "@/components/relatorios-card/vales-sst";
 import CardReembolsos from "@/components/relatorios-card/reembolsos";
 import { Content } from "@/components/layout/content";
 
-
 function Relatorios() {
   return (
     <Content title="Relatorios">
@@ -11,7 +10,7 @@ function Relatorios() {
         <CardReembolsos title="Reembolsos"/>
       </div>
     </Content>
-);
+  );
 }
 
 export default Relatorios;

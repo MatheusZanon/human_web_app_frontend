@@ -10,10 +10,10 @@ export function useGetFinanceiroValores() {
     });
 }
 
-export function useGetReembolsos(url:string) {
+export function useGetReembolsos(url:string, mes?: number, ano?: number) {
     return useQuery({
-        queryKey: ['reembolsos', url],
-        queryFn: () => getReembolsos(url),
+        queryKey: ['reembolsos', url, mes, ano],
+        queryFn: () => getReembolsos(url, mes, ano),
     });
 }
 
