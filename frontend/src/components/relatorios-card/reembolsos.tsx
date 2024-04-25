@@ -9,7 +9,7 @@ function CardReembolsos({ ...props }) {
     const [url, setUrl] = useState<string>('financeiro_valores/reembolsos/?limit=15&offset=0');
     const [mes, setMes] = useState<number>(0);
     const [ano, setAno] = useState<number>(date.getFullYear());
-    const reembolsos = useGetReembolsos(url);
+    const reembolsos = useGetReembolsos(url, mes, ano);
     const reembolsosResults = reembolsos.isSuccess && reembolsos.data && 'results' in reembolsos.data ? reembolsos.data.results : [];
 
     return (
