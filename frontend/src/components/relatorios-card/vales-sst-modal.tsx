@@ -42,7 +42,7 @@ const ValesSSTModal: React.FC<ModalProps> = ({ vale, onClose, onUpdate }) => {
                 <form className={styles.form} onSubmit={handleSubmit}>
                     <label className={styles.label}>
                         Nome/Razão Social:
-                        <input type="text" className='form-control' value={nome} onChange={e => setNome(e.target.value)} />
+                        <span className='d-block fw-normal'>{vale.nome_razao_social}</span>
                     </label>
                     <label className={styles.label}>
                         Vale Transporte:
