@@ -1,5 +1,5 @@
-import CardValesSST from "@/components/relatorios-card/vales-sst";
-import CardReembolsos from "@/components/relatorios-card/reembolsos";
+import CardValesSST from "@/components/relatorios/vales-sst/vales-sst";
+import CardReembolsos from "@/components/relatorios/reembolsos/reembolsos";
 import { Content } from "@/components/layout/content";
 
 function Relatorios() {
