@@ -12,14 +12,19 @@ function ProvisaoDireitoTrabalhista() {
     const [url0926, setUrl0926] = useState<string>(
         `dashboard/provisoes_direitos_trabalhistas_0926/?nome_razao_social=${selected}&ano=${ano ?? ''}`,
     );
+    const [urlTaxaAdministracao, setUrlTaxaAdministracao] = useState<string>(
+        `dashboard/taxa_administracao/?nome_razao_social=${selected}&ano=${ano ?? ''}`,
+    )
 
     useEffect(() => {
         setUrl3487(`dashboard/provisoes_direitos_trabalhistas_3487/?nome_razao_social=${selected}&ano=${ano ?? ''}`);
         setUrl0926(`dashboard/provisoes_direitos_trabalhistas_0926/?nome_razao_social=${selected}&ano=${ano ?? ''}`);
+        setUrlTaxaAdministracao(`dashboard/taxa_administracao/?nome_razao_social=${selected}&ano=${ano ?? ''}`);
     }, [selected, ano]);
 
     const { data: provisoes3487 } = useGetProvisaoTrabalhista3487(url3487);
     const { data: provisoes0926 } = useGetProvisaoTrabalhista3487(url0926);
+    const { data: taxaAdministracao } = useGetProvisaoTrabalhista3487(urlTaxaAdministracao);
 
     /**
      * Mescla dois arrays de objetos JSON usando uma chave comum.
@@ -99,9 +104,10 @@ function ProvisaoDireitoTrabalhista() {
 
     let provisoes: object[] = [];
 
-    if (provisoes3487 && provisoes0926) {
+    if (provisoes3487 && provisoes0926 && taxaAdministracao) {
         provisoes = mergeJsonArrays(provisoes0926, provisoes3487, 'mes');
-        provisoes = replaceKeys(provisoes, ['valor', 'valor2'], ['09.26%', '34.87%']);
+        provisoes = mergeJsonArrays(provisoes, taxaAdministracao, 'mes');
+        provisoes = replaceKeys(provisoes, ['valor', 'valor2', 'taxa_administracao2'], ['09.26%', '34.87%', 'Taxa Administracao']);
     }
     return (
         <div className='w-100 p-2 rounded shadow'>
@@ -111,7 +117,7 @@ function ProvisaoDireitoTrabalhista() {
                     <Search companyFilter yearFilter />
                 </div>
                 <div className='d-flex gap-2 w-100'>
-                    <LineChartCard data={provisoes || []} dataKeyX='mes' />
+                    <LineChartCard data={provisoes.filter(provisao => provisao.mes !== 0) || []} dataKeyX='mes' />
                 </div>
             </div>
         </div>

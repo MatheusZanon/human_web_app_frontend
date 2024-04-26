@@ -3,6 +3,7 @@ import { getProvisaoTrabalhista } from './getProvisaoDireitoTrabalhista';
 import { getClientesFinanceiro } from './getClientesFinanceiro';
 import { getAnos } from './getAnos';
 import { getEconomiaFormal } from './getEconomiaFormal';
+import { getTaxaAdministracao } from './getTaxaAdministracao';
 
 export function useGetProvisaoTrabalhista3487(url: string) {
     return useQuery({
@@ -15,6 +16,13 @@ export function useGetProvisaoTrabalhista0926(url: string) {
     return useQuery({
         queryKey: ['total_provisao_trabalhista_0926', url],
         queryFn: () => getProvisaoTrabalhista(url),
+    });
+}
+
+export function useGetTaxaAdministracao(url: string) {
+    return useQuery({
+        queryKey: ['taxa_administracao', url],
+        queryFn: () => getTaxaAdministracao(url),
     });
 }
 
