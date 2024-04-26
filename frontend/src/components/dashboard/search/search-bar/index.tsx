@@ -13,7 +13,7 @@ function SearchBar() {
     };
 
     const handleBlur = () => {
-        setTimeout(() => setSearchOpen(false), 100);
+        setTimeout(() => setSearchOpen(false), 300);
     };
 
     return (
