@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styles from './vales-sst.module.scss';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead  } from "@/components/table";
 import { ArrowBigLeftDash, ArrowBigRightDash, Pencil } from 'lucide-react';
-import LoadingScreen from '../loading-screen';
+import LoadingScreen from '../../loading-screen';
 import { api } from '@/utils/axios';
 import { useGetValesSST } from '@/api/http/financeiro_valores';
 import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
@@ -37,8 +37,6 @@ function CardValesSST({ ...props }) {
         };
       }, [mes, ano]);
     
-    console.log("next: ",valesSST.data?.next, "previous: ", valesSST.data?.previous);
-
     return (
             <div className={`card ${styles.card} shadow`}>
                 <div className="card-body">
@@ -54,7 +52,7 @@ function CardValesSST({ ...props }) {
                             :
                         <button type='button' className='btn btn-primary' disabled={true}><ArrowBigRightDash/></button>}
                         <select className="form-select w-25" value={mes} onChange={(e) => setMes(parseInt(e.target.value))}>
-                            <option value="">Mês</option>
+                            <option value="" disabled>Mês</option>
                             <option value="1">Janeiro</option>
                             <option value="2">Fevereiro</option>
                             <option value="3">Março</option>
@@ -73,26 +71,28 @@ function CardValesSST({ ...props }) {
                     <Table>
                         <TableHead>
                             <TableRow>
-                            <TableHeader>ID</TableHeader>
                             <TableHeader>Nome</TableHeader>
                             <TableHeader>Vale Transporte</TableHeader>
                             <TableHeader>Assinatura Eletrônica</TableHeader>
                             <TableHeader>Vale Refeição</TableHeader>
                             <TableHeader>Ponto Eletrônico</TableHeader>
                             <TableHeader>Saúde/Segurança do Trabalho</TableHeader>
+                            <TableHeader>Mês</TableHeader>
+                            <TableHeader>Ano</TableHeader>
                             <TableHeader>Ações</TableHeader>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {valesSSTResults.length > 0 && valesSSTResults.map(vale => (
                                 <TableRow key={vale.id}>
-                                    <TableData>{vale.id}</TableData>
                                     <TableData>{vale.nome_razao_social}</TableData>
                                     <TableData>{vale.vale_transporte.toFixed(2).toString().replace('.',',')}</TableData>
                                     <TableData>{vale.assinat_eletronica.toFixed(2).toString().replace('.',',')}</TableData>
                                     <TableData>{vale.vale_refeicao.toFixed(2).toString().replace('.',',')}</TableData>
                                     <TableData>{vale.mensal_ponto_elet.toFixed(2).toString().replace('.',',')}</TableData>
                                     <TableData>{vale.saude_seguranca_trabalho.toFixed(2).toString().replace('.',',')}</TableData>
+                                    <TableData>{vale.mes = mes}</TableData>
+                                    <TableData>{vale.ano = ano}</TableData>
                                     <TableData>
                                         <div className='d-flex gap-2 justify-content-center'>
                                             <button className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
