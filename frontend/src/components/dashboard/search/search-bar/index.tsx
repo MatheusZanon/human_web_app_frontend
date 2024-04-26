@@ -9,6 +9,7 @@ function SearchBar() {
     };
 
     const handleFocus = () => {
+        handleSearch('');
         setSearchOpen(true);
     };
 
