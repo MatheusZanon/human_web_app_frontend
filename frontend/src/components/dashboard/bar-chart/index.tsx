@@ -40,7 +40,7 @@ function BarChartCard<T>({ data, dataKeyX, barKeys, title, stacked, xAxisAsMonth
     return (
         <div className='w-100 p-2'>
             {title && <h5>{title}</h5>}
-            <ResponsiveContainer width='100%' height={300}>
+            <ResponsiveContainer width='100%' className={'p-2'} height={300}>
                 <BarChart width={500} height={300} data={chartData}>
                     <XAxis
                         dataKey={data.length > 0 ? (dataKeyX as string) : 'mes'}

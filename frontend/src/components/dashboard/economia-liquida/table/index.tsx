@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { Table, TableBody, TableHeader, TableHead, TableData, TableRow, TableFooter } from '@/components/table';
-import type { getEconomiaFormal } from '@/utils/types/economia_formal';
-import styles from './economia_formal_table.module.scss';
+import type { getEconomiaLiquida } from '@/utils/types/economia_liquida';
+import styles from './economia_liquida_table.module.scss';
 
-function EconomiaFormalTable({ data }: { data?: getEconomiaFormal[] }) {
-    const [sortBy, setSortBy] = useState<keyof getEconomiaFormal>('nome_razao_social');
+function EconomiaLiquidaTable({ data }: { data?: getEconomiaLiquida[] }) {
+    const [sortBy, setSortBy] = useState<keyof getEconomiaLiquida>('nome_razao_social');
     const [sortDirection, setSortDirection] = useState('asc');
     const handleSort = (columnKey: string) => {
         if (sortBy === columnKey) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
-            setSortBy(columnKey as keyof getEconomiaFormal);
+            setSortBy(columnKey as keyof getEconomiaLiquida);
             setSortDirection('asc');
         }
     };
@@ -39,12 +39,12 @@ function EconomiaFormalTable({ data }: { data?: getEconomiaFormal[] }) {
                             Empresa
                         </TableHeader>
                         <TableHeader
-                            columnKey='economia_formal'
-                            sortDirection={sortBy === 'economia_formal' ? sortDirection : ''}
-                            onSort={() => handleSort('economia_formal')}
+                            columnKey='economia_liquida'
+                            sortDirection={sortBy === 'economia_liquida' ? sortDirection : ''}
+                            onSort={() => handleSort('economia_liquida')}
                             sortable
                         >
-                            Economia Formal
+                            Economia Liquida
                         </TableHeader>
                     </TableRow>
                 </TableHead>
@@ -52,7 +52,7 @@ function EconomiaFormalTable({ data }: { data?: getEconomiaFormal[] }) {
                     {sortedData.map((row, index) => (
                         <TableRow key={`${row.nome_razao_social}_${index}`}>
                             <TableData>{row.nome_razao_social ? row.nome_razao_social : 'Não informado'}</TableData>
-                            <TableData>{row.economia_formal ? row.economia_formal : 'Não informado'}</TableData>
+                            <TableData>{row.economia_liquida ? row.economia_liquida.toFixed(2).toString().replace('.', ',') : 'Não informado'}</TableData>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -61,7 +61,7 @@ function EconomiaFormalTable({ data }: { data?: getEconomiaFormal[] }) {
                         <TableData>
                             <span className='fw-bold'>Total:</span>
                         </TableData>
-                        <TableData>{somatorio(sortedData.map((row) => row.economia_formal))}</TableData>
+                        <TableData>{somatorio(sortedData.map((row) => row.economia_liquida))}</TableData>
                     </TableRow>
                 </TableFooter>
             </Table>
@@ -69,4 +69,4 @@ function EconomiaFormalTable({ data }: { data?: getEconomiaFormal[] }) {
     );
 }
 
-export { EconomiaFormalTable };
+export { EconomiaLiquidaTable };

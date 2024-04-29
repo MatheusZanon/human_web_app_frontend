@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getProvisaoTrabalhista } from './getProvisaoDireitoTrabalhista';
 import { getClientesFinanceiro } from './getClientesFinanceiro';
 import { getAnos } from './getAnos';
-import { getEconomiaFormal } from './getEconomiaFormal';
+import { getEconomiaLiquida } from './getEconomiaLiquida';
 import { getTaxaAdministracao } from './getTaxaAdministracao';
 
 export function useGetProvisaoTrabalhista3487(url: string) {
@@ -40,9 +40,9 @@ export function useGetAnos() {
     });
 }
 
-export function useGetEconomiaFormal(url: string) {
+export function useGetEconomiaLiquida(url: string) {
     return useQuery({
-        queryKey: ['economia_formal', url],
-        queryFn: () => getEconomiaFormal(url),
+        queryKey: ['economia_liquida', url],
+        queryFn: () => getEconomiaLiquida(url),
     });
 }

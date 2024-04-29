@@ -1,11 +1,24 @@
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
-interface PieChartProps {
-    data: Record<string, unknown>[];
+interface BasePieChartProps {
     title?: string;
 }
 
-function PieChartCard({ data, title }: PieChartProps) {
+interface WithData<T> extends BasePieChartProps {
+    data: T[];
+    dataKey: keyof T;
+    labelBy: keyof T;
+}
+
+interface WithoutData extends BasePieChartProps {
+    data?: undefined;
+    dataKey?: undefined;
+    labelBy?: undefined;
+}
+
+type PieChartProps<T> = WithData<T> | WithoutData;
+
+function PieChartCard<T>({ data, dataKey, labelBy, title }: PieChartProps<T>) {
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF7043', '#942EE7', '#E5D7A9', '#EF4444'];
     const RADIAN = Math.PI / 180;
 
@@ -45,7 +58,7 @@ function PieChartCard({ data, title }: PieChartProps) {
     };
 
     return (
-        <div className='w-100 p-2 rounded shadow'>
+        <div className='w-100 p-2'>
             {title && <h5>{title}</h5>}
             <ResponsiveContainer width='100%' height={300}>
                 <PieChart width={500} height={300}>
@@ -53,20 +66,21 @@ function PieChartCard({ data, title }: PieChartProps) {
                     <Tooltip />
 
                     <Pie
-                        data={data}
+                        data={data ? data : [{ name: 'Vazio', value: 1 }]}
                         cx='50%'
                         cy='50%'
                         labelLine={false}
                         label={renderCustomizedLabel}
                         outerRadius={80}
                         fill='#8884d8'
-                        dataKey='value'
+                        dataKey={dataKey as string}
                     >
-                        {data.map((entry, index) => (
+                        {data?.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
                                 fill={COLORS[index % COLORS.length]}
                                 style={{ outline: 'none' }}
+                                name={entry[labelBy as keyof T] as string}
                             />
                         ))}
                     </Pie>

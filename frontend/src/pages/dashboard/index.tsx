@@ -1,4 +1,4 @@
-import { EconomiaFormal } from '@/components/dashboard/economia-formal';
+import { EconomiaLiquida } from '@/components/dashboard/economia-liquida';
 import { ProvisaoDireitoTrabalhista } from '@/components/dashboard/provisao-direito-trabalhista';
 import { SearchProvider } from '@/components/dashboard/search/search-provider';
 
@@ -12,7 +12,7 @@ function Dashboard() {
                 </SearchProvider>
             </div>
             <div className='d-flex gap-4'>
-                <EconomiaFormal />
+                <EconomiaLiquida />
             </div>
         </div>
     );

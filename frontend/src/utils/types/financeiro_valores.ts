@@ -18,7 +18,7 @@ export type FinanceiroValores = {
     mensal_ponto_elet: number;
     saude_seguranca_trabalho: number;
     percentual_human: number;
-    economia_formal: number;
+    economia_liquida: number;
     total_fatura: number;
     mes: number;
     ano: number;

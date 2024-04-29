@@ -1,15 +1,14 @@
-import { useGetEconomiaFormal } from '@/api/http/dashboard';
-import { Search } from '../../search';
+import { useGetEconomiaLiquida } from '@/api/http/dashboard';
 import { useEffect, useState } from 'react';
 import LoadingScreen from '@/components/loading-screen';
-import { EconomiaFormalTable } from '../table';
+import { EconomiaLiquidaTable } from '../table';
 import { useSearch } from '../../search/search-provider';
 
-function RelatorioEconomiaFormalTable() {
+function RelatorioEconomiaLiquidaTable() {
     const { selected, month, ano } = useSearch();
 
     const [economiaUrl, setEconomiaUrl] = useState<string>(
-        `dashboard/economia_formal/?nome_razao_social=&ano=${ano ?? ''}`,
+        `dashboard/economia_liquida/?nome_razao_social=&ano=${ano ?? ''}`,
     );
 
     const {
@@ -17,11 +16,11 @@ function RelatorioEconomiaFormalTable() {
         isLoading: isEconomiaLoading,
         isError: isEconomiaError,
         isSuccess: isEconomiaSuccess,
-    } = useGetEconomiaFormal(economiaUrl);
+    } = useGetEconomiaLiquida(economiaUrl);
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            setEconomiaUrl(`dashboard/economia_formal/?nome_razao_social=&mes=${month ?? ''}&ano=${ano ?? ''}`);
+            setEconomiaUrl(`dashboard/economia_liquida/?nome_razao_social=&mes=${month ?? ''}&ano=${ano ?? ''}`);
         }, 500); // Delay de 500ms para evitar muitas requisições enquanto digita
 
         return () => {
@@ -31,12 +30,11 @@ function RelatorioEconomiaFormalTable() {
 
     return (
         <div className='d-flex flex-column w-100 h-100'>
-            <Search monthFilter yearFilter />
             {isEconomiaLoading && <LoadingScreen />}
-            {isEconomiaError && <EconomiaFormalTable />}
-            {isEconomiaSuccess && economia && <EconomiaFormalTable data={economia} />}
+            {isEconomiaError && <EconomiaLiquidaTable />}
+            {isEconomiaSuccess && economia && <EconomiaLiquidaTable data={economia} />}
         </div>
     );
 }
 
-export { RelatorioEconomiaFormalTable };
+export { RelatorioEconomiaLiquidaTable };
