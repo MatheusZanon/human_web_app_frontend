@@ -54,3 +54,90 @@ export function formatTime(date: Date) {
 export function formatCellphone(number: string) {
     return number.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
 }
+
+export function capitalize(value: string): string {
+    return value
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+/**
+ * Mescla dois arrays de objetos JSON usando uma chave comum.
+ * Se um objeto no segundo array tiver uma chave que já existe no primeiro array, adiciona um sufixo '2' para evitar conflito.
+ * @param array1 - Primeiro array de objetos
+ * @param array2 - Segundo array de objetos
+ * @param key - Chave comum usada para combinar objetos
+ * @returns Array de objetos mesclados
+ */
+export function mergeJsonArrays<T extends Record<string, any>, U extends keyof T>(
+    array1: T[],
+    array2: T[],
+    key: U,
+): T[] {
+    // Criar um mapa para armazenar os objetos do primeiro array com base na chave
+    const map = new Map<T[U], T>();
+
+    // Adicionar objetos do primeiro array ao mapa usando a chave
+    array1.forEach((obj) => {
+        map.set(obj[key], { ...obj }); // Usa uma cópia para garantir que o objeto original não seja modificado
+    });
+
+    // Iterar sobre o segundo array
+    array2.forEach((obj) => {
+        const keyValue = obj[key];
+        if (map.has(keyValue)) {
+            const existingObj = map.get(keyValue);
+
+            if (existingObj) {
+                // Adicionar campos do segundo array ao objeto existente
+                Object.keys(obj).forEach((subKey) => {
+                    if (subKey !== key) {
+                        const newKey = `${subKey}2`; // Adicionar sufixo '2' para evitar conflitos
+                        existingObj[newKey as U] = obj[subKey];
+                    }
+                });
+            }
+        } else {
+            // Se a chave não existir, adicionar ao mapa
+            map.set(keyValue, { ...obj }); // Usa uma cópia para evitar efeitos colaterais
+        }
+    });
+
+    // Retornar todos os valores do mapa como um array
+    return Array.from(map.values());
+}
+
+/**
+ * Substitui as chaves de um array de objetos JSON com base em uma lista de chaves antiga e uma lista de chaves novas.
+ * @template T O tipo do array de objetos JSON.
+ * @template U O tipo das chaves.
+ * @param data O array de objetos JSON.
+ * @param oldKeys A lista de chaves antiga.
+ * @param newKeys A lista de chaves novas.
+ * @returns O array de objetos JSON com as chaves substituídas.
+ */
+export function replaceKeys<T extends Record<U, unknown>, U extends keyof T>(
+    data: T[],
+    oldKeys: U[],
+    newKeys: string[],
+): T[] {
+    // Iterar sobre cada objeto do array
+    return data.map((obj) => {
+        // Criar um novo objeto vazio
+        const newObj: Partial<Record<U, unknown>> = {}; // Usar Partial<Record<U, unknown>> para garantir que as chaves sejam opcionais
+        // Iterar sobre cada chave do objeto
+        Object.entries(obj).forEach(([key, value]) => {
+            // Checar se a chave é uma das chaves antigas que serão substituídas
+            const index = oldKeys.indexOf(key as U); // Converte a chave antiga para o tipo correto
+            // Se a chave estiver na lista de chaves antigas que serão substituídas transformar na chave nova
+            if (index !== -1) {
+                newObj[newKeys[index] as U] = value; // Converte a chave nova para o tipo correto
+            } else {
+                // Se a chave não estiver na lista de chaves antigas que serão substituídas, adicionar a chave ao novo objeto
+                newObj[key as U] = value; // Converte a chave antiga para o tipo correto
+            }
+        });
+        return newObj as T; // Converte o novo objeto para o tipo correto
+    });
+}

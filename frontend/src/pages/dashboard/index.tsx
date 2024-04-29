@@ -1,15 +1,12 @@
 import { EconomiaLiquida } from '@/components/dashboard/economia-liquida';
-import { ProvisaoDireitoTrabalhista } from '@/components/dashboard/provisao-direito-trabalhista';
-import { SearchProvider } from '@/components/dashboard/search/search-provider';
+import { Taxas } from '@/components/dashboard/taxas';
 
 function Dashboard() {
     return (
         <div className='d-flex flex-column gap-4 px-3 pb-3 shadow rounded mb-2'>
             <h1>Dashboard</h1>
             <div className='d-flex gap-4'>
-                <SearchProvider>
-                    <ProvisaoDireitoTrabalhista />
-                </SearchProvider>
+                <Taxas />
             </div>
             <div className='d-flex gap-4'>
                 <EconomiaLiquida />

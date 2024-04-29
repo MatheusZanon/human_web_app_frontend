@@ -1,3 +1,4 @@
+import { capitalize } from '@/libs';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 interface BarChartProps<T> {
@@ -14,14 +15,6 @@ const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set
 
 function monthFormatter(value: number): string {
     return monthNames[value - 1]; // Assumindo que os valores variam de 1 a 12
-}
-
-// Função para capitalizar string
-function capitalize(value: string): string {
-    return value
-        .split('_')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
 }
 
 function BarChartCard<T>({ data, dataKeyX, barKeys, title, stacked, xAxisAsMonths }: BarChartProps<T>) {
