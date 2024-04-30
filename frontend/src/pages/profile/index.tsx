@@ -6,9 +6,15 @@ function Profile() {
     const { authenticatedUser } = useAuthenticatedUser();
 
     return (
-        <Content title="Profile">
+        <Content title='Profile'>
             <div className='row'>
-                <ProfileCard profilePicture='' name={authenticatedUser?.username || ''} roles={authenticatedUser?.groups || []} email={authenticatedUser?.email || ''} />
+                <ProfileCard
+                    id={authenticatedUser?.id}
+                    profilePicture=''
+                    name={authenticatedUser?.username || ''}
+                    roles={authenticatedUser?.groups || []}
+                    email={authenticatedUser?.email || ''}
+                />
             </div>
             <div className='row py-2'>
                 <div className='col'>

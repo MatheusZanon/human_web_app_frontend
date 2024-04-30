@@ -16,11 +16,24 @@ function Robos() {
         <>
             <Content title='Robôs'>
                 <div className='d-flex gap-2 mb-2'>
+                    {(hasRole('TI') || hasRole('ADMIN')) && (
+                        <div>
+                            <select name='filtrar-robos' className='form-select'>
+                                <option value='todos'>Todos</option>
+                                <option value='financeiro'>Financeiro</option>
+                                <option value='rh'>RH</option>
+                            </select>
+                        </div>
+                    )}
                     {hasRole('TI') && <CriarRoboCard />}
                     {hasRole('TI') && <DeletarRoboCard robos={robos.data || []} />}
                 </div>
                 <div className='d-flex gap-2 flex-wrap'>
-                    {robos.isLoading && <div><LoadingScreen/></div>}
+                    {robos.isLoading && (
+                        <div>
+                            <LoadingScreen />
+                        </div>
+                    )}
                     {robos.isSuccess && robos.data.length === 0 && <div>No data</div>}
                     {robos.isSuccess &&
                         robos.data.map((robo) => (

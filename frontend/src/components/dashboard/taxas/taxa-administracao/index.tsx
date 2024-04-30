@@ -24,7 +24,7 @@ function TaxaAdministracao() {
     return (
         <>
             {isLoadingTaxaAdministracao && <LoadingScreen />}
-            {isErrorTaxaAdministracao && <LineChartCard title='Taxa Administração' />}
+            {isErrorTaxaAdministracao && <LineChartCard title='Taxa Administração' syncId='1' />}
             {isSuccessTaxaAdministracao && (
                 <LineChartCard
                     data={taxa_administracao}

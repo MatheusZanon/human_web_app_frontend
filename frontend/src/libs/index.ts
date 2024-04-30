@@ -55,6 +55,26 @@ export function formatCellphone(number: string) {
     return number.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
 }
 
+export function formatCpf(cpf: string) {
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+
+export function formatCnpj(cnpj: string) {
+    return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+}
+
+export function formatCep(cep: string) {
+    return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
+}
+
+export function formatPhone(phone: string) {
+    return phone.replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, '($1) $2 $3-$4');
+}
+
+export function formatRg(rg: string) {
+    return rg.replace(/(\d{2})(\d{3})(\d{3})/, '$1.$2.$3');
+}
+
 export function capitalize(value: string): string {
     return value
         .split('_')

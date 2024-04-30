@@ -44,7 +44,7 @@ function EconomiaLiquidaTable({ data }: { data?: getEconomiaLiquida[] }) {
                             onSort={() => handleSort('economia_liquida')}
                             sortable
                         >
-                            Economia Liquida
+                            Valor
                         </TableHeader>
                     </TableRow>
                 </TableHead>
@@ -52,7 +52,7 @@ function EconomiaLiquidaTable({ data }: { data?: getEconomiaLiquida[] }) {
                     {sortedData.map((row, index) => (
                         <TableRow key={`${row.nome_razao_social}_${index}`}>
                             <TableData>{row.nome_razao_social ? row.nome_razao_social : 'Não informado'}</TableData>
-                            <TableData>{row.economia_liquida ? row.economia_liquida.toFixed(2).toString().replace('.', ',') : 'Não informado'}</TableData>
+                            <TableData>{row.economia_liquida ? row.economia_liquida.toFixed(2).toString().replace('.', ',') : '0,00'}</TableData>
                         </TableRow>
                     ))}
                 </TableBody>

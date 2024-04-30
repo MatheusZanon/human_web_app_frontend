@@ -1,44 +1,47 @@
 @import '../../assets/scss/styles.scss';
 
 .profileCardInfo {
-  display: flex;
-  padding: 0.8rem 1.1rem;
-
-  .profileCardPicture {
-    max-width: 100px;
-    position: relative;
-    z-index: 1;
-    margin-top: -40px;
-  }
-
-  .profileCardDetails {
     display: flex;
-    justify-content: center;
-    padding-left: 0.8rem;
-    font-size: 0.8rem;
-    line-height: 1.2rem;
-    gap: 0.8rem;
+    padding: 0.8rem 1.1rem;
 
-    .profileCardName {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-
-      .profileName {
-        font-size: 1.2rem;
-        font-weight: 700;
-      }
+    .profileCardPicture {
+        max-width: 100px;
+        position: relative;
+        z-index: 1;
+        margin-top: -40px;
     }
 
-    .profileCardEmail {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
+    .profileCardDetails {
+        display: flex;
+        justify-content: center;
+        padding-left: 0.8rem;
+        font-size: 0.8rem;
+        line-height: 1.2rem;
+        gap: 0.8rem;
 
-      .profileEmail {
-        font-size: 1.2rem;
-        font-weight: 700;
-      }
+        .profileCardName {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+
+            .profileName {
+                font-size: 1.2rem;
+                font-weight: 700;
+            }
+        }
+
+        .profileCardEmail {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+
+            .profileEmail {
+                font-size: 1.2rem;
+                font-weight: 700;
+            }
+        }
     }
-  }
+
+    .profileCardActions {
+    }
 }

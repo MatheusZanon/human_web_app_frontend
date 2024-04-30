@@ -41,7 +41,7 @@ function LineChartCard<T>({ data, dataKeyX, labelBy, title, connectNulls, syncId
             <ResponsiveContainer width='100%' height={300}>
                 <LineChart width={500} height={300} data={chartData} syncId={syncId}>
                     <XAxis dataKey={dataKeyX as string} />
-                    <YAxis domain={data ? [0, 1] : ['auto', 'auto']} tickSize={0} />
+                    <YAxis domain={data ? ['auto', 'auto'] : [0, 1]} tickSize={0} />
                     <CartesianGrid strokeDasharray='5 5' />
                     <Tooltip />
                     <Legend />

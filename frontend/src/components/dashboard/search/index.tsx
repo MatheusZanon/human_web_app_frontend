@@ -9,7 +9,7 @@ const Search: React.FC<{ companyFilter?: boolean; monthFilter?: boolean; yearFil
     monthFilter,
     yearFilter,
 }) => {
-    const { search, selected, setSelected, setMonth, setAno } = useSearch();
+    const { search, selected, setSelected, setMonth, month, ano, setAno } = useSearch();
     const { data: empresas } = useGetClientesFinanceiro();
     const { data: anos } = useGetAnos();
 
@@ -34,6 +34,7 @@ const Search: React.FC<{ companyFilter?: boolean; monthFilter?: boolean; yearFil
                             name='Mes'
                             id='selectMes'
                             className='form-select'
+                            value={month}
                             onChange={(e) => setMonth(Number(e.target.value))}
                         >
                             <option selected disabled>
@@ -58,6 +59,7 @@ const Search: React.FC<{ companyFilter?: boolean; monthFilter?: boolean; yearFil
                             name='Ano'
                             id='selectAno'
                             className='form-select'
+                            value={ano}
                             onChange={(e) => setAno(Number(e.target.value))}
                         >
                             <option selected disabled>
