@@ -6,28 +6,36 @@ import { useRobos } from '@/api/http';
 import { DeletarRoboCard } from '@/components/robos/deletar-robo';
 import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
+import { useState } from 'react';
 
 function Robos() {
-    const robos = useRobos();
+    const [categoria, setCategoria] = useState('');
+    const robos = useRobos(categoria);
+
 
     const { hasRole } = useAuthenticatedUser();
 
     return (
         <>
             <Content title='Robôs'>
-                <div className='d-flex gap-2 mb-2'>
-                    {(hasRole('TI') || hasRole('ADMIN')) && (
+                {(hasRole('TI') || hasRole('ADMIN')) && (
+                    <div className='d-flex gap-2 mb-2'>
                         <div>
-                            <select name='filtrar-robos' className='form-select'>
-                                <option value='todos'>Todos</option>
+                            <select
+                                name='filtrar-robos'
+                                value={categoria}
+                                className='form-select'
+                                onChange={(event) => setCategoria(event.target.value)}
+                            >
+                                <option value=''>Todos</option>
                                 <option value='financeiro'>Financeiro</option>
                                 <option value='rh'>RH</option>
                             </select>
                         </div>
-                    )}
-                    {hasRole('TI') && <CriarRoboCard />}
-                    {hasRole('TI') && <DeletarRoboCard robos={robos.data || []} />}
-                </div>
+                        {hasRole('TI') && <CriarRoboCard />}
+                        {hasRole('TI') && <DeletarRoboCard robos={robos.data || []} />}
+                    </div>
+                )}
                 <div className='d-flex gap-2 flex-wrap'>
                     {robos.isLoading && (
                         <div>

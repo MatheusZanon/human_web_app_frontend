@@ -109,11 +109,7 @@ function Sidebar() {
                     />
                 )}
                 <li className='nav-item'>
-                    <SubMenu sbmIcon={<Bot className={open ? 'me-2' : ''} />} sbmTitle='Robôs' parentOpen={open}>
-                        <NavItem icon={<Dot className={'me-2'} />} title={'Todos'} to='robos' />
-                        <NavItem icon={<Dot className={'me-2'} />} title={'Financeiro'} to='robos/financeiro' />
-                        <NavItem icon={<Dot className={'me-2'} />} title={'RH'} to='robos/rh' />
-                    </SubMenu>
+                    <NavItem icon={<Bot className={open ? 'me-2' : ''} />} title={open ? 'Robôs' : ''} to='robos' />
                 </li>
                 {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO') || hasRole('TI')) && (
                     <li className='nav-item'>
@@ -123,7 +119,11 @@ function Sidebar() {
                             parentOpen={open}
                         >
                             <NavItem icon={<Dot className={'me-2'} />} title={'Clientes'} to='financeiro/clientes' />
-                            <NavItem icon={<Dot className={'me-2'} />} title={'Relatorios'} to='financeiro/relatorios'/>
+                            <NavItem
+                                icon={<Dot className={'me-2'} />}
+                                title={'Relatorios'}
+                                to='financeiro/relatorios'
+                            />
                             <NavItem icon={<Dot className={'me-2'} />} title={'Arquivos Drive'} to='financeiro/drive' />
                         </SubMenu>
                     </li>
@@ -137,7 +137,7 @@ function Sidebar() {
                         >
                             <NavItem
                                 icon={<Dot className={open ? 'me-2' : ''} />}
-                                title={open ? 'Funcionários' : ''}
+                                title={'Funcionários'}
                                 to='rh/funcionarios'
                             />
                         </SubMenu>

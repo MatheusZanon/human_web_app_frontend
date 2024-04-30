@@ -13,16 +13,15 @@ import { CriarParametroType } from '@/utils/types/criar_parametro';
 import { CriarRotinaType } from '@/utils/types/criar_rotina';
 import { postRotinas } from './postRotinas';
 import { deleteParametros } from './deleteParametros';
-import { IAppError } from '@/utils/types/app_error';
 import { putParametros } from './putParametros';
 import { deleteRotina } from './deleteRotinas';
 import { putRotinas } from './putRotinas';
 export type { RoboParametrosType } from './postExecutarRobo';
 
-export function useRobos() {
+export function useRobos(categoria?: string) {
     return useQuery({
-        queryKey: ['robos'],
-        queryFn: () => getRobos(),
+        queryKey: ['robos', categoria],
+        queryFn: () => getRobos(categoria),
     });
 }
 
