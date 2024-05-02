@@ -52,7 +52,7 @@ export function formatTime(date: Date) {
 }
 
 export function formatCellphone(number: string) {
-    return number.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    return number.replace(/^(\d{2})[- ]?(\d{5})[- ]?(\d{4})$/, '($1) $2-$3');
 }
 
 export function formatCpf(cpf: string) {
