@@ -25,7 +25,7 @@ import FuncionarioProfile from '@/pages/funcionario-profile';
 
 /**
  * Robos
-*/
+ */
 import Robos from '@/pages/robos';
 import RoboDetalhes from '@/pages/robos/detalhes';
 import Financeiro from '@/pages/robos/financeiro';
@@ -43,7 +43,7 @@ import PastasGoogleDrive from '@/pages/financeiro/pastas-google-drive';
  * Dashboard
  */
 import Dashboard from '@/pages/dashboard';
-
+import { ProfileCardProvider } from '@/components/profile-card/profile-card-provider';
 
 type route = {
     path: string;
@@ -51,59 +51,66 @@ type route = {
 };
 
 const allRoutes: route[] = [
-  {
-    path: '',
-    element: <Dashboard />
-
-  },
-  {
-    path: 'robos',
-    element: <Robos />
-  },
-  {
-    path: 'robos/:roboId',
-    element: <RoboDetalhes />
-  },
-  {
-    path: 'robos/financeiro',
-    element: <Financeiro />
-  },
-  {
-    path: 'robos/rh',
-    element: <RH />
-  },
-  {
-    path: 'financeiro/clientes',
-    element: <ClientesFinanceiro />
-  },
-  {
-    path: 'financeiro/clientes/profile/:clienteId',
-    element: <ClienteFinanceiroProfile />
-  },
-  {
-    path: 'financeiro/relatorios',
-    element: <Relatorios />
-  },
-  {
-    path: 'financeiro/drive',
-    element: <PastasGoogleDrive />
-  },
-  {
-    path: 'rh/funcionarios',
-    element: <Funcionarios />
-  },
-  {
-    path: 'profile',
-    element: <Profile />
-  },
-  {
-    path: 'activate-users',
-    element: <ActivateUsersTable />,
-},
-{
-    path: 'rh/funcionarios/:funcionarioId',
-    element: <FuncionarioProfile />,
-}
+    {
+        path: '',
+        element: <Dashboard />,
+    },
+    {
+        path: 'robos',
+        element: <Robos />,
+    },
+    {
+        path: 'robos/:roboId',
+        element: <RoboDetalhes />,
+    },
+    {
+        path: 'robos/financeiro',
+        element: <Financeiro />,
+    },
+    {
+        path: 'robos/rh',
+        element: <RH />,
+    },
+    {
+        path: 'financeiro/clientes',
+        element: <ClientesFinanceiro />,
+    },
+    {
+        path: 'financeiro/clientes/profile/:clienteId',
+        element: <ClienteFinanceiroProfile />,
+    },
+    {
+        path: 'financeiro/relatorios',
+        element: <Relatorios />,
+    },
+    {
+        path: 'financeiro/drive',
+        element: <PastasGoogleDrive />,
+    },
+    {
+        path: 'rh/funcionarios',
+        element: <Funcionarios />,
+    },
+    {
+        path: 'profile',
+        element: (
+            <ProfileCardProvider>
+                <Profile />
+            </ProfileCardProvider>
+        ),
+    },
+    {
+        path: 'activate-users',
+        element: <ActivateUsersTable />,
+    },
+    {
+        path: 'rh/funcionarios/:funcionarioId',
+        element: (
+            <ProfileCardProvider>
+                <FuncionarioProfile />
+            </ProfileCardProvider>
+        ),
+    },
 ];
 
 const router = createBrowserRouter([
@@ -126,9 +133,9 @@ const router = createBrowserRouter([
     {
         path: '/main',
         element: (
-          <RequireAuth>
-              <MainLayout />
-          </RequireAuth>           
+            <RequireAuth>
+                <MainLayout />
+            </RequireAuth>
         ),
         children: allRoutes.map(({ path, element }) => ({
             path,

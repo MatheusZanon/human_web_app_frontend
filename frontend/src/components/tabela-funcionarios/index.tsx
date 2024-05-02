@@ -6,6 +6,7 @@ import { User } from '@/utils/types/user';
 import { useNavigate } from 'react-router-dom';
 import { useDeactivateUser } from '@/api/http';
 import { toast } from 'react-toastify';
+import { formatCellphone } from '@/libs';
 
 function TabelaFuncionarios({ data }: { data: User[] }) {
     const { hasRole, authenticatedUser } = useAuthenticatedUser();
@@ -103,12 +104,12 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                         {funcionario.groups.length > 0
                                             ? funcionario.groups.map((group, index) =>
                                                   index !== funcionario.groups.length - 1
-                                                      ? `${group}, `
-                                                      : `${group}`,
+                                                      ? `${group.replace('_', ' ')}, `
+                                                      : `${group.replace('_', ' ')}`,
                                               )
                                             : 'Sem Cargo'}
                                     </TableData>
-                                    <TableData>{funcionario.telefone_celular}</TableData>
+                                    <TableData>{formatCellphone(funcionario.telefone_celular || '00000000000')}</TableData>
                                     {(hasRole('RH_GERENCIA') ||
                                         hasRole('RH_OPERACAO') ||
                                         hasRole('ADMIN') ||

@@ -1,6 +1,7 @@
 import { Pen } from 'lucide-react';
 import styles from './profileCard.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
+import { useProfileCard } from './profile-card-provider';
 
 function ProfileCard({
     id,
@@ -18,11 +19,12 @@ function ProfileCard({
     email: string;
 }) {
     const { authenticatedUser, hasRole } = useAuthenticatedUser();
+    const { user, handleEditMode } = useProfileCard();
     return (
         <div className='d-flex flex-column'>
             <div className='position-relative rounded overflow-hidden'>
                 <img
-                    src={profileHeader ? profileHeader : 'https://dummyimage.com/1600x451/000/fff'}
+                    src={user?.profile_picture || 'https://dummyimage.com/1600x451/000/fff'}
                     alt='dummy cover photo'
                     className='img-fluid'
                 />
@@ -41,28 +43,21 @@ function ProfileCard({
                             <div className={`${styles.profileCardName}`}>
                                 <span className={`${styles.profileName} text-primary m-0`}>{name}</span>
                                 <div>
-                                    {roles.length > 0
-                                        ? roles.map((role, index) =>
-                                              index !== roles.length - 1
-                                                  ? `${role.replace('_', ' ')}, `
-                                                  : `${role.replace('_', ' ')}`,
-                                          )
-                                        : 'Sem Cargo'}
+                                    {email}
                                 </div>
-                            </div>
-                            <div className={`${styles.profileCardEmail}`}>
-                                <span className={`${styles.profileEmail} m-0`}>{email}</span>
-                                Email
                             </div>
                         </div>
                     </div>
                 </div>
-                {(hasRole('admin') || hasRole('TI') || authenticatedUser?.id === id) && (
+                {(hasRole('admin') || hasRole('TI')) && (
                     <div className={`${styles.profileCardActions} d-flex gap-2`}>
                         <div className='d-flex align-items-center'>
-                            <button className='btn d-flex align-items-center gap-2'>
+                            <button
+                                className='btn d-flex align-items-center gap-2'
+                                type='button'
+                                onClick={() => handleEditMode()}
+                            >
                                 <Pen size={18} />
-                                Editar
                             </button>
                         </div>
                     </div>
