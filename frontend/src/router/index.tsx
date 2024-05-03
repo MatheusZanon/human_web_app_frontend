@@ -56,6 +56,18 @@ const allRoutes: route[] = [
         element: <Dashboard />,
     },
     {
+        path: 'profile',
+        element: (
+            <ProfileCardProvider>
+                <Profile />
+            </ProfileCardProvider>
+        ),
+    },
+    {
+        path: 'activate-users',
+        element: <ActivateUsersTable />,
+    },
+    {
         path: 'robos',
         element: <Robos />,
     },
@@ -76,7 +88,7 @@ const allRoutes: route[] = [
         element: <ClientesFinanceiro />,
     },
     {
-        path: 'financeiro/clientes/profile/:clienteId',
+        path: 'financeiro/clientes/:clienteId',
         element: <ClienteFinanceiroProfile />,
     },
     {
@@ -90,18 +102,6 @@ const allRoutes: route[] = [
     {
         path: 'rh/funcionarios',
         element: <Funcionarios />,
-    },
-    {
-        path: 'profile',
-        element: (
-            <ProfileCardProvider>
-                <Profile />
-            </ProfileCardProvider>
-        ),
-    },
-    {
-        path: 'activate-users',
-        element: <ActivateUsersTable />,
     },
     {
         path: 'rh/funcionarios/:funcionarioId',
