@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from './vales-sst.module.scss';
+import styles from './vales-sst-card.module.scss';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead  } from "@/components/table";
 import { ArrowBigLeftDash, ArrowBigRightDash, Pencil } from 'lucide-react';
 import LoadingScreen from '../../loading-screen';

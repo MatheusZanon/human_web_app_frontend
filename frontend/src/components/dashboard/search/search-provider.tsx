@@ -28,7 +28,6 @@ const SearchContext = createContext<SearchContextType>({
 
 const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const date = new Date();
-    console.log(date.getMonth())
     const [search, setSearch] = useState<string>('');
     const [searchOpen, setSearchOpen] = useState<boolean>(false);
     const [selected, setSelected] = useState<string>('');

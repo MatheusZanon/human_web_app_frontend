@@ -23,7 +23,6 @@ function AlterarRoboRotina({ roboId, rotina }: { roboId: string; rotina: RoboRot
     const { mutate: alterarRotina, isSuccess, isError, error } = useAlterarRotina({ roboId });
 
     const onSubmit = (rotinaId: number, data: CriarRotinaType) => {
-        console.log(rotinaId, data);
         alterarRotina({ rotinaId, data });
         if (isSuccess) {
             toast.success('Rotina alterada com sucesso!', {
