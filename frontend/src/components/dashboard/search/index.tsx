@@ -3,6 +3,7 @@ import { SearchResultList } from './search-results';
 import { useSearch } from './search-provider';
 import { useGetAnos, useGetClientesFinanceiro } from '@/api/http/dashboard';
 import styles from './search.module.scss';
+import { useEffect } from 'react';
 
 const Search: React.FC<{ companyFilter?: boolean; monthFilter?: boolean; yearFilter?: boolean }> = ({
     companyFilter,
@@ -13,13 +14,17 @@ const Search: React.FC<{ companyFilter?: boolean; monthFilter?: boolean; yearFil
     const { data: empresas } = useGetClientesFinanceiro();
     const { data: anos } = useGetAnos();
 
+    // Use useEffect para definir o valor de "selected" fora do ciclo de renderização
+    useEffect(() => {
+        const newSelected = empresas?.find(
+            (emp) => emp.nome_razao_social.toLocaleLowerCase() === search.toLocaleLowerCase()
+        )?.nome_razao_social;
+
+        setSelected(newSelected ?? '');
+    }, [search, empresas, setSelected]); // Re-renderize se "search" ou "empresas" mudarem
+
     const filteredSearch = empresas?.filter((emp) =>
         emp.nome_razao_social.toLowerCase().includes(search.toLowerCase()),
-    );
-
-    setSelected(
-        empresas?.find((emp) => emp.nome_razao_social.toLocaleLowerCase() === search.toLocaleLowerCase())
-            ?.nome_razao_social ?? '',
     );
 
     return (
@@ -37,9 +42,6 @@ const Search: React.FC<{ companyFilter?: boolean; monthFilter?: boolean; yearFil
                             value={month}
                             onChange={(e) => setMonth(Number(e.target.value))}
                         >
-                            <option selected disabled>
-                                Mês
-                            </option>
                             <option value={1}>Janeiro</option>
                             <option value={2}>Fevereiro</option>
                             <option value={3}>Março</option>
@@ -62,10 +64,7 @@ const Search: React.FC<{ companyFilter?: boolean; monthFilter?: boolean; yearFil
                             value={ano}
                             onChange={(e) => setAno(Number(e.target.value))}
                         >
-                            <option selected disabled>
-                                Ano
-                            </option>
-                            {anos?.map((ano) => <option value={ano.ano}>{ano.ano}</option>)}
+                            {anos?.map((ano) => <option key={ano.ano} value={ano.ano}>{ano.ano}</option>)}
                         </select>
                     )}
                 </div>
