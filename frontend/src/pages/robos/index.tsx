@@ -2,7 +2,7 @@ import RoboCard from '@/components/robos/robo-card';
 import logo from '@/assets/react.svg';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { CriarRoboCard } from '@/components/robos/criar-robo';
-import { useRobos } from '@/api/http';
+import { useGetCategorias, useRobos } from '@/api/http';
 import { DeletarRoboCard } from '@/components/robos/deletar-robo';
 import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
@@ -11,7 +11,7 @@ import { useState } from 'react';
 function Robos() {
     const [categoria, setCategoria] = useState('');
     const robos = useRobos(categoria);
-
+    const { data: categorias, isLoading: isCategoriasLoading, isSuccess: isCategoriasSuccess } = useGetCategorias();
 
     const { hasRole } = useAuthenticatedUser();
 
@@ -27,9 +27,16 @@ function Robos() {
                                 className='form-select'
                                 onChange={(event) => setCategoria(event.target.value)}
                             >
-                                <option value=''>Todos</option>
-                                <option value='financeiro'>Financeiro</option>
-                                <option value='rh'>RH</option>
+                                <option value=''>Todas</option>
+                                {isCategoriasSuccess && categorias && !isCategoriasLoading && (
+                                    <>
+                                        {categorias.map((cat) => (
+                                            <option key={cat} value={cat}>
+                                                {cat}
+                                            </option>
+                                        ))}
+                                    </>
+                                )}
                             </select>
                         </div>
                         {hasRole('TI') && <CriarRoboCard />}

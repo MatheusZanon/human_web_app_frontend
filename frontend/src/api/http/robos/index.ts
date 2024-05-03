@@ -16,7 +16,15 @@ import { deleteParametros } from './deleteParametros';
 import { putParametros } from './putParametros';
 import { deleteRotina } from './deleteRotinas';
 import { putRotinas } from './putRotinas';
+import { getCategorias } from './getCategorias';
 export type { RoboParametrosType } from './postExecutarRobo';
+
+export function useGetCategorias() {
+    return useQuery({
+        queryKey: ['robos/categorias'],
+        queryFn: () => getCategorias(),
+    });
+}
 
 export function useRobos(categoria?: string) {
     return useQuery({
