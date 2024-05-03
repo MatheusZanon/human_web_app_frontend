@@ -57,8 +57,7 @@ function BarChartCard<T>({ data, dataKeyX, barKeys, syncId, title, stacked, xAxi
                   });
                   return acc;
               }, [])
-              .filter((key) => (key !== 'mes'));
-            
+              .filter((key) => key !== 'mes');
 
     return (
         <div className='w-100 p-2'>
@@ -67,28 +66,22 @@ function BarChartCard<T>({ data, dataKeyX, barKeys, syncId, title, stacked, xAxi
                 <BarChart width={500} height={300} data={chartData} syncId={syncId}>
                     <XAxis
                         dataKey={(dataKeyX as string) || 'mes'}
-                        tickFormatter={
-                            data && xAxisAsMonths ? monthFormatter : !data ? monthFormatter : undefined
-                        }
+                        tickFormatter={data && xAxisAsMonths ? monthFormatter : !data ? monthFormatter : undefined}
                     />
-                    <YAxis domain={chartData.length > 0 ? [0, 1] : ['auto', 'auto']} width={80} allowDataOverflow />
+                    <YAxis domain={chartData.length > 0 ? ['auto', 'auto'] : [0, 1]} width={80} allowDataOverflow />
                     <CartesianGrid strokeDasharray='5 5' />
                     <Tooltip />
                     <Legend formatter={(value) => capitalize(value)} />
-                    {keys.map(
-                        (key, index) => (
-                            (
-                                <Bar
-                                    key={index}
-                                    dataKey={key as string}
-                                    stackId={stacked ? '1' : undefined}
-                                    stroke={COLORS[index % COLORS.length]}
-                                    fill={COLORS[index % COLORS.length]}
-                                    name={data ? (key as string) : 'Vazio'}
-                                />
-                            )
-                        ),
-                    )}
+                    {keys.map((key, index) => (
+                        <Bar
+                            key={index}
+                            dataKey={key as string}
+                            stackId={stacked ? '1' : undefined}
+                            stroke={COLORS[index % COLORS.length]}
+                            fill={COLORS[index % COLORS.length]}
+                            name={data ? (key as string) : 'Vazio'}
+                        />
+                    ))}
 
                     {chartData.length === 0 && <Bar dataKey='uv' stackId='1' fill='#8884d8' />}
                 </BarChart>
