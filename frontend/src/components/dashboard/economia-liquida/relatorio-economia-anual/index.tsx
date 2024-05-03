@@ -28,7 +28,7 @@ function RelatorioEconomiaLiquidaMensal() {
     return (
         <div className='d-flex flex-column w-100 h-100'>
             {isEconomiaLoading && <LoadingScreen />}
-            {isEconomiaError && <BarChartCard data={[]} />}
+            {isEconomiaError && <BarChartCard />}
             {isEconomiaSuccess && economia && (
                 <BarChartCard data={economia} dataKeyX='mes' barKeys={['economia_liquida']} title='Anual' xAxisAsMonths />
             )}

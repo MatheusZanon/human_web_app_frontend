@@ -1,18 +1,21 @@
 import { Content } from '@/components/layout/content';
 import ProfileCard from '@/components/profile-card';
-import { ProfileCardProvider, useProfileCard } from '@/components/profile-card/profile-card-provider';
+import { useProfileCard } from '@/components/profile-card/profile-card-provider';
 import { UpdateUserModal } from '@/components/update-user-modal';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { formatCellphone, formatCpf, formatRg } from '@/libs';
+import { useEffect } from 'react';
 
 function Profile() {
     const { authenticatedUser } = useAuthenticatedUser();
 
     const { setUser } = useProfileCard();
 
-    if (authenticatedUser) {
-        setUser(authenticatedUser);
-    }
+    useEffect(() => {
+        if (authenticatedUser) {
+            setUser(authenticatedUser);
+        }
+    }, [authenticatedUser, setUser]);
 
     return (
         <Content title='Profile'>
@@ -31,7 +34,7 @@ function Profile() {
                     <h2>Meus dados</h2>
                     <div className='row'>
                         <div className='col'>
-                            <p>Nome: {authenticatedUser?.username}</p>
+                            <p>Nome: {`${authenticatedUser?.first_name} ${authenticatedUser?.last_name}`}</p>
                             <p>
                                 Cargo:{' '}
                                 {authenticatedUser?.groups && authenticatedUser.groups.length > 0

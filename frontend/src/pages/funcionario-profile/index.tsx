@@ -6,6 +6,7 @@ import { Content } from '@/components/layout/content';
 import { formatCpf } from '@/libs';
 import { useProfileCard } from '@/components/profile-card/profile-card-provider';
 import { UpdateUserModal } from '@/components/update-user-modal';
+import { useEffect } from 'react';
 
 function FuncionarioProfile() {
     const { funcionarioId } = useParams();
@@ -13,9 +14,11 @@ function FuncionarioProfile() {
     const { data: user, isLoading, isSuccess } = useGetUserById({ userId: userId });
     const { setUser } = useProfileCard();
 
-    if (user) {
-        setUser(user);
-    }
+    useEffect(() => {
+        if (user) {
+            setUser(user);
+        }
+    }, [user, setUser]); // Atualiza somente após renderizar
 
     return (
         <>

@@ -61,10 +61,15 @@ export function useDeactivateUser() {
 
 export function useUpdateUser() {
     return useMutation({
-        mutationKey: ['users'],
+        mutationKey: ['update-user'],
         mutationFn: ({ userId, data }: { userId: number; data: Partial<User> }) => patchUser({ userId, data }),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+        onSuccess: ({ id }) => {
+            queryClient.invalidateQueries({ queryKey: [`user/${id}`] });
+            const user = queryClient.getQueryData<User>(['user']);
+
+            if (user?.id === id) {
+                queryClient.invalidateQueries({ queryKey: ['user'] });
+            }
         },
     });
 }
