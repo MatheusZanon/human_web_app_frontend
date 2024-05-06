@@ -19,7 +19,7 @@ function CriarRoboParametroModal({ roboId }: { roboId: string }) {
     });
     const tipos = Object.keys(criarParametroSchema.shape.tipo.Values);
 
-    const { mutate: criarParametro, isSuccess, isError, error } = useCriarParametro({ roboId });
+    const { mutate: criarParametro, isPending, isSuccess, isError, error } = useCriarParametro({ roboId });
 
     const onSubmit = (data: CriarParametroType) => {
         criarParametro(data);
@@ -89,6 +89,8 @@ function CriarRoboParametroModal({ roboId }: { roboId: string }) {
                                 type='submit'
                                 className='btn btn-primary'
                                 onClick={handleSubmit((data) => onSubmit(data))}
+                                disabled={isPending}
+                                aria-disabled={isPending}
                             >
                                 Criar
                             </button>

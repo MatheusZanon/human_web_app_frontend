@@ -21,7 +21,7 @@ function AlterarRoboParametro({ roboId, parametro }: { roboId: string; parametro
     });
     const tipos = Object.keys(criarParametroSchema.shape.tipo.Values);
 
-    const { mutate: alterarParametro, isSuccess, isError, error } = useAlterarParametro({ roboId });
+    const { mutate: alterarParametro, isPending, isSuccess, isError, error } = useAlterarParametro({ roboId });
 
     const onSubmit = (parametroId: number, data: CriarParametroType) => {
         alterarParametro({ parametroId, data });
@@ -96,6 +96,8 @@ function AlterarRoboParametro({ roboId, parametro }: { roboId: string; parametro
                                 type='submit'
                                 className='btn btn-primary'
                                 onClick={handleSubmit((data) => onSubmit(parseInt(parametro.parametro_info.id), data))}
+                                disabled={isPending}
+                                aria-disabled={isPending}
                             >
                                 Alterar
                             </button>

@@ -24,7 +24,7 @@ function DeletarRoboCard({ robos }: { robos: Robo[] }) {
         resolver: zodResolver(deletarRoboSchema),
     });
 
-    const { mutate: deleteRobo, isSuccess } = useDeleteRobo();
+    const { mutate: deleteRobo, isPending, isSuccess } = useDeleteRobo();
 
     function onSubmit(data: id) {
         const id = parseInt(data.id);
@@ -82,6 +82,8 @@ function DeletarRoboCard({ robos }: { robos: Robo[] }) {
                                 type='submit'
                                 className='btn btn-danger'
                                 onClick={handleSubmit((data) => onSubmit(data))}
+                                disabled={isPending}
+                                aria-disabled={isPending}
                             >
                                 Deletar
                             </button>

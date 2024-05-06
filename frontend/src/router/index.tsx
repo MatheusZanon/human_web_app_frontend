@@ -28,8 +28,6 @@ import FuncionarioProfile from '@/pages/funcionario-profile';
  */
 import Robos from '@/pages/robos';
 import RoboDetalhes from '@/pages/robos/detalhes';
-import Financeiro from '@/pages/robos/financeiro';
-import RH from '@/pages/robos/rh';
 
 /**
  * Financeiro
@@ -74,14 +72,6 @@ const allRoutes: route[] = [
     {
         path: 'robos/:roboId',
         element: <RoboDetalhes />,
-    },
-    {
-        path: 'robos/financeiro',
-        element: <Financeiro />,
-    },
-    {
-        path: 'robos/rh',
-        element: <RH />,
     },
     {
         path: 'financeiro/clientes',

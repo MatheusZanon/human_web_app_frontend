@@ -19,7 +19,7 @@ function CriarRoboRotinaModal({ roboId }: { roboId: string }) {
         resolver: zodResolver(criarRotinaSchema),
     });
 
-    const { mutate: criarRotina, isSuccess, isError, error } = useCriarRotina({ roboId });
+    const { mutate: criarRotina, isPending, isSuccess, isError, error } = useCriarRotina({ roboId });
 
     const onSubmit = (data: CriarRotinaType) => {
         criarRotina(data);
@@ -56,9 +56,7 @@ function CriarRoboRotinaModal({ roboId }: { roboId: string }) {
                             ></button>
                         </div>
                         <div className='modal-body'>
-                            <form
-                                className='d-flex flex-column gap-2'
-                            >
+                            <form className='d-flex flex-column gap-2'>
                                 <div>
                                     <label htmlFor='nome_parametro' className='form-label'>
                                         Nome
@@ -73,7 +71,13 @@ function CriarRoboRotinaModal({ roboId }: { roboId: string }) {
                             </form>
                         </div>
                         <div className='modal-footer'>
-                            <button type='submit' className='btn btn-primary' onClick={handleSubmit((data) => onSubmit(data))}>
+                            <button
+                                type='submit'
+                                className='btn btn-primary'
+                                onClick={handleSubmit((data) => onSubmit(data))}
+                                disabled={isPending}
+                                aria-disabled={isPending}
+                            >
                                 Criar
                             </button>
                             <button

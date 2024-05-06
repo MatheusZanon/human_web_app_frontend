@@ -30,7 +30,7 @@ function CriarRoboCard() {
         resolver: zodResolver(criarRoboSchema),
     });
 
-    const { mutate: create, isSuccess } = useCreateRobo();
+    const { mutate: create, isPending, isSuccess } = useCreateRobo();
 
     function onSubmit(data: CriarRoboType) {
         create(data);
@@ -110,6 +110,8 @@ function CriarRoboCard() {
                             <button
                                 className='btn btn-primary'
                                 onClick={handleSubmit((data) => onSubmit(data))}
+                                disabled={isPending}
+                                aria-disabled={isPending}
                             >
                                 Criar
                             </button>
