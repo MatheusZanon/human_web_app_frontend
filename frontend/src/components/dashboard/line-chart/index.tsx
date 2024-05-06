@@ -36,17 +36,17 @@ function LineChartCard<T>({ data, dataKeyX, labelBy, title, connectNulls, syncId
         .filter((key) => key !== dataKeyX);
 
     return (
-        <div className='d-flex flex-column gap-2 px-2 w-100'>
+        <div className='d-flex flex-column gap-2 w-100'>
             {title && <h5>{title}</h5>}
-            <ResponsiveContainer width='100%' height={300}>
+            <ResponsiveContainer width={'100%'} height={300}>
                 <LineChart width={500} height={300} data={chartData} syncId={syncId}>
                     <XAxis dataKey={dataKeyX as string} />
-                    <YAxis domain={data ? ['auto', 'auto'] : [0, 1]} tickSize={0} />
+                    <YAxis domain={data ? ['auto', 'auto'] : [0, 1]} tickSize={0} width={80} allowDataOverflow />
                     <CartesianGrid strokeDasharray='5 5' />
                     <Tooltip />
                     <Legend />
 
-                    {keys?.map((key, index) => (
+                    {keys.map((key, index) => (
                         <Line
                             key={index}
                             connectNulls={connectNulls}
@@ -54,7 +54,7 @@ function LineChartCard<T>({ data, dataKeyX, labelBy, title, connectNulls, syncId
                             dataKey={key as string}
                             stroke={COLORS[index % COLORS.length]}
                             fill={COLORS[index % COLORS.length]}
-                            name={data ? labelBy as string : 'Vazio'}
+                            name={data ? (labelBy as string) : 'Vazio'}
                         />
                     ))}
                 </LineChart>

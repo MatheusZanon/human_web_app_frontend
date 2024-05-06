@@ -6,6 +6,7 @@ import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@
 import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Content } from '@/components/layout/content';
+import { formatCnpj } from '@/libs';
 
 function ClientesFinanceiro() {
   const [url, setUrl] = useState<string>('clientes_financeiro/?limit=12&offset=0');
@@ -70,7 +71,7 @@ function ClientesFinanceiro() {
             <TableRow key={cliente.id}>
               <TableData>{cliente.id}</TableData>
               <TableData>{cliente.nome_razao_social}</TableData>
-              {cliente.cnpj ? <TableData>{cliente.cnpj}</TableData> : <TableData>-</TableData>}
+              {cliente.cnpj ? <TableData>{formatCnpj(cliente.cnpj)}</TableData> : <TableData>-</TableData>}
               {cliente.cpf ? <TableData>{cliente.cpf}</TableData> : <TableData>-</TableData>}
               <TableData>{cliente.regiao}</TableData>
               <TableData>

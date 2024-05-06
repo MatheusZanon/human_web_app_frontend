@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 const UpdateUserModal: React.FC = () => {
     const { user, editMode, handleEditMode } = useProfileCard();
 
-    const { data: userGroups, isLoading: isUserGroupsLoading, error: userGroupsError } = useGetAllGroups();
+    const { data: userGroups, isLoading: isUserGroupsLoading } = useGetAllGroups();
 
     const updateUserSchema = z.object({
         username: z.string().min(1, 'Este campo é obrigatório'),
@@ -61,7 +61,7 @@ const UpdateUserModal: React.FC = () => {
         delayError: 500,
     });
 
-    const handlePhoneChange = (event) => {
+    const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const formattedPhone = phoneFormatter(event.target.value);
         setValue('phone', formattedPhone);
     };
@@ -70,7 +70,7 @@ const UpdateUserModal: React.FC = () => {
 
     const onSubmit = ({ email, first_name, last_name, groups, phone, username }: UpdateUserType) => {
         const cleanedPhone = phone.replace(/\D/g, '');
-        const currentPhone = user?.telefone_celular.replace(/\D/g, '');
+        const currentPhone = user?.telefone_celular?.replace(/\D/g, '');
         const phoneToSave = cleanedPhone !== currentPhone ? cleanedPhone : null;
         const updatedValues: Partial<UpdateUserType> = {};
 
@@ -79,14 +79,14 @@ const UpdateUserModal: React.FC = () => {
         }
 
         if (user?.first_name !== first_name) {
-            updatedValues.firstName = first_name;
+            updatedValues.first_name = first_name;
         }
 
         if (user?.last_name !== last_name) {
             updatedValues.last_name = last_name;
         }
 
-        function arraysContainSameElements(arr1, arr2) {
+        function arraysContainSameElements(arr1: string[], arr2: string[]) {
             if (arr1.length !== arr2.length) {
                 return false; // Se o comprimento for diferente, os arrays são diferentes
             }
@@ -98,8 +98,8 @@ const UpdateUserModal: React.FC = () => {
         }
         if (
             !arraysContainSameElements(
-                user?.groups,
-                userGroups?.filter((group) => groups.includes(group.id.toString())).map((group) => group.name),
+                user!.groups,
+                userGroups!.filter((group) => groups.includes(group.id.toString())).map((group) => group.name),
             )
         ) {
             updatedValues.groups = groups;
@@ -182,7 +182,9 @@ const UpdateUserModal: React.FC = () => {
                                 {...register('first_name')}
                                 defaultValue={user?.first_name}
                             />
-                            {errors.first_name && <p className='text-danger'>{errors.first_name.message?.toString()}</p>}
+                            {errors.first_name && (
+                                <p className='text-danger'>{errors.first_name.message?.toString()}</p>
+                            )}
                         </div>
                         <div className='d-flex flex-column w-100'>
                             <label htmlFor='lastName' className='form-label'>
@@ -213,28 +215,33 @@ const UpdateUserModal: React.FC = () => {
                         </div>
                         <div className='d-flex flex-column w-100'>
                             <p className='form-label'>Cargos:</p>
+                            {errors.groups && <p className='text-danger mb-0'>{errors.groups.message?.toString()}</p>}
                             {isUserGroupsLoading && <p>Loading...</p>}
-                            {userGroupsError && <p>Error</p>}
                             {userGroups &&
                                 !isUserGroupsLoading &&
                                 userGroups.map((group) => (
-                                    <div key={group.id} className='w-100 d-flex align-items-center gap-2 mb-1'>
-                                        <input
-                                            type='checkbox'
-                                            id={`group-${group.name}`}
-                                            className='form-check'
-                                            value={group.id}
-                                            defaultChecked={user?.groups.includes(group.name)}
-                                            {...register('groups')}
-                                        />
-                                        <label htmlFor={`group-${group.name}`}>{group.name.replace('_', ' ')}</label>
-                                        {errors.groups && (
-                                            <p className='text-danger'>{errors.groups.message?.toString()}</p>
-                                        )}
+                                    <div key={group.id} className='w-100 d-flex flex-column mb-1'>
+                                        <div className='d-flex w-100 h-100 align-items-center gap-2'>
+                                            <input
+                                                type='checkbox'
+                                                id={`group-${group.name}`}
+                                                className='form-check'
+                                                value={group.id}
+                                                defaultChecked={user?.groups.includes(group.name)}
+                                                {...register('groups')}
+                                            />
+                                            <label htmlFor={`group-${group.name}`}>
+                                                {group.name.replace('_', ' ')}
+                                            </label>
+                                        </div>
                                     </div>
                                 ))}
                         </div>
-                        <button className='btn btn-primary' onClick={handleSubmit(onSubmit)}>
+                        <button
+                            className='btn btn-primary'
+                            onClick={handleSubmit(onSubmit)}
+                            disabled={isUpdateUserPending}
+                        >
                             Salvar
                         </button>
                     </form>

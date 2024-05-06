@@ -75,11 +75,27 @@ export function formatRg(rg: string) {
     return rg.replace(/(\d{2})(\d{3})(\d{3})/, '$1.$2.$3');
 }
 
-export function capitalize(value: string): string {
-    return value
-        .split('_')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+export function capitalize(value: string | null | undefined): string | null | undefined {
+    if (typeof value !== 'string' || value === null || value === undefined) {
+        return value;
+    }
+
+    const words = value.split('_');
+
+    const capitalizedWords = words.map((word) => {
+        if (typeof word !== 'string' || word === null || word === undefined) {
+            return word;
+        }
+
+        const firstChar = word.charAt(0).toUpperCase();
+        const restOfWord = word.slice(1).toLowerCase();
+
+        return firstChar + restOfWord;
+    });
+
+    const capitalizedValue = capitalizedWords.join(' ');
+
+    return capitalizedValue;
 }
 
 /**
