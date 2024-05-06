@@ -20,7 +20,7 @@ function AlterarRoboRotina({ roboId, rotina }: { roboId: string; rotina: RoboRot
         resolver: zodResolver(criarRotinaSchema),
     });
 
-    const { mutate: alterarRotina, isSuccess, isError, error } = useAlterarRotina({ roboId });
+    const { mutate: alterarRotina, isPending, isSuccess, isError, error } = useAlterarRotina({ roboId });
 
     const onSubmit = (rotinaId: number, data: CriarRotinaType) => {
         alterarRotina({ rotinaId, data });
@@ -86,6 +86,8 @@ function AlterarRoboRotina({ roboId, rotina }: { roboId: string; rotina: RoboRot
                                 type='submit'
                                 className='btn btn-primary'
                                 onClick={handleSubmit((data) => onSubmit(rotina.id, data))}
+                                disabled={isPending}
+                                aria-disabled={isPending}
                             >
                                 Alterar
                             </button>

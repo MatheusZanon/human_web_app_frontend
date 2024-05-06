@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-
 type RoboCardProps = {
     children?: React.ReactNode;
     id: string;
@@ -96,7 +95,7 @@ function RoboCard({
         resolver: zodResolver(RoboParametrosSchema),
     });
 
-    const { mutate: executarRobo } = useExecutarRobo({
+    const { mutate: executarRobo, isPending: isExecuting } = useExecutarRobo({
         roboId: id,
     });
 
@@ -105,7 +104,7 @@ function RoboCard({
     };
     return (
         <div className={`card ${styles.card} shadow`}>
-            <img src={image} alt='dummy' className={`mt-2 card-img-top ${styles.img}`}/>
+            <img src={image} alt='dummy' className={`mt-2 card-img-top ${styles.img}`} />
             <div className='card-body d-flex flex-column justify-content-between'>
                 <div className='row'>
                     <h5 className='card-title d-flex justify-content-between align-items-center'>
@@ -280,7 +279,12 @@ function RoboCard({
                                 {children}
                             </div>
                             <div className='modal-footer'>
-                                <button onClick={handleSubmit(onSubmit)} className='btn btn-primary'>
+                                <button
+                                    onClick={handleSubmit(onSubmit)}
+                                    disabled={isExecuting}
+                                    aria-disabled={isExecuting}
+                                    className='btn btn-primary'
+                                >
                                     Executar
                                 </button>
                                 <button
