@@ -1,7 +1,7 @@
 import { formatCellphone } from '@/libs';
 import { useProfileCard } from '../profile-card/profile-card-provider';
 import styles from './update-user-modal.module.scss';
-import { useGetAllGroups, useUpdateUser } from '@/api/http';
+import { useGetAllGroups, useUpdateUser } from '@/api/http/user';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

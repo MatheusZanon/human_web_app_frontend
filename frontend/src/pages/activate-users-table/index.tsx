@@ -1,4 +1,4 @@
-import { useActivateUser, useGetAllGroups, useGetAllUsers } from '@/api/http';
+import { useActivateUser, useGetAllGroups, useGetAllUsers } from '@/api/http/user';
 import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '@/components/table';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { Group } from '@/utils/types/group';

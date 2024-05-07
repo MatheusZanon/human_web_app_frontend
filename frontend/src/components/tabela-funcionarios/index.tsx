@@ -4,7 +4,7 @@ import { Search, Trash2 } from 'lucide-react';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { User } from '@/utils/types/user';
 import { useNavigate } from 'react-router-dom';
-import { useDeactivateUser } from '@/api/http';
+import { useDeactivateUser } from '@/api/http/user';
 import { toast } from 'react-toastify';
 import { formatCellphone } from '@/libs';
 

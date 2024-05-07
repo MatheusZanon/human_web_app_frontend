@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDeleteRobo } from '@/api/http';
+import { useDeleteRobo } from '@/api/http/robos';
 import { Robo } from '@/utils/types/robo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';

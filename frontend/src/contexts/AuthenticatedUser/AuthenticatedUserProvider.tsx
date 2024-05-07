@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { User } from '@/utils/types/user';
 import { createContext } from 'react';
-import { useGetUser } from '@/api/http';
+import { useGetUser } from '@/api/http/user';
 import LoadingScreen from '@/components/loading-screen';
 
 type AuthenticatedUserProviderState = {

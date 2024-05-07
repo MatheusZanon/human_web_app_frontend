@@ -1,4 +1,4 @@
-import { useGetUserById } from '@/api/http';
+import { useGetUserById } from '@/api/http/user';
 import ProfileCard from '@/components/profile-card';
 import { useParams } from 'react-router-dom';
 import LoadingScreen from '@/components/loading-screen';

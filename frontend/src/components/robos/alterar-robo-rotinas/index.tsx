@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { Pencil } from 'lucide-react';
 import RoboRotina from '@/utils/types/robo_rotinas';
 import { CriarRotinaType, criarRotinaSchema } from '@/utils/types/criar_rotina';
-import { useAlterarRotina } from '@/api/http';
+import { useAlterarRotina } from '@/api/http/robos';
 
 function AlterarRoboRotina({ roboId, rotina }: { roboId: string; rotina: RoboRotina }) {
     const [showAlterarRotinaModal, setAlterarRotinaModal] = useState(false);

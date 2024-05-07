@@ -2,7 +2,7 @@ import RoboCard from '@/components/robos/robo-card';
 import logo from '@/assets/react.svg';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { CriarRoboCard } from '@/components/robos/criar-robo';
-import { useGetCategorias, useRobos } from '@/api/http';
+import { useGetCategorias, useRobos } from '@/api/http/robos';
 import { DeletarRoboCard } from '@/components/robos/deletar-robo';
 import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Pencil } from 'lucide-react';
 import { RoboParametros } from '@/utils/types/robo_parametros';
-import { useAlterarParametro } from '@/api/http';
+import { useAlterarParametro } from '@/api/http/robos';
 
 function AlterarRoboParametro({ roboId, parametro }: { roboId: string; parametro: RoboParametros }) {
     const [showAlterarParametroModal, setShowAlterarParametroModal] = useState(false);

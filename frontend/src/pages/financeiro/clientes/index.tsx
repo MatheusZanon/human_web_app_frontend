@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { api } from '@/utils/axios';
-import { useGetClientes } from "@/api/http";
+import { useGetClientes } from "@/api/http/clientes_financeiro";
 import { Search, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
 import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react';

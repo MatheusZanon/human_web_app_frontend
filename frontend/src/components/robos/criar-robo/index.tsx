@@ -1,4 +1,4 @@
-import { useCreateRobo } from '@/api/http';
+import { useCreateRobo } from '@/api/http/robos';
 import { CriarRoboType } from '@/utils/types/criar_robo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';

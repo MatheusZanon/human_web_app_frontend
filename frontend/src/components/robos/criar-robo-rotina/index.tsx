@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCriarRotina } from '@/api/http';
+import { useCriarRotina } from '@/api/http/robos';
 import { CriarRotinaType, criarRotinaSchema } from '@/utils/types/criar_rotina';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';

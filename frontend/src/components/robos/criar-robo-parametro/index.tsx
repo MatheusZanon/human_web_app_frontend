@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCriarParametro } from '@/api/http';
+import { useCriarParametro } from '@/api/http/robos';
 import { criarParametroSchema, CriarParametroType } from '@/utils/types/criar_parametro';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
