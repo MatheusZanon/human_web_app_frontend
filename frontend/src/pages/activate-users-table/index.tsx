@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
+import { formatCellphone } from '@/libs';
+import { Badge } from '@/components/badge';
 
 function ActivateUsersTable() {
     const { data, isSuccess, isLoading, isError } = useGetAllUsers();
@@ -46,7 +48,11 @@ function ActivateUsersTable() {
     });
 
     if (!data || isLoading) {
-        return <div><LoadingScreen /></div>;
+        return (
+            <div>
+                <LoadingScreen />
+            </div>
+        );
     }
 
     if (!data && isSuccess) {
@@ -132,6 +138,14 @@ function ActivateUsersTable() {
                         >
                             Telefone
                         </TableHeader>
+                        <TableHeader
+                            sortable
+                            sortDirection={sortBy === 'situacao' ? sortDirection : ''}
+                            columnKey='situacao'
+                            onSort={() => handleSort('situacao')}
+                        >
+                            Telefone
+                        </TableHeader>
                         {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
                             <TableHeader>Actions</TableHeader>
                         )}
@@ -143,21 +157,34 @@ function ActivateUsersTable() {
                             !funcionario.is_active && (
                                 <TableRow key={funcionario.id}>
                                     <TableData>{funcionario.id}</TableData>
+                                    <TableData>{`${funcionario.first_name} ${funcionario.last_name}`}</TableData>
                                     <TableData>
-                                    {`${funcionario.first_name} ${funcionario.last_name}`}
+                                        {funcionario.groups.length > 0
+                                            ? funcionario.groups.map((group, index) =>
+                                                  index !== funcionario.groups.length - 1 ? `${group}, ` : `${group}`,
+                                              )
+                                            : 'Sem Cargo'}
                                     </TableData>
                                     <TableData>
-                                        {
-                                            funcionario.groups.length > 0
-                                                ? funcionario.groups.map((group, index) =>
-                                                        index !== funcionario.groups.length - 1
-                                                            ? `${group}, `
-                                                            : `${group}`
-                                                    )
-                                                : 'Sem Cargo'
-                                        }
+                                        {formatCellphone(funcionario.telefone_celular || '00000000000')}
                                     </TableData>
-                                    <TableData>{funcionario.telefone_celular}</TableData>
+                                    <TableData>
+                                        {funcionario.situacao ? (
+                                            <Badge
+                                                variant={
+                                                    funcionario.situacao === 'ATIVO'
+                                                        ? 'success'
+                                                        : funcionario.situacao === 'INATIVO'
+                                                          ? 'danger'
+                                                          : 'warning'
+                                                }
+                                            >
+                                                {funcionario.situacao}
+                                            </Badge>
+                                        ) : (
+                                            '-'
+                                        )}
+                                    </TableData>
                                     {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
                                         <TableData>
                                             <div className='d-flex gap-2 justify-content-center'>
@@ -179,9 +206,7 @@ function ActivateUsersTable() {
                                                         <div className='modal-dialog modal-dialog-centered'>
                                                             <div className='modal-content'>
                                                                 <div className='modal-header'>
-                                                                    <h5 className='modal-title'>
-                                                                        Ativar Funcionário
-                                                                    </h5>
+                                                                    <h5 className='modal-title'>Ativar Funcionário</h5>
                                                                     <button
                                                                         type='button'
                                                                         className='btn-close'
@@ -204,11 +229,11 @@ function ActivateUsersTable() {
                                                                         onClick={() =>
                                                                             funcionario.groups.length > 0
                                                                                 ? handleActivate(funcionario.id, {
-                                                                                        id: findGroupsIds(
-                                                                                            funcionario,
-                                                                                            groups!,
-                                                                                        ),
-                                                                                    })
+                                                                                      id: findGroupsIds(
+                                                                                          funcionario,
+                                                                                          groups!,
+                                                                                      ),
+                                                                                  })
                                                                                 : setShowModal(funcionario.id)
                                                                         }
                                                                     >
@@ -245,9 +270,7 @@ function ActivateUsersTable() {
                                                                     />
                                                                 </div>
                                                                 <div className='modal-body'>
-                                                                    <form
-                                                                        className='d-flex flex-column gap-2'
-                                                                    >
+                                                                    <form className='d-flex flex-column gap-2'>
                                                                         <p>
                                                                             Para ativar um funcionário selecione ao
                                                                             menos um cargo
@@ -272,9 +295,7 @@ function ActivateUsersTable() {
                                                                                                 <input
                                                                                                     className='form-check-input'
                                                                                                     type='checkbox'
-                                                                                                    {...register(
-                                                                                                        'id',
-                                                                                                    )}
+                                                                                                    {...register('id')}
                                                                                                     value={group.id}
                                                                                                     id={`group_${group.id}`}
                                                                                                 />
@@ -299,7 +320,9 @@ function ActivateUsersTable() {
                                                                     <button
                                                                         className='btn btn-success'
                                                                         type='button'
-                                                                        onClick={handleSubmit((data) => handleActivate(funcionario.id, data))}
+                                                                        onClick={handleSubmit((data) =>
+                                                                            handleActivate(funcionario.id, data),
+                                                                        )}
                                                                     >
                                                                         Ativar
                                                                     </button>

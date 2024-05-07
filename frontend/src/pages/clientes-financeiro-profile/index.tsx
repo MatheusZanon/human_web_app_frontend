@@ -40,17 +40,11 @@ function ClienteFinanceiroProfile() {
                                     </div>
                                     <div className='card-body pb-0'>
                                         <ul className='list-group list-group-flush'>
-                                            <li
-                                                className='list-group-item d-flex flex-wrap px-0 justify-content-between'
-                                                key={1}
-                                            >
+                                            <li className='list-group-item d-flex flex-wrap px-0 justify-content-between'>
                                                 <strong>Email:</strong>
                                                 <span className='mb-0'>{cliente?.data?.email}</span>
                                             </li>
-                                            <li
-                                                className='list-group-item d-flex flex-wrap px-0 justify-content-between'
-                                                key={2}
-                                            >
+                                            <li className='list-group-item d-flex flex-wrap px-0 justify-content-between'>
                                                 <strong>Telefone:</strong>
                                                 <span className='mb-0'>
                                                     {cliente?.data?.telefone_celular
