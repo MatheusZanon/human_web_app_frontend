@@ -1,9 +1,27 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './sub-menu.module.scss';
-import { useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
+
+function SubMenuItem({ icon, title, to, open }: { icon: React.ReactNode; title: string; to: string, open: boolean }) {
+    const location = useLocation();
+    const isActive = location.pathname.split('/').slice(2).join('/') === to;
+
+    return (
+        <>
+            <NavLink
+                className={`d-flex align-items-center ${styles.navlink}`}
+                aria-current={isActive ? 'page' : false}
+                data-submenu-open={open}
+                to={to}
+            >
+                {icon}
+                {title}
+            </NavLink>
+        </>
+    );
+}
 
 type SubMenuProps = {
     children: React.ReactNode;
@@ -110,4 +128,4 @@ const SubMenu: React.FC<SubMenuProps> = ({ children, sbmIcon, sbmTitle, parentOp
     );
 };
 
-export default SubMenu;
+export { SubMenu, SubMenuItem };

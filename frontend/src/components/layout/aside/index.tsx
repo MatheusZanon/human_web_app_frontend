@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LineChart, Bot, Dot, DollarSign, UserCog2Icon, UsersRound, ChevronLeft, ChevronRight } from 'lucide-react';
 import logo from '@/assets/react.svg';
-import SubMenu from '@/components/sub-menu';
+import { SubMenu, SubMenuItem } from '@/components/sub-menu';
 import styles from './aside.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 
@@ -118,13 +118,24 @@ function Sidebar() {
                             sbmTitle='Finanças'
                             parentOpen={open}
                         >
-                            <NavItem icon={<Dot className={'me-2'} />} title={'Clientes'} to='financeiro/clientes' />
-                            <NavItem
+                            <SubMenuItem
+                                icon={<Dot className={'me-2'} />}
+                                title={'Clientes'}
+                                to='financeiro/clientes'
+                                open={open}
+                            />
+                            <SubMenuItem
                                 icon={<Dot className={'me-2'} />}
                                 title={'Relatorios'}
                                 to='financeiro/relatorios'
+                                open={open}
                             />
-                            <NavItem icon={<Dot className={'me-2'} />} title={'Arquivos Drive'} to='financeiro/drive' />
+                            <SubMenuItem
+                                icon={<Dot className={'me-2'} />}
+                                title={'Arquivos Drive'}
+                                to='financeiro/drive'
+                                open={open}
+                            />
                         </SubMenu>
                     </li>
                 )}
@@ -135,10 +146,11 @@ function Sidebar() {
                             sbmTitle='RH'
                             parentOpen={open}
                         >
-                            <NavItem
+                            <SubMenuItem
                                 icon={<Dot className={open ? 'me-2' : ''} />}
                                 title={'Funcionários'}
                                 to='rh/funcionarios'
+                                open={open}
                             />
                         </SubMenu>
                     </li>

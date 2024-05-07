@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
 import { MdOutlineFolder, MdImage, MdPictureAsPdf, MdEditDocument } from 'react-icons/md';
+import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 
 function PastasGoogleDrive() {
@@ -38,7 +39,6 @@ function PastasGoogleDrive() {
                     <TableHead>
                         <TableRow>
                             <TableHeader>Nome</TableHeader>
-                            <TableHeader>MimeType</TableHeader>
                             <TableHeader>Ações</TableHeader>
                             <TableHeader>Última Modificação</TableHeader>
                         </TableRow>
@@ -47,13 +47,15 @@ function PastasGoogleDrive() {
                         {data?.map((arquivo) => (
                             <TableRow key={arquivo.id}>
                                 <TableData>
-                                    {arquivo.mimeType === "application/vnd.google-apps.folder" && <MdOutlineFolder/>} 
+                                    {arquivo.mimeType === "application/vnd.google-apps.folder" && <MdOutlineFolder/>}
+                                    {arquivo.mimeType === "application/x-zip-compressed" && <BsFileEarmarkZip/>} 
                                     {arquivo.mimeType === "image/png" && <MdImage/>}
                                     {arquivo.mimeType === "application/vnd.google-apps.document" && <MdEditDocument/>}
+                                    {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" && <BsFiletypeDoc/>}
                                     {arquivo.mimeType === "application/pdf" && <MdPictureAsPdf/>} 
+                                    {arquivo.mimeType === "text/plain" && <BsFiletypeTxt/>}
                                     {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && <FaFileExcel/>} {arquivo.name}
                                 </TableData>
-                                <TableData>{arquivo.mimeType}</TableData>
                                 <TableData>
                                     <Link to={`${arquivo.webViewLink}`} target='_blank'>Visualizar</Link> 
                                 </TableData>
