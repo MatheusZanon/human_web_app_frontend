@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
-import { useGetClientes } from "@/api/http/clientes_financeiro";
+import { useEffect, useState, useRef } from 'react';
+import { useGetClientes } from '@/api/http/clientes_financeiro';
 import { Search, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
 import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react';
@@ -91,9 +91,9 @@ function ClientesFinanceiro() {
                             <TableHeader>Ações</TableHeader>
                         </TableRow>
                     </TableHead>
-                    {clienteResults.length > 0 &&
-                        clienteResults.map((cliente) => (
-                            <TableBody>
+                    <TableBody>
+                        {clienteResults.length > 0 &&
+                            clienteResults.map((cliente) => (
                                 <TableRow key={cliente.id}>
                                     <TableData>{cliente.id}</TableData>
                                     <TableData>{cliente.nome_razao_social}</TableData>
@@ -122,8 +122,8 @@ function ClientesFinanceiro() {
                                         </div>
                                     </TableData>
                                 </TableRow>
-                            </TableBody>
-                        ))}
+                            ))}
+                    </TableBody>
                 </Table>
                 {!clienteResults.length && (
                     <h6 className='text-center align-self-center'>
