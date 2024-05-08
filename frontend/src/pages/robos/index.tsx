@@ -27,7 +27,7 @@ function Robos() {
                                 className='form-select'
                                 onChange={(event) => setCategoria(event.target.value)}
                             >
-                                <option value=''>Todas</option>
+                                <option value=''>Todos</option>
                                 {isCategoriasSuccess && categorias && !isCategoriasLoading && (
                                     <>
                                         {categorias.map((cat) => (

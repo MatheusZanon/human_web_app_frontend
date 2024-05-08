@@ -4,14 +4,13 @@ import { useGetArquivos } from "@/api/http/google_drive";
 import { Link } from 'react-router-dom';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
+import { AlertTriangle } from 'lucide-react';
 import { MdOutlineFolder, MdImage, MdPictureAsPdf, MdEditDocument } from 'react-icons/md';
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 
 function PastasGoogleDrive() {
-    console.log(import.meta.env.VITE_FOLDER_ID);
     const initialFolderId = import.meta.env.VITE_FOLDER_ID;
-    console.log(initialFolderId);
     const [ url, setUrl ] = useState<string>(`google_drive/listar_arquivos?folder_id=${initialFolderId}`);
     const { data } = useGetArquivos(url);
     const [isLoading, setIsLoading] = useState(true);
@@ -26,13 +25,18 @@ function PastasGoogleDrive() {
     if (isLoading) return <LoadingScreen />
     if (error) return <div>{`Error: ${error}`}</div>
 
-    if (!data) {
+    if (data?.length === 0) {
         return (
             <Content title="Arquivos Drive Financeiro">
-                <p>Carregando...</p>
+                <h6 className='text-center align-self-center'>
+                    Nenhum arquivo encontrado{' '}
+                    <p className='mt-2'>
+                        <AlertTriangle />
+                    </p>
+                </h6>
             </Content>
         )
-    }else {
+    } else {
         return (
             <Content title="Arquivos Drive Financeiro">
                 <Table>
@@ -57,7 +61,7 @@ function PastasGoogleDrive() {
                                     {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && <FaFileExcel/>} {arquivo.name}
                                 </TableData>
                                 <TableData>
-                                    <Link to={`${arquivo.webViewLink}`} target='_blank'>Visualizar</Link> 
+                                    {arquivo.mimeType === "application/vnd.google-apps.folder" ? <Link to={`${arquivo.webViewLink}`} target='_blank'>Visualizar</Link> : <Link to={`${arquivo.webViewLink}`} target='_blank'>Visualizar</Link>}
                                 </TableData>
                                 <TableData>{arquivo.modifiedTime}</TableData>
                             </TableRow>
