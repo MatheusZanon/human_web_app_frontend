@@ -1,11 +1,14 @@
 import { fromNowDays } from '@/libs';
 import styles from './robo-card.module.scss';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useState } from 'react';
-import { useExecutarRobo, useRoboParametrosById, useGetRoboRotinasById } from '@/api/http/robos';
+import { useExecutarRobo, useRoboParametrosById, useGetRoboRotinasById, useDeleteRotina } from '@/api/http/robos';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
+import { AlterarRoboRotina } from '../alterar-robo-rotinas';
+import { toast } from 'react-toastify';
 
 type RoboCardProps = {
     children?: React.ReactNode;
@@ -33,6 +36,7 @@ function RoboCard({
     children,
 }: RoboCardProps) {
     const [showModal, setShowModal] = useState(false);
+    const { hasRole } = useAuthenticatedUser();
 
     const { data: roboParametros } = useRoboParametrosById({
         roboId: id,
@@ -77,7 +81,8 @@ function RoboCard({
 
     const {
         register,
-        handleSubmit,
+        watch,
+        getValues,
         formState: { errors },
     } = useForm<RoboParametrosType>({
         mode: 'onChange',
@@ -98,6 +103,33 @@ function RoboCard({
     const { mutate: executarRobo, isPending: isExecuting } = useExecutarRobo({
         roboId: id,
     });
+
+    const {
+        mutate: deleteRotina,
+        isPending: isDeleteRotinaPending,
+        isSuccess: isDeleteRotinaSuccess,
+        isError: isDeleteRotinaError,
+        error,
+    } = useDeleteRotina({
+        roboId: id,
+    });
+
+    const handleDeleteRotina = (rotinaId: number) => {
+        deleteRotina(rotinaId);
+        if (isDeleteRotinaSuccess) {
+            toast.success('Rotina excluída com sucesso!', {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+
+        if (isDeleteRotinaError) {
+            toast.error(`Erro ao excluir rotina! ${error?.response?.data}`, {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+    };
 
     const onSubmit = (data: RoboParametrosType) => {
         executarRobo(data);
@@ -231,7 +263,50 @@ function RoboCard({
                                             ))}
                                             {isRoboRotinasSuccess && roboRotinas.length > 0 && (
                                                 <div>
-                                                    <label className='form-label'>Rotina</label>
+                                                    <label className='form-label d-flex justify-content-between'>
+                                                        <span className='flex-grow-1'>Rotina</span>
+                                                        <div className={`d-flex gap-2`}>
+                                                            {hasRole('TI') && (
+                                                                <>
+                                                                    {roboRotinas.filter(
+                                                                        (rotina) => rotina.nome === watch('rotina'),
+                                                                    )[0] && (
+                                                                        <>
+                                                                            <AlterarRoboRotina
+                                                                                roboId={id}
+                                                                                rotina={
+                                                                                    roboRotinas.filter(
+                                                                                        (rotina) =>
+                                                                                            rotina.nome ===
+                                                                                            watch('rotina'),
+                                                                                    )[0]
+                                                                                }
+                                                                            />
+
+                                                                            <button
+                                                                                className='btn py-0 px-2'
+                                                                                key={`delete-rotina`}
+                                                                                type='button'
+                                                                                onClick={() =>
+                                                                                    handleDeleteRotina(
+                                                                                        roboRotinas.filter(
+                                                                                            (rotina) =>
+                                                                                                rotina.nome ===
+                                                                                                getValues('rotina'),
+                                                                                        )[0].id,
+                                                                                    )
+                                                                                }
+                                                                                disabled={isDeleteRotinaPending}
+                                                                                aria-disabled={isDeleteRotinaPending}
+                                                                            >
+                                                                                <X size={18} />
+                                                                            </button>
+                                                                        </>
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </label>
                                                     <select
                                                         id='rotinas'
                                                         className='form-select'
@@ -253,26 +328,67 @@ function RoboCard({
                                     <>
                                         <p className='text-muted'>Nenhum parametro encontrado</p>
                                         {roboRotinas && roboRotinas.length > 0 && (
-                                            <>
-                                                <form>
-                                                    <div>
-                                                        <label className='form-label'>Rotina</label>
-                                                        <select
-                                                            id='rotinas'
-                                                            className='form-select'
-                                                            defaultValue=''
-                                                            {...register('rotina')}
-                                                        >
-                                                            <option value=''>Selecione uma rotina</option>
-                                                            {roboRotinas.map((rotina) => (
-                                                                <option key={rotina.id} value={rotina.nome}>
-                                                                    {rotina.nome}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-                                                </form>
-                                            </>
+                                            <form>
+                                                <div>
+                                                    <label className='form-label d-flex justify-content-between'>
+                                                        <span className='flex-grow-1'>Rotina</span>
+                                                        <div className={`d-flex gap-2`}>
+                                                            {hasRole('TI') && (
+                                                                <>
+                                                                    {roboRotinas.filter(
+                                                                        (rotina) => rotina.nome === watch('rotina'),
+                                                                    )[0] && (
+                                                                        <>
+                                                                            <AlterarRoboRotina
+                                                                                roboId={id}
+                                                                                rotina={
+                                                                                    roboRotinas.filter(
+                                                                                        (rotina) =>
+                                                                                            rotina.nome ===
+                                                                                            watch('rotina'),
+                                                                                    )[0]
+                                                                                }
+                                                                            />
+
+                                                                            <button
+                                                                                className='btn py-0 px-2'
+                                                                                key={`delete-rotina`}
+                                                                                type='button'
+                                                                                onClick={() =>
+                                                                                    handleDeleteRotina(
+                                                                                        roboRotinas.filter(
+                                                                                            (rotina) =>
+                                                                                                rotina.nome ===
+                                                                                                getValues('rotina'),
+                                                                                        )[0].id,
+                                                                                    )
+                                                                                }
+                                                                                disabled={isDeleteRotinaPending}
+                                                                                aria-disabled={isDeleteRotinaPending}
+                                                                            >
+                                                                                <X size={18} />
+                                                                            </button>
+                                                                        </>
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </label>
+                                                    <select
+                                                        id='rotinas'
+                                                        className='form-select'
+                                                        defaultValue=''
+                                                        {...register('rotina')}
+                                                    >
+                                                        <option value=''>Selecione uma rotina</option>
+                                                        {roboRotinas.map((rotina) => (
+                                                            <option key={rotina.id} value={rotina.nome}>
+                                                                {rotina.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </form>
                                         )}
                                     </>
                                 )}
@@ -280,7 +396,9 @@ function RoboCard({
                             </div>
                             <div className='modal-footer'>
                                 <button
-                                    onClick={handleSubmit(onSubmit)}
+                                    onClick={() => {
+                                        onSubmit(getValues());
+                                    }}
                                     disabled={isExecuting}
                                     aria-disabled={isExecuting}
                                     className='btn btn-primary'

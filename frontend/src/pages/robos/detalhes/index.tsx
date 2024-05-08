@@ -6,7 +6,7 @@ import {
     useDeleteParametro,
     useDeleteRotina,
 } from '@/api/http/robos';
-import { RoboParametrosType } from '@/api/http';
+import { RoboParametrosType } from '@/api/http/robos';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
@@ -309,7 +309,52 @@ function RoboDetalhes() {
                                             <>
                                                 <form>
                                                     <div>
-                                                        <label className='form-label'>Rotina</label>
+                                                        <label className='form-label d-flex justify-content-between'>
+                                                            <span className='flex-grow-1'>Rotina</span>
+                                                            <div className={`d-flex gap-2`}>
+                                                                {hasRole('TI') && (
+                                                                    <>
+                                                                        {roboRotinas.filter(
+                                                                            (rotina) => rotina.nome === watch('rotina'),
+                                                                        )[0] && (
+                                                                            <>
+                                                                                <AlterarRoboRotina
+                                                                                    roboId={roboId ? roboId : ''}
+                                                                                    rotina={
+                                                                                        roboRotinas.filter(
+                                                                                            (rotina) =>
+                                                                                                rotina.nome ===
+                                                                                                watch('rotina'),
+                                                                                        )[0]
+                                                                                    }
+                                                                                />
+
+                                                                                <button
+                                                                                    className='btn py-0 px-2'
+                                                                                    key={`delete-rotina`}
+                                                                                    type='button'
+                                                                                    onClick={() =>
+                                                                                        handleDeleteRotina(
+                                                                                            roboRotinas.filter(
+                                                                                                (rotina) =>
+                                                                                                    rotina.nome ===
+                                                                                                    getValues('rotina'),
+                                                                                            )[0].id,
+                                                                                        )
+                                                                                    }
+                                                                                    disabled={isDeleteRotinaPending}
+                                                                                    aria-disabled={
+                                                                                        isDeleteRotinaPending
+                                                                                    }
+                                                                                >
+                                                                                    <X size={18} />
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </label>
                                                         <select
                                                             id='rotinas'
                                                             className='form-select'

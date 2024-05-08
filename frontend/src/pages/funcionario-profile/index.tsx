@@ -1,10 +1,10 @@
 import { useGetUserById } from '@/api/http/user';
-import ProfileCard from '@/components/profile-card';
+import ProfileCard from '@/components/user-profile-card';
 import { useParams } from 'react-router-dom';
 import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
 import { formatCpf } from '@/libs';
-import { useProfileCard } from '@/components/profile-card/profile-card-provider';
+import { useUserProfileCard } from '@/components/user-profile-card/user-profile-card-provider';
 import { UpdateUserModal } from '@/components/update-user-modal';
 import { useEffect } from 'react';
 
@@ -12,7 +12,7 @@ function FuncionarioProfile() {
     const { funcionarioId } = useParams();
     const userId = parseInt(funcionarioId ? funcionarioId : '');
     const { data: user, isLoading, isSuccess } = useGetUserById({ userId: userId });
-    const { setUser } = useProfileCard();
+    const { setUser } = useUserProfileCard();
 
     useEffect(() => {
         if (user) {

@@ -1,5 +1,5 @@
 import { formatCellphone } from '@/libs';
-import { useProfileCard } from '../profile-card/profile-card-provider';
+import { useUserProfileCard } from '../user-profile-card/user-profile-card-provider';
 import styles from './update-user-modal.module.scss';
 import { useGetAllGroups, useUpdateUser } from '@/api/http/user';
 import { z } from 'zod';
@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
 
 const UpdateUserModal: React.FC = () => {
-    const { user, editMode, handleEditMode } = useProfileCard();
+    const { user, editMode, handleEditMode } = useUserProfileCard();
 
     const { data: userGroups, isLoading: isUserGroupsLoading } = useGetAllGroups();
 

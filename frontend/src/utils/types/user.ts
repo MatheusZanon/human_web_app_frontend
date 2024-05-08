@@ -13,4 +13,5 @@ export type User = {
     is_active: boolean;
     groups: string[];
     permissions: string[];
+    situacao: string;
 };

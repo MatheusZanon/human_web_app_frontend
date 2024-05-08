@@ -1,6 +1,6 @@
 import { Content } from '@/components/layout/content';
-import ProfileCard from '@/components/profile-card';
-import { useProfileCard } from '@/components/profile-card/profile-card-provider';
+import UserProfileCard from '@/components/user-profile-card';
+import { useUserProfileCard } from '@/components/user-profile-card/user-profile-card-provider';
 import { UpdateUserModal } from '@/components/update-user-modal';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { formatCellphone, formatCpf, formatRg } from '@/libs';
@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 function Profile() {
     const { authenticatedUser } = useAuthenticatedUser();
 
-    const { setUser } = useProfileCard();
+    const { setUser } = useUserProfileCard();
 
     useEffect(() => {
         if (authenticatedUser) {
@@ -20,7 +20,7 @@ function Profile() {
     return (
         <Content title='Profile'>
             <div className='row'>
-                <ProfileCard
+                <UserProfileCard
                     id={authenticatedUser?.id}
                     profilePicture=''
                     name={authenticatedUser?.username || ''}

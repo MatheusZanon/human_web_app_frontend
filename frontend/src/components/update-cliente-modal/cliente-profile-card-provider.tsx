@@ -1,22 +1,22 @@
-import { User } from '@/utils/types/user';
+import { Cliente } from '@/utils/types/cliente';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-interface ProfileCardContextType {
-    user: User | undefined;
+interface ClienteProfileCardContextType {
+    cliente: Cliente | undefined;
     editMode: boolean;
     handleEditMode: () => void;
-    setUser: (user: User | undefined) => void;
+    setCliente: (cliente: Cliente | undefined) => void;
 }
 
-const ProfileCardContext = createContext<ProfileCardContextType>({
-    user: undefined,
+const ClienteProfileCardContext = createContext<ClienteProfileCardContextType>({
+    cliente: undefined,
     editMode: false,
     handleEditMode: () => {},
-    setUser: () => {},
+    setCliente: () => {},
 });
 
-const ProfileCardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User>();
+const ClienteProfileCardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [cliente, setCliente] = useState<Cliente>();
     const [editMode, setEditMode] = useState(false);
 
     const handleEditMode = () => {
@@ -36,21 +36,21 @@ const ProfileCardProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [editMode]);
 
     return (
-        <ProfileCardContext.Provider
+        <ClienteProfileCardContext.Provider
             value={{
-                user,
-                setUser,
+                cliente,
+                setCliente,
                 editMode,
                 handleEditMode,
             }}
         >
             {children}
-        </ProfileCardContext.Provider>
+        </ClienteProfileCardContext.Provider>
     );
 };
 
-const useProfileCard = () => {
-    const context = useContext(ProfileCardContext);
+const useClienteProfileCard = () => {
+    const context = useContext(ClienteProfileCardContext);
 
     if (context === undefined) {
         throw new Error('useSearch must be used within a SearchProvider');
@@ -59,4 +59,4 @@ const useProfileCard = () => {
     return context;
 };
 
-export { ProfileCardProvider, useProfileCard };
+export { ClienteProfileCardProvider, useClienteProfileCard };
