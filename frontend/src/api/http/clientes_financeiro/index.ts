@@ -1,6 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { queryClient } from '@/utils/queryClient';
 import { getClientes } from './getClientes';
 import { getClienteById } from './getClienteById';
+import { patchCliente } from './patchCliente';
+import { Cliente } from '@/utils/types/cliente';
 
 export function useGetClientes(url: string) {
     return useQuery({
@@ -16,3 +19,17 @@ export function useGetClienteById({ clienteId }: { clienteId: number }) {
     });
 }
 
+export function useUpdateCliente() {
+    return useMutation({
+        mutationKey: ['update-user'],
+        mutationFn: ({ clienteId, data }: { clienteId: number; data: Partial<Cliente> }) => patchCliente({ clienteId, data }),
+        onSuccess: ({ id }) => {
+            queryClient.invalidateQueries({ queryKey: [`cliente/${id}`] });
+            const user = queryClient.getQueryData<Cliente>(['cliente']);
+
+            if (user?.id === id) {
+                queryClient.invalidateQueries({ queryKey: ['cliente'] });
+            }
+        },
+    });
+}

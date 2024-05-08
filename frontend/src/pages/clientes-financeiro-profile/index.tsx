@@ -2,33 +2,64 @@ import { useParams } from 'react-router-dom';
 import { useGetClienteById } from '@/api/http/clientes_financeiro';
 import { Content } from '@/components/layout/content';
 import { formatCellphone, formatCnpj, formatCpf } from '@/libs';
+import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
+import { UpdateClienteModal } from '@/components/update-cliente-modal';
+import { useClienteProfileCard } from '@/components/update-cliente-modal/cliente-profile-card-provider';
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { Pen } from 'lucide-react';
 
 function ClienteFinanceiroProfile() {
     const { clienteId } = useParams();
     const clientId = parseInt(clienteId ? clienteId : '0');
-    const cliente = useGetClienteById({ clienteId: clientId });
+    const { data: cliente, error: clienteError } = useGetClienteById({ clienteId: clientId });
+    const { hasRole } = useAuthenticatedUser();
+    const { setCliente, handleEditMode } = useClienteProfileCard();
+
+    useEffect(() => {
+        if (cliente) {
+            setCliente(cliente);
+        }
+    }, [cliente, setCliente]);
+
+    if (clienteError) {
+        toast.error(clienteError.message);
+    }
 
     return (
         <>
             <Content title='Perfil do Cliente'>
                 <div className='row'>
+                    {(hasRole('ADMIN') || hasRole('TI')) && (
+                        <div className='d-flex align-items-center'>
+                            <button
+                                className='btn d-flex align-items-center gap-2'
+                                type='button'
+                                onClick={() => handleEditMode()}
+                            >
+                                <Pen size={18} />
+                                <span>Editar</span>
+                            </button>
+                        </div>
+                    )}
+                    <UpdateClienteModal />
                     <div className='col-xl-3 col-xxl-4 col-lg-4'>
                         <div className='row'>
                             <div className='col-lg-12 mb-3'>
                                 <div className='card overflow-hidden shadow'>
                                     <div className='text-center p-3 overlay-box'>
-                                        <h4 className='mb-1'>{cliente?.data?.nome_razao_social}</h4>
-                                        {cliente?.data?.cnpj ? (
-                                            <p className='text-gray mb-0'>{formatCnpj(cliente.data.cnpj)}</p>
+                                        <h4 className='mb-1'>{cliente?.nome_razao_social}</h4>
+                                        {cliente?.cnpj ? (
+                                            <p className='text-gray mb-0'>{formatCnpj(cliente.cnpj)}</p>
                                         ) : null}
-                                        {cliente?.data?.cpf ? (
-                                            <p className='text-gray mb-0'>{formatCpf(cliente?.data?.cpf)}</p>
+                                        {cliente?.cpf ? (
+                                            <p className='text-gray mb-0'>{formatCpf(cliente?.cpf)}</p>
                                         ) : null}
                                     </div>
                                     <ul className='list-group list-group-flush'>
                                         <li className='list-group-item d-flex justify-content-between'>
                                             <strong className='text-muted'>Região</strong>{' '}
-                                            <span className='mb-0'>{cliente?.data?.regiao}</span>
+                                            <span className='mb-0'>{cliente?.regiao}</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -42,13 +73,13 @@ function ClienteFinanceiroProfile() {
                                         <ul className='list-group list-group-flush'>
                                             <li className='list-group-item d-flex flex-wrap px-0 justify-content-between'>
                                                 <strong>Email:</strong>
-                                                <span className='mb-0'>{cliente?.data?.email}</span>
+                                                <span className='mb-0'>{cliente?.email}</span>
                                             </li>
                                             <li className='list-group-item d-flex flex-wrap px-0 justify-content-between'>
                                                 <strong>Telefone:</strong>
                                                 <span className='mb-0'>
-                                                    {cliente?.data?.telefone_celular
-                                                        ? formatCellphone(cliente.data.telefone_celular)
+                                                    {cliente?.telefone_celular
+                                                        ? formatCellphone(cliente.telefone_celular)
                                                         : ''}
                                                 </span>
                                             </li>
@@ -69,27 +100,21 @@ function ClienteFinanceiroProfile() {
                                             </div>
                                             <div className='tab-content'>
                                                 <strong>Razão Social</strong>
-                                                <p>
-                                                    {cliente?.data?.nome_razao_social
-                                                        ? cliente.data.nome_razao_social
-                                                        : ''}
-                                                </p>
+                                                <p>{cliente?.nome_razao_social ? cliente.nome_razao_social : ''}</p>
                                                 <strong>Nome Fantasia:</strong>
-                                                <p>{cliente?.data?.nome_fantasia ? cliente.data.nome_fantasia : ''}</p>
-                                                {cliente?.data?.cnpj ? (
+                                                <p>{cliente?.nome_fantasia ? cliente.nome_fantasia : ''}</p>
+                                                {cliente?.cnpj ? (
                                                     <>
                                                         <strong>CNPJ</strong>
-                                                        <p>{formatCnpj(cliente.data.cnpj)}</p>
+                                                        <p>{formatCnpj(cliente.cnpj)}</p>
                                                     </>
                                                 ) : null}
-                                                {cliente?.data?.cpf ? (
+                                                {cliente?.cpf ? (
                                                     <>
                                                         <strong>CPF</strong>
-                                                        <p>{formatCpf(cliente?.data?.cpf)}</p>
+                                                        <p>{formatCpf(cliente?.cpf)}</p>
                                                     </>
                                                 ) : null}
-                                                <h5>Endereços</h5>
-                                                <p>Av. Cardoso Moreira - Centro, Itaperuna</p>
                                             </div>
                                         </div>
                                     </div>

@@ -1,9 +1,9 @@
 import { Pen } from 'lucide-react';
-import styles from './profileCard.module.scss';
+import styles from './userProfileCard.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
-import { useProfileCard } from './profile-card-provider';
+import { useUserProfileCard } from './user-profile-card-provider';
 
-function ProfileCard({
+function UserProfileCard({
     id,
     profilePicture,
     profileHeader,
@@ -18,8 +18,8 @@ function ProfileCard({
     roles: string[];
     email: string;
 }) {
-    const { authenticatedUser, hasRole } = useAuthenticatedUser();
-    const { user, handleEditMode } = useProfileCard();
+    const { hasRole } = useAuthenticatedUser();
+    const { user, handleEditMode } = useUserProfileCard();
     return (
         <div className='d-flex flex-column'>
             <div className='position-relative rounded overflow-hidden'>
@@ -42,9 +42,7 @@ function ProfileCard({
                         <div className={`${styles.profileCardDetails} text-muted`}>
                             <div className={`${styles.profileCardName}`}>
                                 <span className={`${styles.profileName} text-primary m-0`}>{name}</span>
-                                <div>
-                                    {email}
-                                </div>
+                                <div>{email}</div>
                             </div>
                         </div>
                     </div>
@@ -67,4 +65,4 @@ function ProfileCard({
     );
 }
 
-export default ProfileCard;
+export default UserProfileCard;
