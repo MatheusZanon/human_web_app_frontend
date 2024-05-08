@@ -24,10 +24,10 @@ export function useUpdateCliente() {
         mutationKey: ['update-user'],
         mutationFn: ({ clienteId, data }: { clienteId: number; data: Partial<Cliente> }) => patchCliente({ clienteId, data }),
         onSuccess: ({ id }) => {
-            queryClient.invalidateQueries({ queryKey: [`cliente/${id}`] });
-            const user = queryClient.getQueryData<Cliente>(['cliente']);
+            queryClient.invalidateQueries({ queryKey: [`cliente`, id] });
+            const cliente = queryClient.getQueryData<Cliente>(['cliente']);
 
-            if (user?.id === id) {
+            if (cliente?.id === id) {
                 queryClient.invalidateQueries({ queryKey: ['cliente'] });
             }
         },

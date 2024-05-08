@@ -12,6 +12,7 @@ const UpdateClienteModal: React.FC = () => {
 
     const updateClienteSchema = z.object({
         nome_razao_social: z.string().min(1, 'Este campo é obrigatório'),
+        nome_fantasia: z.string().min(1, 'Este campo é obrigatório'),
         email: z.string().min(1, 'Este campo é obrigatório'),
         cnpj: z.string().min(1, 'Este campo é obrigatório'),
         cpf: z.string().min(1, 'Este campo é obrigatório'),
@@ -66,7 +67,7 @@ const UpdateClienteModal: React.FC = () => {
 
     const { mutate: updateCliente, isPending: isUpdateClientePending, error: UpdateClienteError } = useUpdateCliente();
 
-    const onSubmit = ({ cnpj, cpf, email, nome_razao_social, phone, regiao }: UpdateClienteType) => {
+    const onSubmit = ({ cnpj, cpf, email, nome_razao_social, nome_fantasia, phone, regiao }: UpdateClienteType) => {
         const cleanedPhone = phone.replace(/\D/g, '');
         const currentPhone = cliente?.telefone_celular?.replace(/\D/g, '');
         const phoneToSave = cleanedPhone !== currentPhone ? cleanedPhone : null;
@@ -90,6 +91,10 @@ const UpdateClienteModal: React.FC = () => {
 
         if (cliente?.nome_razao_social !== nome_razao_social) {
             updatedValues.nome_razao_social = nome_razao_social;
+        }
+
+        if (cliente?.nome_fantasia !== nome_fantasia) {
+            updatedValues.nome_fantasia = nome_fantasia;
         }
 
         if (cliente?.regiao !== regiao) {
@@ -129,17 +134,30 @@ const UpdateClienteModal: React.FC = () => {
                 <div className={`${styles.modalContent} p-4 gap-2`}>
                     <form className='d-flex flex-column gap-2 w-100 h-100 px-1 overflow-auto'>
                         <div className='d-flex flex-column w-100'>
-                            <label htmlFor='username' className='form-label'>
+                            <label htmlFor='razao_social' className='form-label'>
                                 Razão Social:
                             </label>
                             <input
                                 type='text'
-                                id='username'
+                                id='razao_social'
                                 className='form-control'
                                 {...register('nome_razao_social')}
                                 defaultValue={cliente?.nome_razao_social}
                             />
                             {errors.nome_razao_social && <p className='text-danger'>{errors.nome_razao_social.message?.toString()}</p>}
+                        </div>
+                        <div className='d-flex flex-column w-100'>
+                            <label htmlFor='nome_fantasia' className='form-label'>
+                                Nome Fantasia:
+                            </label>
+                            <input
+                                type='text'
+                                id='nome_fantasia'
+                                className='form-control'
+                                {...register('nome_fantasia')}
+                                defaultValue={cliente?.nome_fantasia}
+                            />
+                            {errors.nome_fantasia && <p className='text-danger'>{errors.nome_fantasia.message?.toString()}</p>}
                         </div>
                         <div className='d-flex flex-column w-100'>
                             <label htmlFor='email' className='form-label'>
@@ -155,12 +173,12 @@ const UpdateClienteModal: React.FC = () => {
                             {errors.email && <p className='text-danger'>{errors.email.message?.toString()}</p>}
                         </div>
                         <div className='d-flex flex-column w-100'>
-                            <label htmlFor='firstName' className='form-label'>
+                            <label htmlFor='regiao' className='form-label'>
                                 Região:
                             </label>
                             <input
                                 type='text'
-                                id='firstName'
+                                id='regiao'
                                 className='form-control'
                                 {...register('regiao')}
                                 defaultValue={cliente?.regiao}
@@ -170,12 +188,12 @@ const UpdateClienteModal: React.FC = () => {
                             )}
                         </div>
                         <div className='d-flex flex-column w-100'>
-                            <label htmlFor='lastName' className='form-label'>
+                            <label htmlFor='cnpj' className='form-label'>
                                 CNPJ:
                             </label>
                             <input
                                 type='text'
-                                id='lastName'
+                                id='cnpj'
                                 className='form-control'
                                 {...register('cnpj')}
                                 defaultValue={cliente?.cnpj}
@@ -183,12 +201,12 @@ const UpdateClienteModal: React.FC = () => {
                             {errors.cnpj && <p className='text-danger'>{errors.cnpj.message?.toString()}</p>}
                         </div>
                         <div className='d-flex flex-column w-100'>
-                            <label htmlFor='lastName' className='form-label'>
+                            <label htmlFor='cpf' className='form-label'>
                                 CPF:
                             </label>
                             <input
                                 type='text'
-                                id='lastName'
+                                id='cpf'
                                 className='form-control'
                                 {...register('cpf')}
                                 defaultValue={cliente?.cpf}
