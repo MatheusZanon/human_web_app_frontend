@@ -7,8 +7,7 @@ import { AlertTriangle, ArrowBigLeftDash, Search, Download } from 'lucide-react'
 import { MdFolder, MdImage, MdPictureAsPdf, MdEditDocument } from 'react-icons/md';
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
-import { Navigate } from 'react-router-dom';
-import { formatIsoDate, formatDateTime } from '@/libs';
+import { formatDateTime } from '@/libs';
 
 
 function PastasGoogleDrive() {
@@ -16,14 +15,24 @@ function PastasGoogleDrive() {
     const [currentFolderId, setCurrentFolderId] = useState(initialFolderId);
     const [ url, setUrl ] = useState<string>(`google_drive/listar_arquivos?folder_id=${initialFolderId}`);
     const arquivosDrive  = useGetArquivos(url);
-    const navigate = Navigate;
+    const [history, setHistory] = useState<string[]>([]);
 
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
     }, [currentFolderId]);
 
     const handleClick = (folderId: string) => {
+        setHistory(prev => [...prev, currentFolderId]);
         setCurrentFolderId(folderId);
+    }
+
+    const handleBackClick = () => {
+        setHistory(prev => {
+            const newHistory = [...prev];
+            const previousFolderId = newHistory.pop(); // Remove e obtém o último ID do histórico
+            setCurrentFolderId(previousFolderId);
+            return newHistory;
+        });
     }
     
     if (arquivosDrive.isLoading) return <LoadingScreen />
@@ -35,7 +44,7 @@ function PastasGoogleDrive() {
                 <button
                     type='button'
                     className='btn btn-primary'
-                    onClick={() => handleClick(initialFolderId)}
+                    onClick={() => handleBackClick()}
                     >
                     <ArrowBigLeftDash />
                 </button>  
@@ -54,15 +63,8 @@ function PastasGoogleDrive() {
                     <button
                         type='button'
                         className='btn btn-primary'
-                        onClick={() => {
-                                const firstItem = arquivosDrive.data?.[0];
-                                if (firstItem && firstItem.parents) {
-                                    console.log(firstItem);
-                                    handleClick(initialFolderId);
-                                }
-                            }
-                        }
-                        >
+                        onClick={() => {handleBackClick();}}
+                    >
                         <ArrowBigLeftDash />
                     </button>      
                 }
