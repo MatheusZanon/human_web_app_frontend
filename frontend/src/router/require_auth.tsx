@@ -20,7 +20,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
                     setIsAuthenticated(true);
                 }
             } catch (error) {
-                console.log(error);
+                alert("Tempo de sessão expirado, faca o login novamente!");
                 api.post('session/logout/');
                 setIsAuthenticated(false);
             } finally {

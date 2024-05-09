@@ -3,7 +3,7 @@ import { getArquivos } from "./getArquivos";
 
 export function useGetArquivos(url: string) {
     return useQuery({
-        queryKey: ["arquivos"],
+        queryKey: ["arquivos", url],
         queryFn: () => getArquivos(url),
     });
 }
