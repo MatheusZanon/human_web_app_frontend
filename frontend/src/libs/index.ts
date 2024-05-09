@@ -7,6 +7,38 @@ dayjs.extend(relativeTime);
 dayjs.extend(utc);
 dayjs.locale(ptBR);
 
+// Função auxiliar para validar CPF
+export const isValidCPF = (cpf: string): boolean => {
+    cpf = cpf.replace(/[^\d]+/g, '');
+    if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) return false;
+
+    const cpfDigits = cpf.split('').map((el) => +el);
+    const rest = (count: number): number =>
+        ((cpfDigits.slice(0, count - 12).reduce((soma, el, index) => soma + el * (count - index), 0) * 10) % 11) % 10;
+
+    return rest(10) === cpfDigits[9] && rest(11) === cpfDigits[10];
+};
+
+// Função auxiliar para validar CNPJ
+export const isValidCNPJ = (cnpj: string): boolean => {
+    cnpj = cnpj.replace(/[^\d]+/g, '');
+
+    if (cnpj.length !== 14 || !!cnpj.match(/(\d)\1{13}/)) return false;
+
+    const cnpjDigits = cnpj.split('').map((el) => +el);
+    const calculateCheckDigit = (digits: number[], base: number): number => {
+        const factors = base === 13 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+        const sum = digits.slice(0, base - 1).reduce((acc, el, index) => acc + el * factors[index], 0);
+        const remainder = sum % 11;
+        return remainder < 2 ? 0 : 11 - remainder;
+    };
+
+    const firstCheckDigit = calculateCheckDigit(cnpjDigits, 13);
+    const secondCheckDigit = calculateCheckDigit(cnpjDigits, 14);
+
+    return firstCheckDigit === cnpjDigits[12] && secondCheckDigit === cnpjDigits[13];
+};
+
 export function toUnixTimestamp(date: Date) {
     return dayjs(date).unix();
 }

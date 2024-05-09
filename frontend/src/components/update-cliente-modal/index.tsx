@@ -1,4 +1,4 @@
-import { formatCellphone } from '@/libs';
+import { formatCellphone, formatCnpj, formatCpf } from '@/libs';
 import styles from './update-cliente-modal.module.scss';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
 import { useClienteProfileCard } from './cliente-profile-card-provider';
 import { useUpdateCliente } from '@/api/http/clientes_financeiro';
+import { X } from 'lucide-react';
 
 const UpdateClienteModal: React.FC = () => {
     const { cliente, editMode, handleEditMode } = useClienteProfileCard();
@@ -14,8 +15,8 @@ const UpdateClienteModal: React.FC = () => {
         nome_razao_social: z.string().min(1, 'Este campo é obrigatório'),
         nome_fantasia: z.string().min(1, 'Este campo é obrigatório'),
         email: z.string().min(1, 'Este campo é obrigatório'),
-        cnpj: z.string().min(1, 'Este campo é obrigatório'),
-        cpf: z.string().min(1, 'Este campo é obrigatório'),
+        cnpj: z.union([z.string().length(18, 'CNPJ inválido'), z.string().length(0, 'CNPJ inválido')]),
+        cpf: z.union([z.string().length(14, 'CPF inválido'), z.string().length(0, 'CPF inválido')]),
         phone: z
             .string()
             .trim()
@@ -24,24 +25,104 @@ const UpdateClienteModal: React.FC = () => {
         regiao: z.string().min(1, 'Este campo é obrigatório'),
     });
 
-    type UpdateClienteType = z.infer<typeof updateClienteSchema>;
+    const updateClienteSchemaWithRequired = updateClienteSchema.refine(
+        (data) => {
+            const hasCNPJ = Boolean(data?.cnpj);
+            const hasCPF = Boolean(data?.cpf);
+
+            // Deve ter pelo menos um deles preenchido
+            if (!hasCNPJ && !hasCPF) {
+                return false; // Se ambos estiverem vazios, a condição falha
+            }
+
+            // Se ambos estiverem preenchidos, também é uma falha
+            if (hasCNPJ && hasCPF) {
+                return false;
+            }
+
+            return true; // Se apenas um estiver preenchido, a condição é verdadeira
+        },
+        {
+            message: 'Preencha apenas um dos campos: CNPJ ou CPF.',
+            path: ['cpf'], // Exibe a mensagem para ambos os campos
+        },
+    );
+
+    type UpdateClienteType = z.infer<typeof updateClienteSchemaWithRequired>;
+
+    const cnpjFormatter = (cnpj: string): string => {
+        // Remover todos os caracteres não numéricos
+        const cleanCNPJ = cnpj.replace(/\D/g, '');
+
+        // Adicionar pontuações conforme a quantidade de dígitos
+        let formattedCNPJ = cleanCNPJ;
+
+        if (cleanCNPJ.length > 2) {
+            formattedCNPJ = `${cleanCNPJ.slice(0, 2)}.${cleanCNPJ.slice(2)}`;
+        }
+
+        if (cleanCNPJ.length > 5) {
+            formattedCNPJ = `${formattedCNPJ.slice(0, 6)}.${cleanCNPJ.slice(5)}`;
+        }
+
+        if (cleanCNPJ.length > 8) {
+            formattedCNPJ = `${formattedCNPJ.slice(0, 10)}/${cleanCNPJ.slice(8)}`;
+        }
+
+        if (cleanCNPJ.length > 12) {
+            formattedCNPJ = `${formattedCNPJ.slice(0, 15)}-${cleanCNPJ.slice(12)}`;
+        }
+        formattedCNPJ = `${formattedCNPJ.slice(0, 18)}`;
+
+        return formattedCNPJ;
+    };
+
+    const cpfFormatter = (cpf: string): string => {
+        // Remover todos os caracteres não numéricos
+        let cleanCPF = cpf.replace(/\D/g, '');
+
+        // Limitar a quantidade máxima de dígitos para 11
+        cleanCPF = cleanCPF.slice(0, 11); // CPF deve ter 11 dígitos no máximo
+
+        // Adicionar pontuações conforme a quantidade de dígitos
+        let formattedCPF = cleanCPF;
+
+        if (cleanCPF.length > 3) {
+            formattedCPF = `${cleanCPF.slice(0, 3)}.${cleanCPF.slice(3, 6)}`;
+        }
+
+        if (cleanCPF.length > 6) {
+            formattedCPF = `${formattedCPF.slice(0, 7)}.${cleanCPF.slice(6, 9)}`;
+        }
+
+        if (cleanCPF.length > 9) {
+            formattedCPF = `${formattedCPF.slice(0, 11)}-${cleanCPF.slice(9, 11)}`;
+        }
+
+        return formattedCPF;
+    };
 
     // Função para formatar o telefone no formato brasileiro
-    const phoneFormatter = (phone: string) => {
+    const phoneFormatter = (phone: string): string => {
         // Remover todos os caracteres não numéricos
-        const cleanPhone = phone.replace(/\D/g, '');
+        let cleanPhone = phone.replace(/\D/g, '');
 
-        if (cleanPhone.length <= 2) {
-            return cleanPhone;
-        }
+        // Limitar a quantidade de dígitos para 11 (celular) ou 10 (fixo)
+        cleanPhone = cleanPhone.slice(0, 11); // Limita para um máximo de 11 dígitos
+
+        let formattedPhone = cleanPhone;
 
         // Adicionar parênteses ao DDD
-        if (cleanPhone.length <= 7) {
-            return `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(2)}`;
+        if (cleanPhone.length > 2) {
+            formattedPhone = `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(2, 7)}`;
         }
 
-        // Adicionar traço após o quinto dígito
-        return `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(2, 7)}-${cleanPhone.slice(7)}`;
+        // Adicionar traço após o quinto dígito para telefones fixos (DDD + número)
+        if (cleanPhone.length > 7) {
+            formattedPhone = `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(2, 7)}-${cleanPhone.slice(7, 11)}`;
+        }
+
+        return formattedPhone;
     };
 
     const {
@@ -50,7 +131,7 @@ const UpdateClienteModal: React.FC = () => {
         formState: { errors },
         setValue,
     } = useForm<UpdateClienteType>({
-        resolver: zodResolver(updateClienteSchema),
+        resolver: zodResolver(updateClienteSchemaWithRequired),
         mode: 'onChange',
         reValidateMode: 'onChange',
         criteriaMode: 'all',
@@ -63,6 +144,16 @@ const UpdateClienteModal: React.FC = () => {
     const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const formattedPhone = phoneFormatter(event.target.value);
         setValue('phone', formattedPhone);
+    };
+
+    const handleCNPJChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedCNPJ = cnpjFormatter(event.target.value);
+        setValue('cnpj', formattedCNPJ);
+    };
+
+    const handleCPFChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedCPF = cpfFormatter(event.target.value);
+        setValue('cpf', formattedCPF);
     };
 
     const { mutate: updateCliente, isPending: isUpdateClientePending, error: UpdateClienteError } = useUpdateCliente();
@@ -132,6 +223,11 @@ const UpdateClienteModal: React.FC = () => {
         editMode && (
             <div className={`${styles.modalWrapper}`}>
                 <div className={`${styles.modalContent} p-4 gap-2`}>
+                    <div className='d-flex w-100 justify-content-end align-items-center'>
+                        <button className='btn' type='button' onClick={handleEditMode}>
+                            <X size={18} />
+                        </button>
+                    </div>
                     <form className='d-flex flex-column gap-2 w-100 h-100 px-1 overflow-auto'>
                         <div className='d-flex flex-column w-100'>
                             <label htmlFor='razao_social' className='form-label'>
@@ -144,7 +240,9 @@ const UpdateClienteModal: React.FC = () => {
                                 {...register('nome_razao_social')}
                                 defaultValue={cliente?.nome_razao_social}
                             />
-                            {errors.nome_razao_social && <p className='text-danger'>{errors.nome_razao_social.message?.toString()}</p>}
+                            {errors.nome_razao_social && (
+                                <p className='text-danger'>{errors.nome_razao_social.message?.toString()}</p>
+                            )}
                         </div>
                         <div className='d-flex flex-column w-100'>
                             <label htmlFor='nome_fantasia' className='form-label'>
@@ -157,7 +255,9 @@ const UpdateClienteModal: React.FC = () => {
                                 {...register('nome_fantasia')}
                                 defaultValue={cliente?.nome_fantasia}
                             />
-                            {errors.nome_fantasia && <p className='text-danger'>{errors.nome_fantasia.message?.toString()}</p>}
+                            {errors.nome_fantasia && (
+                                <p className='text-danger'>{errors.nome_fantasia.message?.toString()}</p>
+                            )}
                         </div>
                         <div className='d-flex flex-column w-100'>
                             <label htmlFor='email' className='form-label'>
@@ -183,9 +283,7 @@ const UpdateClienteModal: React.FC = () => {
                                 {...register('regiao')}
                                 defaultValue={cliente?.regiao}
                             />
-                            {errors.regiao && (
-                                <p className='text-danger'>{errors.regiao.message?.toString()}</p>
-                            )}
+                            {errors.regiao && <p className='text-danger'>{errors.regiao.message?.toString()}</p>}
                         </div>
                         <div className='d-flex flex-column w-100'>
                             <label htmlFor='cnpj' className='form-label'>
@@ -196,9 +294,11 @@ const UpdateClienteModal: React.FC = () => {
                                 id='cnpj'
                                 className='form-control'
                                 {...register('cnpj')}
-                                defaultValue={cliente?.cnpj}
+                                onChange={handleCNPJChange}
+                                placeholder='00.000.000/0000-00'
+                                defaultValue={cliente?.cnpj && formatCnpj(cliente.cnpj)}
                             />
-                            {errors.cnpj && <p className='text-danger'>{errors.cnpj.message?.toString()}</p>}
+                            {errors.cnpj && <p className='text-danger'>{errors.cnpj?.message}</p>}
                         </div>
                         <div className='d-flex flex-column w-100'>
                             <label htmlFor='cpf' className='form-label'>
@@ -209,7 +309,9 @@ const UpdateClienteModal: React.FC = () => {
                                 id='cpf'
                                 className='form-control'
                                 {...register('cpf')}
-                                defaultValue={cliente?.cpf}
+                                onChange={handleCPFChange}
+                                placeholder='000.000.000-00'
+                                defaultValue={cliente?.cpf && formatCpf(cliente.cpf)}
                             />
                             {errors.cpf && <p className='text-danger'>{errors.cpf.message?.toString()}</p>}
                         </div>
@@ -229,6 +331,7 @@ const UpdateClienteModal: React.FC = () => {
                         </div>
                         <button
                             className='btn btn-primary'
+                            type='button'
                             onClick={handleSubmit(onSubmit)}
                             disabled={isUpdateClientePending}
                         >
