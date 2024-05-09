@@ -7,6 +7,7 @@ import { api } from '@/utils/axios';
 import { useGetValesSST } from '@/api/http/financeiro_valores';
 import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
 import ValesSSTModal from './vales-sst-modal';
+import AlertMessage from '@/components/alert-message';
 
 
 function CardValesSST({ ...props }) {
@@ -105,6 +106,9 @@ function CardValesSST({ ...props }) {
                             ))}
                         </TableBody>
                     </Table>
+                    {!valesSSTResults.length && 
+                        <AlertMessage message="Nenhum registro de vale encontrado!"/>
+                    }  
                     {selectedVale && <ValesSSTModal vale={selectedVale} onClose={() => setSelectedVale(null)} onUpdate={updateVale}/>}
                 </div>
             </div>

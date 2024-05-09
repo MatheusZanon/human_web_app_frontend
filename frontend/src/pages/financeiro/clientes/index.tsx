@@ -6,6 +6,7 @@ import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react
 import { useNavigate } from 'react-router-dom';
 import { Content } from '@/components/layout/content';
 import { formatCnpj, formatCpf } from '@/libs';
+import AlertMessage from '@/components/alert-message';
 
 function ClientesFinanceiro() {
     const [url, setUrl] = useState<string>('clientes_financeiro/?limit=12&offset=0');
@@ -126,12 +127,7 @@ function ClientesFinanceiro() {
                     </TableBody>
                 </Table>
                 {!clienteResults.length && (
-                    <h6 className='text-center align-self-center'>
-                        Nenhum cliente encontrado{' '}
-                        <p className='mt-2'>
-                            <AlertTriangle />
-                        </p>
-                    </h6>
+                    <AlertMessage message="Nenhum cliente encontrado!"/>
                 )}
             </Content>
         </>

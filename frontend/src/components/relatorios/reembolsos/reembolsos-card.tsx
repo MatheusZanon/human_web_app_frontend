@@ -3,6 +3,7 @@ import { useGetReembolsos } from '@/api/http/financeiro_valores';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead  } from "@/components/table";
 import { ArrowBigLeftDash, ArrowBigRightDash, Pencil, Trash2, AlertTriangle, Plus } from 'lucide-react';
 import styles from './reembolsos-card.module.scss';
+import AlertMessage from '@/components/alert-message';
 
 function CardReembolsos({ ...props }) {
     const date = new Date();
@@ -89,7 +90,7 @@ function CardReembolsos({ ...props }) {
                     </TableBody>
                 </Table>
                 {!reembolsosResults.length && 
-                    <h6 className='text-center align-self-center'>Nenhum reembolso encontrado <p className='mt-2'><AlertTriangle/></p></h6>
+                    <AlertMessage message="Nenhum reembolso encontrado!"/>
                 }  
             </div>
         </div>

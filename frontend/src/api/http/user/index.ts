@@ -4,6 +4,8 @@ import { queryClient } from '@/utils/queryClient';
 import { getUser } from './getUser';
 import { getAllUsers } from './getAllUsers';
 import { getAllGroups } from './getAllGroups';
+import { getActiveUsers } from './getActiveUsers';
+import { getInactiveUsers } from './getInactiveUsers'; 
 import { putActivateUser } from './putActivateUser';
 import { getUserById } from './getUserById';
 import { putDeactivateUser } from './putDesactivateUser';
@@ -25,17 +27,33 @@ export function useGetUserById({ userId }: { userId: number }) {
     });
 }
 
-export function useGetAllUsers() {
+export function usegetAllUsers() {
     return useQuery({
         queryKey: ['users'],
         queryFn: () => getAllUsers(),
     });
 }
 
+
 export function useGetAllGroups() {
     return useQuery({
         queryKey: ['groups'],
         queryFn: () => getAllGroups(),
+    });
+}
+
+
+export function useGetActiveUsers() {
+    return useQuery({
+        queryKey: ['active_users'],
+        queryFn: () => getActiveUsers(),
+    });
+}
+
+export function useGetInactiveUsers() {
+    return useQuery({
+        queryKey: ['inactive_users'],
+        queryFn: () => getInactiveUsers(),
     });
 }
 

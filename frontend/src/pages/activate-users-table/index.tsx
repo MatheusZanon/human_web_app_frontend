@@ -1,4 +1,4 @@
-import { useActivateUser, useGetAllGroups, useGetAllUsers } from '@/api/http/user';
+import { useActivateUser, useGetAllGroups, useGetInactiveUsers } from '@/api/http/user';
 import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '@/components/table';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { Group } from '@/utils/types/group';
@@ -13,9 +13,10 @@ import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
 import { formatCellphone } from '@/libs';
 import { Badge } from '@/components/badge';
+import AlertMessage from '@/components/alert-message';
 
 function ActivateUsersTable() {
-    const { data, isSuccess, isLoading, isError } = useGetAllUsers();
+    const { data, isSuccess, isLoading, isError } = useGetInactiveUsers();
     const { data: groups } = useGetAllGroups();
     const { mutate: activate, isSuccess: activateSuccess, isError: activateError, error } = useActivateUser();
     const { hasRole } = useAuthenticatedUser();
@@ -23,7 +24,7 @@ function ActivateUsersTable() {
     const [sortDirection, setSortDirection] = useState('asc');
     const [showModal, setShowModal] = useState<number | null>(null);
     const [showActivateModal, setShowActivateModal] = useState<number | null>(null);
-
+    
     const schema = z.object({
         id: z.array(z.coerce.number(), { required_error: 'Selecione pelo menos um grupo' }),
     });
@@ -55,8 +56,48 @@ function ActivateUsersTable() {
         );
     }
 
-    if (!data && isSuccess) {
-        return <div>Não existem funcionários para ativar!</div>;
+    if (data.length === 0 && isSuccess) {
+        return (
+            <Content title='Ativação de Funcionários'>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableHeader columnKey='id' onSort={() => handleSort('id')}>
+                            ID
+                        </TableHeader>
+                        <TableHeader
+                            sortable
+                            sortDirection={sortBy === 'username' ? sortDirection : ''}
+                            columnKey='username'
+                            onSort={() => handleSort('username')}
+                        >
+                            Nome
+                        </TableHeader>
+                        <TableHeader
+                            sortable
+                            sortDirection={sortBy === 'groups' ? sortDirection : ''}
+                            columnKey='groups'
+                            onSort={() => handleSort('groups')}
+                        >
+                            Cargo
+                        </TableHeader>
+                        <TableHeader
+                            sortable
+                            sortDirection={sortBy === 'telefone_celular' ? sortDirection : ''}
+                            columnKey='telefone_celular'
+                            onSort={() => handleSort('telefone_celular')}
+                        >
+                            Telefone
+                        </TableHeader>
+                        {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
+                            <TableHeader>Actions</TableHeader>
+                        )}
+                    </TableRow>
+                </TableHead>
+            </Table>
+            <AlertMessage message="Não há funcionários inativos!" />
+            </Content>
+        );
     }
 
     if (isError) {
@@ -144,7 +185,7 @@ function ActivateUsersTable() {
                             columnKey='situacao'
                             onSort={() => handleSort('situacao')}
                         >
-                            Telefone
+                            Situação
                         </TableHeader>
                         {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
                             <TableHeader>Actions</TableHeader>

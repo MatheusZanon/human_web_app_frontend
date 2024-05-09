@@ -1,9 +1,10 @@
-import { useGetAllUsers } from '@/api/http/user';
+import { useGetActiveUsers } from '@/api/http/user';
+import AlertMessage from '@/components/alert-message';
 import { Content } from '@/components/layout/content';
 import { TabelaFuncionarios } from '@/components/tabela-funcionarios';
 
 function Funcionarios() {
-    const users = useGetAllUsers();
+    const users = useGetActiveUsers();
 
     if (users.isSuccess && users.data.length > 0) {
         return (
@@ -12,7 +13,11 @@ function Funcionarios() {
             </Content>
         );
     } else {
-        return <div>Não há funcionarios!</div>;
+        return (
+            <Content title="">
+                <AlertMessage message="Funcionários não encontrados!"/>
+            </Content>
+        );
     }
 }
 

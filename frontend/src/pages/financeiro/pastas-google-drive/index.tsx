@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Content } from "@/components/layout/content";
 import { useGetArquivos } from "@/api/http/google_drive";
+import { Content } from "@/components/layout/content";
+import AlertMessage from '@/components/alert-message';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
-import { AlertTriangle, ArrowBigLeftDash, Search, Download } from 'lucide-react';
+import { ArrowBigLeftDash, Search, Download } from 'lucide-react';
 import { MdFolder, MdImage, MdPictureAsPdf, MdEditDocument } from 'react-icons/md';
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
@@ -36,7 +37,7 @@ function PastasGoogleDrive() {
     }
     
     if (arquivosDrive.isLoading) return <LoadingScreen />
-    if (arquivosDrive.error) return <div>{`Error: ${arquivosDrive.error}`}</div>
+    if (arquivosDrive.error) return (<Content title=""><AlertMessage message="Erro ao buscar arquivos!" /></Content>)
 
     if (arquivosDrive.data?.length === 0) {
         return (
@@ -48,12 +49,7 @@ function PastasGoogleDrive() {
                     >
                     <ArrowBigLeftDash />
                 </button>  
-                <h6 className='text-center align-self-center'>
-                    Nenhum arquivo encontrado{' '}
-                    <p className='mt-2'>
-                        <AlertTriangle />
-                    </p>
-                </h6>
+                <AlertMessage message="Nenhum arquivo encontrado!" />
             </Content>
         )
     } else {
@@ -84,49 +80,51 @@ function PastasGoogleDrive() {
                                         <button 
                                         type="button" className='btn' onClick={() => handleClick(arquivo.id)} style={{margin: 0, padding: 0, border: 'none'}}>
                                             <div className='d-flex align-items-center gap-2'>
-                                                <MdFolder/> {arquivo.name}
+                                                <MdFolder size={22}/> {arquivo.name}
                                             </div>
                                         </button>
                                     }
                                     {arquivo.mimeType === "application/x-zip-compressed" && 
                                         <div className='d-flex align-items-center gap-2'>
-                                            <BsFileEarmarkZip color="#88770D"/> {arquivo.name}
+                                            <BsFileEarmarkZip color="#88770D" size={22}/> {arquivo.name}
                                         </div>
                                     } 
                                     {(arquivo.mimeType === "image/png" || arquivo.mimeType === "image/jpeg") && 
                                         <div className='d-flex align-items-center gap-2'>
-                                            <MdImage color='#EF3232'/> {arquivo.name}
+                                            <MdImage color='#EF3232' size={22}/> {arquivo.name}
                                         </div>
                                     }
                                     {arquivo.mimeType === "application/vnd.google-apps.document" && 
                                         <div className='d-flex align-items-center gap-2'>
-                                            <MdEditDocument color="#0D3FB0"/> {arquivo.name}
+                                            <MdEditDocument color="#0D3FB0" size={22}/> {arquivo.name}
                                         </div>
                                     }
                                     {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" && 
                                         <div className='d-flex align-items-center gap-2'>
-                                            <BsFiletypeDoc color="#2370D1"/> {arquivo.name} 
+                                            <BsFiletypeDoc color="#2370D1" size={22}/> {arquivo.name} 
                                         </div>
                                     }
                                     {arquivo.mimeType === "application/pdf" &&
                                         <div className='d-flex align-items-center gap-2'>
-                                            <MdPictureAsPdf color='#FF0000'/> {arquivo.name}
+                                            <MdPictureAsPdf color='#FF0000' size={22}/> {arquivo.name}
                                         </div>
                                     } 
                                     {arquivo.mimeType === "text/plain" && 
                                         <div className='d-flex align-items-center gap-2'>
-                                            <BsFiletypeTxt/> {arquivo.name}
+                                            <BsFiletypeTxt size={22}/> {arquivo.name}
                                         </div>
                                     }
                                     {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && 
                                         <div className='d-flex align-items-center gap-2'>
-                                            <FaFileExcel color='#106C05'/> {arquivo.name}
+                                            <FaFileExcel color='#106C05' size={22}/> {arquivo.name}
                                         </div>
                                     }
                                 </TableData>
                                 <TableData>
                                     {arquivo.mimeType === "application/vnd.google-apps.folder" ? 
-                                    '-' 
+                                    <div className='justify-content-center align-items-center'>
+                                        - 
+                                    </div>
                                     : 
                                     <div className='d-flex justify-content-center align-items-center gap-2'>
                                         <button
