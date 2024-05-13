@@ -5,8 +5,21 @@ import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@
 import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Content } from '@/components/layout/content';
-import { formatCnpj, formatCpf } from '@/libs';
+import { cnpjFormatter, cpfFormatter, formatCnpj, formatCpf, phoneFormatter } from '@/libs';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
+import {
+    BaseModalBody,
+    BaseModalContent,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalProvider,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '@/components/baseModal';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 function ClientesFinanceiro() {
     const [url, setUrl] = useState<string>('clientes_financeiro/?limit=12&offset=0');
@@ -17,6 +30,84 @@ function ClientesFinanceiro() {
     const navigate = useNavigate();
     const inputRef = useRef<HTMLInputElement>(null);
     const { hasRole } = useAuthenticatedUser();
+
+    const newClienteFormSchema = z
+        .object({
+            nome_razao_social: z.string().min(1, { message: 'Este campo é obrigatório' }),
+            nome_fantasia: z.string().min(1, { message: 'Este campo é obrigatório' }),
+            cnpj: z.union([z.string().length(18, 'CNPJ inválido'), z.string().length(0, 'CNPJ inválido')]),
+            cpf: z.union([z.string().length(14, 'CPF inválido'), z.string().length(0, 'CPF inválido')]),
+            email: z.string().email({ message: 'Email inválido' }),
+            telefone_celular: z
+                .string()
+                .trim()
+                .regex(
+                    /^(\(?\d{2}\)?\s?)?(\d{5})-?(\d{4})$/,
+                    'Formato de telefone inválido. Use o formato (XX) XXXXX-XXXX',
+                )
+                .min(1, 'Este campo é obrigatório'),
+            regiao: z.string().min(1, { message: 'Este campo é obrigatório' }),
+        })
+        .refine(
+            (data) => {
+                const hasCNPJ = Boolean(data?.cnpj);
+                const hasCPF = Boolean(data?.cpf);
+
+                // Deve ter pelo menos um deles preenchido
+                if (!hasCNPJ && !hasCPF) {
+                    return false; // Se ambos estiverem vazios, a condição falha
+                }
+
+                // Se ambos estiverem preenchidos, também é uma falha
+                if (hasCNPJ && hasCPF) {
+                    return false;
+                }
+
+                return true; // Se apenas um estiver preenchido, a condição é verdadeira
+            },
+            {
+                message: 'Preencha apenas um dos campos: CNPJ ou CPF.',
+                path: ['cpf'], // Exibe a mensagem para ambos os campos
+            },
+        );
+
+    type NewClienteFormType = z.infer<typeof newClienteFormSchema>;
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+    } = useForm<NewClienteFormType>({
+        resolver: zodResolver(newClienteFormSchema),
+        mode: 'onChange',
+        reValidateMode: 'onChange',
+        criteriaMode: 'all',
+        shouldUnregister: false,
+        shouldFocusError: true,
+        shouldUseNativeValidation: false,
+        delayError: 500,
+    });
+
+    const handleCNPJChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedCNPJ = cnpjFormatter(event.target.value);
+        setValue('cnpj', formattedCNPJ);
+    };
+
+    const handleCPFChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedCPF = cpfFormatter(event.target.value);
+        setValue('cpf', formattedCPF);
+    };
+
+    const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedPhone = phoneFormatter(event.target.value);
+        setValue('telefone_celular', formattedPhone);
+    };
+
+    const onSubmit = (data: NewClienteFormType) => {
+        // TODO: Criar o envio do formulário
+        console.log(data);
+    };
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -72,9 +163,140 @@ function ClientesFinanceiro() {
                             onChange={handleSearchChange}
                         />
                         {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO')) && (
-                            <button type='button' className='btn btn-primary'>
-                                Adicionar Cliente
-                            </button>
+                            <BaseModalProvider>
+                                <BaseModalTrigger>Adicionar Cliente</BaseModalTrigger>
+                                <BaseModalRoot>
+                                    <BaseModalContent>
+                                        <BaseModalHeader>
+                                            <BaseModalTitle>Adicionar Cliente</BaseModalTitle>
+                                        </BaseModalHeader>
+                                        <BaseModalBody>
+                                            <form className='d-flex flex-column gap-2 w-100 h-100 px-1 overflow-auto'>
+                                                <div className='d-flex flex-column w-100'>
+                                                    <label htmlFor='nome_razao_social' className='form-label'>
+                                                        Nome Razão Social:
+                                                    </label>
+                                                    <input
+                                                        type='text'
+                                                        id='nome_razao_social'
+                                                        {...register('nome_razao_social')}
+                                                        className='form-control'
+                                                    />
+                                                    {errors.nome_razao_social && (
+                                                        <p className='text-danger'>
+                                                            {errors.nome_razao_social.message?.toString()}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className='d-flex flex-column w-100'>
+                                                    <label htmlFor='nome_fantasia' className='form-label'>
+                                                        Nome Fantasia:
+                                                    </label>
+                                                    <input
+                                                        type='text'
+                                                        id='nome_fantasia'
+                                                        {...register('nome_fantasia')}
+                                                        className='form-control'
+                                                    />
+                                                    {errors.nome_fantasia && (
+                                                        <p className='text-danger'>
+                                                            {errors.nome_fantasia.message?.toString()}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className='d-flex flex-column w-100'>
+                                                    <label htmlFor='email' className='form-label'>
+                                                        Email:
+                                                    </label>
+                                                    <input
+                                                        type='text'
+                                                        id='email'
+                                                        {...register('email')}
+                                                        className='form-control'
+                                                    />
+                                                    {errors.email && (
+                                                        <p className='text-danger'>
+                                                            {errors.email.message?.toString()}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className='d-flex flex-column w-100'>
+                                                    <label htmlFor='telefone_celular' className='form-label'>
+                                                        Telefone Celular:
+                                                    </label>
+                                                    <input
+                                                        type='text'
+                                                        id='telefone_celular'
+                                                        {...register('telefone_celular')}
+                                                        onChange={handlePhoneChange}
+                                                        className='form-control'
+                                                    />
+                                                    {errors.telefone_celular && (
+                                                        <p className='text-danger'>
+                                                            {errors.telefone_celular.message?.toString()}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className='d-flex flex-column w-100'>
+                                                    <label htmlFor='regiao' className='form-label'>
+                                                        Região:
+                                                    </label>
+                                                    <input
+                                                        type='text'
+                                                        id='regiao'
+                                                        {...register('regiao')}
+                                                        className='form-control'
+                                                    />
+                                                    {errors.regiao && (
+                                                        <p className='text-danger'>
+                                                            {errors.regiao.message?.toString()}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className='d-flex flex-column w-100'>
+                                                    <label htmlFor='cnpj' className='form-label'>
+                                                        CNPJ:
+                                                    </label>
+                                                    <input
+                                                        type='text'
+                                                        id='cnpj'
+                                                        {...register('cnpj')}
+                                                        onChange={handleCNPJChange}
+                                                        className='form-control'
+                                                    />
+                                                    {errors.cnpj && (
+                                                        <p className='text-danger'>{errors.cnpj.message?.toString()}</p>
+                                                    )}
+                                                </div>
+                                                <div className='d-flex flex-column w-100'>
+                                                    <label htmlFor='cpf' className='form-label'>
+                                                        CPF:
+                                                    </label>
+                                                    <input
+                                                        type='text'
+                                                        id='cpf'
+                                                        {...register('cpf')}
+                                                        onChange={handleCPFChange}
+                                                        className='form-control'
+                                                    />
+                                                    {errors.cpf && (
+                                                        <p className='text-danger'>{errors.cpf.message?.toString()}</p>
+                                                    )}
+                                                </div>
+                                            </form>
+                                        </BaseModalBody>
+                                        <BaseModalFooter>
+                                            <button
+                                                type='button'
+                                                className='btn btn-primary'
+                                                onClick={handleSubmit(onSubmit)}
+                                            >
+                                                Adicionar
+                                            </button>
+                                        </BaseModalFooter>
+                                    </BaseModalContent>
+                                </BaseModalRoot>
+                            </BaseModalProvider>
                         )}
                     </div>
                 </div>

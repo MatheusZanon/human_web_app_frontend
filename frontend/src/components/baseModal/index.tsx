@@ -164,12 +164,12 @@ const BaseModalContent: React.FC<baseModalContentProps> = ({ children }) => {
             animate='animate'
             exit='exit'
             variants={contentVariants}
-            transition={{ duration: 0.1, type: 'spring', damping: 15, stiffness: 120, delay: 0.2 }}
+            transition={{ duration: 0.2, type: 'spring', damping: 15, stiffness: 120, delay: 0.2 }}
         >
             <div className='d-flex w-100 justify-content-end'>
                 <BaseModalCloseButton />
             </div>
-            <div className='d-flex flex-column flex-grow-1 align-items-center w-100 p-2'>{children}</div>
+            <div className='d-flex flex-column flex-grow-1 align-items-center w-100 overflow-y-scroll p-4'>{children}</div>
         </motion.div>
     );
 };

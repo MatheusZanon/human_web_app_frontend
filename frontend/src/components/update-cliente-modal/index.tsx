@@ -14,7 +14,7 @@ const UpdateClienteModal: React.FC = () => {
     const updateClienteSchema = z.object({
         nome_razao_social: z.string().min(1, 'Este campo é obrigatório'),
         nome_fantasia: z.string().min(1, 'Este campo é obrigatório'),
-        email: z.string().min(1, 'Este campo é obrigatório'),
+        email: z.string().email('Email inválido'),
         cnpj: z.union([z.string().length(18, 'CNPJ inválido'), z.string().length(0, 'CNPJ inválido')]),
         cpf: z.union([z.string().length(14, 'CPF inválido'), z.string().length(0, 'CPF inválido')]),
         phone: z
