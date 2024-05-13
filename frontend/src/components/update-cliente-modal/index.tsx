@@ -1,4 +1,4 @@
-import { formatCellphone, formatCnpj, formatCpf } from '@/libs';
+import { cnpjFormatter, cpfFormatter, formatCellphone, formatCnpj, formatCpf, phoneFormatter } from '@/libs';
 import styles from './update-cliente-modal.module.scss';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -49,81 +49,6 @@ const UpdateClienteModal: React.FC = () => {
     );
 
     type UpdateClienteType = z.infer<typeof updateClienteSchemaWithRequired>;
-
-    const cnpjFormatter = (cnpj: string): string => {
-        // Remover todos os caracteres não numéricos
-        const cleanCNPJ = cnpj.replace(/\D/g, '');
-
-        // Adicionar pontuações conforme a quantidade de dígitos
-        let formattedCNPJ = cleanCNPJ;
-
-        if (cleanCNPJ.length > 2) {
-            formattedCNPJ = `${cleanCNPJ.slice(0, 2)}.${cleanCNPJ.slice(2)}`;
-        }
-
-        if (cleanCNPJ.length > 5) {
-            formattedCNPJ = `${formattedCNPJ.slice(0, 6)}.${cleanCNPJ.slice(5)}`;
-        }
-
-        if (cleanCNPJ.length > 8) {
-            formattedCNPJ = `${formattedCNPJ.slice(0, 10)}/${cleanCNPJ.slice(8)}`;
-        }
-
-        if (cleanCNPJ.length > 12) {
-            formattedCNPJ = `${formattedCNPJ.slice(0, 15)}-${cleanCNPJ.slice(12)}`;
-        }
-        formattedCNPJ = `${formattedCNPJ.slice(0, 18)}`;
-
-        return formattedCNPJ;
-    };
-
-    const cpfFormatter = (cpf: string): string => {
-        // Remover todos os caracteres não numéricos
-        let cleanCPF = cpf.replace(/\D/g, '');
-
-        // Limitar a quantidade máxima de dígitos para 11
-        cleanCPF = cleanCPF.slice(0, 11); // CPF deve ter 11 dígitos no máximo
-
-        // Adicionar pontuações conforme a quantidade de dígitos
-        let formattedCPF = cleanCPF;
-
-        if (cleanCPF.length > 3) {
-            formattedCPF = `${cleanCPF.slice(0, 3)}.${cleanCPF.slice(3, 6)}`;
-        }
-
-        if (cleanCPF.length > 6) {
-            formattedCPF = `${formattedCPF.slice(0, 7)}.${cleanCPF.slice(6, 9)}`;
-        }
-
-        if (cleanCPF.length > 9) {
-            formattedCPF = `${formattedCPF.slice(0, 11)}-${cleanCPF.slice(9, 11)}`;
-        }
-
-        return formattedCPF;
-    };
-
-    // Função para formatar o telefone no formato brasileiro
-    const phoneFormatter = (phone: string): string => {
-        // Remover todos os caracteres não numéricos
-        let cleanPhone = phone.replace(/\D/g, '');
-
-        // Limitar a quantidade de dígitos para 11 (celular) ou 10 (fixo)
-        cleanPhone = cleanPhone.slice(0, 11); // Limita para um máximo de 11 dígitos
-
-        let formattedPhone = cleanPhone;
-
-        // Adicionar parênteses ao DDD
-        if (cleanPhone.length > 2) {
-            formattedPhone = `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(2, 7)}`;
-        }
-
-        // Adicionar traço após o quinto dígito para telefones fixos (DDD + número)
-        if (cleanPhone.length > 7) {
-            formattedPhone = `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(2, 7)}-${cleanPhone.slice(7, 11)}`;
-        }
-
-        return formattedPhone;
-    };
 
     const {
         register,

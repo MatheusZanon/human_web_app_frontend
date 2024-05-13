@@ -6,6 +6,7 @@ import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react
 import { useNavigate } from 'react-router-dom';
 import { Content } from '@/components/layout/content';
 import { formatCnpj, formatCpf } from '@/libs';
+import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 
 function ClientesFinanceiro() {
     const [url, setUrl] = useState<string>('clientes_financeiro/?limit=12&offset=0');
@@ -15,6 +16,7 @@ function ClientesFinanceiro() {
     const [filtro, setFiltro] = useState<string>('');
     const navigate = useNavigate();
     const inputRef = useRef<HTMLInputElement>(null);
+    const { hasRole } = useAuthenticatedUser();
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -43,42 +45,38 @@ function ClientesFinanceiro() {
     return (
         <>
             <Content title='Clientes'>
-                <div className='d-flex gap-2 justify-content-left' style={{ height: '7vh' }}>
-                    {clientes.data?.previous ? (
+                <div className='d-flex gap-2 justify-content-between align-items-center' style={{ height: '7vh' }}>
+                    <div className='d-flex align-items-center gap-2 flex-grow-1'>
                         <button
                             type='button'
                             className='btn btn-primary'
-                            onClick={() => clientes.data.previous && setUrl(clientes.data.previous)}
+                            onClick={() => clientes?.data?.previous && setUrl(clientes.data.previous)}
+                            disabled={!clientes?.data?.previous}
                         >
                             <ArrowBigLeftDash />
                         </button>
-                    ) : (
-                        <button type='button' className='btn btn-primary' disabled={true}>
-                            <ArrowBigLeftDash />
-                        </button>
-                    )}
-
-                    {clientes.data?.next ? (
                         <button
                             type='button'
                             className='btn btn-primary'
-                            onClick={() => clientes.data.next && setUrl(clientes.data.next)}
+                            onClick={() => clientes?.data?.next && setUrl(clientes.data.next)}
+                            disabled={!clientes?.data?.next}
                         >
                             <ArrowBigRightDash />
                         </button>
-                    ) : (
-                        <button type='button' className='btn btn-primary' disabled={true}>
-                            <ArrowBigRightDash />
-                        </button>
-                    )}
-                    <input
-                        ref={inputRef}
-                        type='text'
-                        className='form-control mx-2 w-25 custom-input'
-                        value={filtro}
-                        placeholder='Filtrar'
-                        onChange={handleSearchChange}
-                    />
+                        <input
+                            ref={inputRef}
+                            type='text'
+                            className='form-control mx-2 w-25 custom-input'
+                            value={filtro}
+                            placeholder='Filtrar'
+                            onChange={handleSearchChange}
+                        />
+                        {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO')) && (
+                            <button type='button' className='btn btn-primary'>
+                                Adicionar Cliente
+                            </button>
+                        )}
+                    </div>
                 </div>
                 <Table>
                     <TableHead>

@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
+import { X } from 'lucide-react';
 
 const UpdateUserModal: React.FC = () => {
     const { user, editMode, handleEditMode } = useUserProfileCard();
@@ -144,6 +145,11 @@ const UpdateUserModal: React.FC = () => {
         editMode && (
             <div className={`${styles.modalWrapper}`}>
                 <div className={`${styles.modalContent} p-4 gap-2`}>
+                    <div className='d-flex w-100 justify-content-end align-items-center'>
+                        <button className='btn' type='button' onClick={handleEditMode}>
+                            <X size={18} />
+                        </button>
+                    </div>
                     <form className='d-flex flex-column gap-2 w-100 h-100 px-1 overflow-auto'>
                         <div className='d-flex flex-column w-100'>
                             <label htmlFor='username' className='form-label'>

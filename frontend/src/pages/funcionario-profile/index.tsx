@@ -7,6 +7,16 @@ import { formatCpf } from '@/libs';
 import { useUserProfileCard } from '@/components/user-profile-card/user-profile-card-provider';
 import { UpdateUserModal } from '@/components/update-user-modal';
 import { useEffect } from 'react';
+import {
+    BaseModalContent,
+    BaseModalProvider,
+    BaseModalTrigger,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalBody,
+} from '@/components/baseModal';
 
 function FuncionarioProfile() {
     const { funcionarioId } = useParams();
