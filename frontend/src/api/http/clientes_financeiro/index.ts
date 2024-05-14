@@ -4,6 +4,8 @@ import { getClientes } from './getClientes';
 import { getClienteById } from './getClienteById';
 import { patchCliente } from './patchCliente';
 import { Cliente } from '@/utils/types/cliente';
+import { CriarClienteType } from '@/utils/types/criar_cliente';
+import { postCliente } from './postCliente';
 
 export function useGetClientes(url: string) {
     return useQuery({
@@ -31,5 +33,13 @@ export function useUpdateCliente() {
                 queryClient.invalidateQueries({ queryKey: ['cliente'] });
             }
         },
+    });
+}
+
+export function usePostCliente() {
+    return useMutation({
+        mutationKey: ['post-cliente'],
+        mutationFn: (data: CriarClienteType) => postCliente(data),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clientes'] }),
     });
 }

@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
-import { useGetClientes } from '@/api/http/clientes_financeiro';
+import { useEffect, useState, useRef, useMemo } from 'react';
+import { useGetClientes, usePostCliente } from '@/api/http/clientes_financeiro';
 import { Search, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
 import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react';
@@ -20,65 +20,64 @@ import {
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CriarClienteType } from '@/utils/types/criar_cliente';
+import { toast } from 'react-toastify';
+
+const newClienteFormSchema = z
+    .object({
+        nome_razao_social: z.string().min(1, { message: 'Este campo é obrigatório' }),
+        nome_fantasia: z.string().min(1, { message: 'Este campo é obrigatório' }),
+        cnpj: z.union([z.string().length(18, 'CNPJ inválido'), z.string().length(0, 'CNPJ inválido')]),
+        cpf: z.union([z.string().length(14, 'CPF inválido'), z.string().length(0, 'CPF inválido')]),
+        email: z.string().email({ message: 'Email inválido' }),
+        telefone_celular: z
+            .string()
+            .trim()
+            .regex(/^(\(?\d{2}\)?\s?)?(\d{5})-?(\d{4})$/, 'Formato de telefone inválido. Use o formato (XX) XXXXX-XXXX')
+            .min(1, 'Este campo é obrigatório'),
+        regiao: z.string().min(1, { message: 'Este campo é obrigatório' }),
+    })
+    .refine(
+        (data) => {
+            const hasCNPJ = Boolean(data?.cnpj);
+            const hasCPF = Boolean(data?.cpf);
+
+            // Deve ter pelo menos um deles preenchido
+            if (!hasCNPJ && !hasCPF) {
+                return false; // Se ambos estiverem vazios, a condição falha
+            }
+
+            // Se ambos estiverem preenchidos, também é uma falha
+            if (hasCNPJ && hasCPF) {
+                return false;
+            }
+
+            return true; // Se apenas um estiver preenchido, a condição é verdadeira
+        },
+        {
+            message: 'Preencha apenas um dos campos: CNPJ ou CPF.',
+            path: ['cpf'], // Exibe a mensagem para ambos os campos
+        },
+    );
 
 function ClientesFinanceiro() {
     const [url, setUrl] = useState<string>('clientes_financeiro/?limit=12&offset=0');
     const clientes = useGetClientes(url);
-    const clienteResults =
-        clientes.isSuccess && clientes.data && 'results' in clientes.data ? clientes.data.results : [];
+    const clienteResults = useMemo(() => {
+        return clientes.data && 'results' in clientes.data ? clientes.data.results : [];
+    }, [clientes.data]);
     const [filtro, setFiltro] = useState<string>('');
     const navigate = useNavigate();
     const inputRef = useRef<HTMLInputElement>(null);
+    const { mutate: createCliente, isPending: isCreatingCliente, error: createClienteError } = usePostCliente();
     const { hasRole } = useAuthenticatedUser();
-
-    const newClienteFormSchema = z
-        .object({
-            nome_razao_social: z.string().min(1, { message: 'Este campo é obrigatório' }),
-            nome_fantasia: z.string().min(1, { message: 'Este campo é obrigatório' }),
-            cnpj: z.union([z.string().length(18, 'CNPJ inválido'), z.string().length(0, 'CNPJ inválido')]),
-            cpf: z.union([z.string().length(14, 'CPF inválido'), z.string().length(0, 'CPF inválido')]),
-            email: z.string().email({ message: 'Email inválido' }),
-            telefone_celular: z
-                .string()
-                .trim()
-                .regex(
-                    /^(\(?\d{2}\)?\s?)?(\d{5})-?(\d{4})$/,
-                    'Formato de telefone inválido. Use o formato (XX) XXXXX-XXXX',
-                )
-                .min(1, 'Este campo é obrigatório'),
-            regiao: z.string().min(1, { message: 'Este campo é obrigatório' }),
-        })
-        .refine(
-            (data) => {
-                const hasCNPJ = Boolean(data?.cnpj);
-                const hasCPF = Boolean(data?.cpf);
-
-                // Deve ter pelo menos um deles preenchido
-                if (!hasCNPJ && !hasCPF) {
-                    return false; // Se ambos estiverem vazios, a condição falha
-                }
-
-                // Se ambos estiverem preenchidos, também é uma falha
-                if (hasCNPJ && hasCPF) {
-                    return false;
-                }
-
-                return true; // Se apenas um estiver preenchido, a condição é verdadeira
-            },
-            {
-                message: 'Preencha apenas um dos campos: CNPJ ou CPF.',
-                path: ['cpf'], // Exibe a mensagem para ambos os campos
-            },
-        );
-
-    type NewClienteFormType = z.infer<typeof newClienteFormSchema>;
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         setValue,
-    } = useForm<NewClienteFormType>({
+    } = useForm<CriarClienteType>({
         resolver: zodResolver(newClienteFormSchema),
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -104,9 +103,30 @@ function ClientesFinanceiro() {
         setValue('telefone_celular', formattedPhone);
     };
 
-    const onSubmit = (data: NewClienteFormType) => {
-        // TODO: Criar o envio do formulário
-        console.log(data);
+    const onSubmit = (data: CriarClienteType) => {
+        createCliente(data);
+
+        if (isCreatingCliente) {
+            toast.loading('Por favor, aguarde...');
+        }
+
+        if (!isCreatingCliente) {
+            toast.dismiss();
+        }
+
+        if (!isCreatingCliente && !createClienteError) {
+            toast.success('Cliente criado com sucesso!', {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+
+        if (!isCreatingCliente && createClienteError) {
+            toast.error(`Erro ao atualizar dados! ${createClienteError?.response?.data}`, {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
     };
 
     useEffect(() => {
@@ -171,7 +191,7 @@ function ClientesFinanceiro() {
                                             <BaseModalTitle>Adicionar Cliente</BaseModalTitle>
                                         </BaseModalHeader>
                                         <BaseModalBody>
-                                            <form className='d-flex flex-column gap-2 w-100 h-100 px-1 overflow-auto'>
+                                            <form className='d-flex flex-column gap-2 w-100 h-100 px-1 pb-1 overflow-auto'>
                                                 <div className='d-flex flex-column w-100'>
                                                     <label htmlFor='nome_razao_social' className='form-label'>
                                                         Nome Razão Social:
@@ -359,3 +379,4 @@ function ClientesFinanceiro() {
 }
 
 export default ClientesFinanceiro;
+export { newClienteFormSchema };
