@@ -1,13 +1,26 @@
 import { useState } from 'react';
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableData } from '@/components/table';
-import { Search, Trash2 } from 'lucide-react';
+import { Pen, Search, Trash2 } from 'lucide-react';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { User } from '@/utils/types/user';
 import { useNavigate } from 'react-router-dom';
-import { useDeactivateUser } from '@/api/http/user';
+import { useDeactivateUser, useUpdateSituacao } from '@/api/http/user';
 import { toast } from 'react-toastify';
 import { formatCellphone } from '@/libs';
 import { Badge } from '../badge';
+import {
+    BaseModalBody,
+    BaseModalContent,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalProvider,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '../baseModal';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 function TabelaFuncionarios({ data }: { data: User[] }) {
     const { hasRole, authenticatedUser } = useAuthenticatedUser();
@@ -15,6 +28,12 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
     const [sortDirection, setSortDirection] = useState('asc');
     const [showModal, setShowModal] = useState<number | null>(null);
     const { mutate: deactivateUser, isSuccess, isError, error } = useDeactivateUser();
+    const {
+        mutate: updateSituacao,
+        isSuccess: isSuccessSituacao,
+        isError: isErrorSituacao,
+        error: errorSituacao,
+    } = useUpdateSituacao();
     const navigate = useNavigate();
 
     const handleDeactivate = (id: number) => {
@@ -53,6 +72,45 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
 
     const handleEdit = (id: number) => {
         navigate(`${id}`);
+    };
+
+    const changeSituacaoSchema = z.object({
+        situacao: z.union([z.literal('ATIVO'), z.literal('FERIAS'), z.literal('SUSPENSO')]),
+    });
+
+    type ChangeSituacaoType = z.infer<typeof changeSituacaoSchema>;
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<ChangeSituacaoType>({
+        mode: 'onChange',
+        reValidateMode: 'onChange',
+        criteriaMode: 'all',
+        shouldUnregister: false,
+        shouldFocusError: true,
+        shouldUseNativeValidation: false,
+        delayError: 500,
+        resolver: zodResolver(changeSituacaoSchema),
+    });
+
+    const onSubmit = (id: number, data: ChangeSituacaoType) => {
+        updateSituacao({ userId: id, data: data });
+
+        if (isSuccessSituacao) {
+            toast.success('Situação alterada com sucesso!', {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+
+        if (isErrorSituacao) {
+            toast.error(`Erro ao alterar situação do funcionário ${errorSituacao?.response?.data}`, {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
     };
 
     return (
@@ -128,7 +186,51 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                       : 'warning'
                                             }
                                         >
-                                            {funcionario.situacao}
+                                            <span className='d-flex justify-content-center align-items-center flex-grow-1'>
+                                                {funcionario.situacao}
+                                            </span>
+                                            <BaseModalProvider>
+                                                <BaseModalTrigger size='sm'>
+                                                    <Pen size={16} />
+                                                </BaseModalTrigger>
+                                                <BaseModalRoot>
+                                                    <BaseModalContent>
+                                                        <BaseModalHeader>
+                                                            <BaseModalTitle>
+                                                                {`Alterar situação para ${funcionario.first_name} ${funcionario.last_name}`}
+                                                            </BaseModalTitle>
+                                                        </BaseModalHeader>
+                                                        <BaseModalBody>
+                                                            <form>
+                                                                <select
+                                                                    id='situacao'
+                                                                    className='form-select'
+                                                                    {...register('situacao')}
+                                                                >
+                                                                    <option value='ATIVO'>ATIVO</option>
+                                                                    <option value='SUSPENSO'>SUSPENSO</option>
+                                                                    <option value='FERIAS'>FERIAS</option>
+                                                                </select>
+                                                                {errors.situacao && (
+                                                                    <p className='text-danger mt-2 mb-0 text-wrap'>
+                                                                        {errors.situacao.message}
+                                                                    </p>
+                                                                )}
+                                                            </form>
+                                                        </BaseModalBody>
+                                                        <BaseModalFooter>
+                                                            <button
+                                                                className='btn btn-primary'
+                                                                onClick={handleSubmit((data) =>
+                                                                    onSubmit(funcionario.id, data),
+                                                                )}
+                                                            >
+                                                                Salvar
+                                                            </button>
+                                                        </BaseModalFooter>
+                                                    </BaseModalContent>
+                                                </BaseModalRoot>
+                                            </BaseModalProvider>
                                         </Badge>
                                     ) : (
                                         '-'

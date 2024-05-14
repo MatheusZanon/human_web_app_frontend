@@ -25,7 +25,7 @@ const Badge: React.FC<BadgeProps> = ({ variant = 'primary', size = 'md', href, i
         >
             <span className='visually-hidden'>Badge</span>
             {iconWithClassName}
-            {children && <span>{children}</span>}
+            {children && <span className='d-flex align-items-center flex-grow-1'>{children}</span>}
         </span>
     );
     return href ? <a href={href}>{<Content />}</a> : <Content />;

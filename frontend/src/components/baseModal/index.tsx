@@ -105,12 +105,14 @@ const BaseModalRoot: React.FC<BaseModalRootProps> = ({ children, className: clas
 
 type baseModalTriggerProps = {
     children: React.ReactNode;
+    variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'light' | 'dark' | 'ghost';
+    size?: 'sm' | 'md' | 'lg';
 };
 
-const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({ children }) => {
+const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({ children, variant = 'ghost', size = 'md' }) => {
     const { toggleOpen } = useContext(BaseModalContext);
     return (
-        <button type='button' onClick={toggleOpen} className={`${styles.modalTrigger} btn btn-primary`}>
+        <button type='button' onClick={toggleOpen} className={`${styles.modalTrigger} btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size}`}>
             {children}
         </button>
     );
@@ -169,7 +171,7 @@ const BaseModalContent: React.FC<baseModalContentProps> = ({ children }) => {
             <div className='d-flex w-100 justify-content-end'>
                 <BaseModalCloseButton />
             </div>
-            <div className='d-flex flex-column flex-grow-1 align-items-center w-100 overflow-y-scroll px-4'>
+            <div className='d-flex flex-column flex-grow-1 align-items-center w-100 overflow-y-scroll px-4 overflow-x-hidden'>
                 {children}
             </div>
         </motion.div>
@@ -181,7 +183,7 @@ type baseModalBodyProps = {
 };
 
 const BaseModalBody: React.FC<baseModalBodyProps> = ({ children }) => {
-    return <div className={`${styles.modalBody} d-flex flex-column w-100 flex-grow-1`}>{children}</div>;
+    return <div className={`${styles.modalBody} d-flex flex-column w-100 flex-grow-1 my-2`}>{children}</div>;
 };
 
 type baseModalCloseButtonProps = {
@@ -210,7 +212,7 @@ type baseModalTitleProps = {
 
 const BaseModalTitle: React.FC<baseModalTitleProps> = ({ children }) => {
     return (
-        <div className={styles.modalTitle}>
+        <div className={`${styles.modalTitle} text-wrap`}>
             <h3>{children}</h3>
         </div>
     );
@@ -221,7 +223,7 @@ type baseModalHeaderProps = {
 };
 
 const BaseModalHeader: React.FC<baseModalHeaderProps> = ({ children }) => {
-    return <div className={`${styles.modalHeader} d-flex align-items-center w-100 border-bottom mb-2`}>{children}</div>;
+    return <div className={`${styles.modalHeader} d-flex align-items-center w-100 border-bottom`}>{children}</div>;
 };
 
 type baseModalFooterProps = {
@@ -229,7 +231,7 @@ type baseModalFooterProps = {
 };
 
 const BaseModalFooter: React.FC<baseModalFooterProps> = ({ children }) => {
-    return <div className={`${styles.modalFooter} d-flex align-items-center w-100 border-top mt-2`}>{children}</div>;
+    return <div className={`${styles.modalFooter} d-flex align-items-center w-100 border-top py-2`}>{children}</div>;
 };
 
 export {

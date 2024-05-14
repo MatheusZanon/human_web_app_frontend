@@ -9,6 +9,7 @@ import { getUserById } from './getUserById';
 import { putDeactivateUser } from './putDesactivateUser';
 import { User } from '@/utils/types/user';
 import { patchUser } from './patchUser';
+import { putSituacao } from './putSituação';
 
 export function useGetUser() {
     return useQuery({
@@ -70,6 +71,18 @@ export function useUpdateUser() {
             if (user?.id === id) {
                 queryClient.invalidateQueries({ queryKey: ['user'] });
             }
+        },
+    });
+}
+
+export function useUpdateSituacao() {
+    return useMutation({
+        mutationKey: ['users'],
+        mutationFn: ({ userId, data }: { userId: number; data: { situacao: 'ATIVO' | 'FERIAS' | 'SUSPENSO' } }) =>
+            putSituacao(userId, data),
+        onSuccess: ({ id }) => {
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: [`user/${id}`] });
         },
     });
 }
