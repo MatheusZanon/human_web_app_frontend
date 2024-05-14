@@ -41,7 +41,7 @@ import PastasGoogleDrive from '@/pages/financeiro/pastas-google-drive';
  * Dashboard
  */
 import Dashboard from '@/pages/dashboard';
-import { UserProfileCardProvider } from '@/components/user-profile-card/user-profile-card-provider';
+import { ProfileCardProvider } from '@/components/profile-card/profile-card-provider';
 import { ClienteProfileCardProvider } from '@/components/update-cliente-modal/cliente-profile-card-provider';
 
 type route = {
@@ -57,9 +57,9 @@ const allRoutes: route[] = [
     {
         path: 'profile',
         element: (
-            <UserProfileCardProvider>
+            <ProfileCardProvider>
                 <Profile />
-            </UserProfileCardProvider>
+            </ProfileCardProvider>
         ),
     },
     {
@@ -101,9 +101,9 @@ const allRoutes: route[] = [
     {
         path: 'rh/funcionarios/:funcionarioId',
         element: (
-            <UserProfileCardProvider>
+            <ProfileCardProvider>
                 <FuncionarioProfile />
-            </UserProfileCardProvider>
+            </ProfileCardProvider>
         ),
     },
 ];

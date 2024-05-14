@@ -1,18 +1,17 @@
 import { useGetUserById } from '@/api/http/user';
-import ProfileCard from '@/components/user-profile-card';
+import ProfileCard from '@/components/profile-card';
 import { useParams } from 'react-router-dom';
 import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
 import { formatCpf } from '@/libs';
-import { useUserProfileCard } from '@/components/user-profile-card/user-profile-card-provider';
-import { UpdateUserModal } from '@/components/update-user-modal';
+import { useProfileCard } from '@/components/profile-card/profile-card-provider';
 import { useEffect } from 'react';
 
 function FuncionarioProfile() {
     const { funcionarioId } = useParams();
     const userId = parseInt(funcionarioId ? funcionarioId : '');
     const { data: user, isLoading, isSuccess } = useGetUserById({ userId: userId });
-    const { setUser } = useUserProfileCard();
+    const { setUser } = useProfileCard();
 
     useEffect(() => {
         if (user) {
@@ -27,13 +26,7 @@ function FuncionarioProfile() {
             {isSuccess && user && (
                 <Content title='Profile'>
                     <>
-                        <ProfileCard
-                            id={user?.id}
-                            name={`${user?.first_name} ${user?.last_name}` || ''}
-                            roles={user?.groups || []}
-                            email={user?.email || ''}
-                        />
-                        <UpdateUserModal />
+                        <ProfileCard />
                         <div className='d-flex flex-column gap-4'>
                             <div className='d-flex flex-column gap-2'>
                                 <div className='d-flex flex-column gap-1'>

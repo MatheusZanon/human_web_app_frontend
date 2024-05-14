@@ -1,21 +1,21 @@
 import { User } from '@/utils/types/user';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-interface UserProfileCardContextType {
+interface ProfileCardContextType {
     user: User | undefined;
     editMode: boolean;
     handleEditMode: () => void;
     setUser: (user: User | undefined) => void;
 }
 
-const UserProfileCardContext = createContext<UserProfileCardContextType>({
+const ProfileCardContext = createContext<ProfileCardContextType>({
     user: undefined,
     editMode: false,
     handleEditMode: () => {},
     setUser: () => {},
 });
 
-const UserProfileCardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProfileCardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User>();
     const [editMode, setEditMode] = useState(false);
 
@@ -36,7 +36,7 @@ const UserProfileCardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, [editMode]);
 
     return (
-        <UserProfileCardContext.Provider
+        <ProfileCardContext.Provider
             value={{
                 user,
                 setUser,
@@ -45,12 +45,12 @@ const UserProfileCardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             }}
         >
             {children}
-        </UserProfileCardContext.Provider>
+        </ProfileCardContext.Provider>
     );
 };
 
-const useUserProfileCard = () => {
-    const context = useContext(UserProfileCardContext);
+const useProfileCard = () => {
+    const context = useContext(ProfileCardContext);
 
     if (context === undefined) {
         throw new Error('useSearch must be used within a SearchProvider');
@@ -59,4 +59,4 @@ const useUserProfileCard = () => {
     return context;
 };
 
-export { UserProfileCardProvider, useUserProfileCard };
+export { ProfileCardProvider, useProfileCard };

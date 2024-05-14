@@ -1,15 +1,24 @@
-import { formatCellphone } from '@/libs';
-import { useUserProfileCard } from '../user-profile-card/user-profile-card-provider';
-import styles from './update-user-modal.module.scss';
+import { formatCellphone, phoneFormatter } from '@/libs';
+import { useProfileCard } from '../profile-card/profile-card-provider';
 import { useGetAllGroups, useUpdateUser } from '@/api/http/user';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
-import { X } from 'lucide-react';
+import { Pen } from 'lucide-react';
+import {
+    BaseModalBody,
+    BaseModalContent,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalProvider,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '../baseModal';
 
 const UpdateUserModal: React.FC = () => {
-    const { user, editMode, handleEditMode } = useUserProfileCard();
+    const { user } = useProfileCard();
 
     const { data: userGroups, isLoading: isUserGroupsLoading } = useGetAllGroups();
 
@@ -27,24 +36,6 @@ const UpdateUserModal: React.FC = () => {
     });
 
     type UpdateUserType = z.infer<typeof updateUserSchema>;
-
-    // Função para formatar o telefone no formato brasileiro
-    const phoneFormatter = (phone: string) => {
-        // Remover todos os caracteres não numéricos
-        const cleanPhone = phone.replace(/\D/g, '');
-
-        if (cleanPhone.length <= 2) {
-            return cleanPhone;
-        }
-
-        // Adicionar parênteses ao DDD
-        if (cleanPhone.length <= 7) {
-            return `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(2)}`;
-        }
-
-        // Adicionar traço após o quinto dígito
-        return `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(2, 7)}-${cleanPhone.slice(7)}`;
-    };
 
     const {
         register,
@@ -137,112 +128,122 @@ const UpdateUserModal: React.FC = () => {
                 position: 'bottom-right',
             });
         }
-
-        handleEditMode();
     };
 
     return (
-        editMode && (
-            <div className={`${styles.modalWrapper}`}>
-                <div className={`${styles.modalContent} p-4 gap-2`}>
-                    <div className='d-flex w-100 justify-content-end align-items-center'>
-                        <button className='btn' type='button' onClick={handleEditMode}>
-                            <X size={18} />
-                        </button>
-                    </div>
-                    <form className='d-flex flex-column gap-2 w-100 h-100 px-1 overflow-auto'>
-                        <div className='d-flex flex-column w-100'>
-                            <label htmlFor='username' className='form-label'>
-                                Nome de usuário:
-                            </label>
-                            <input
-                                type='text'
-                                id='username'
-                                className='form-control'
-                                {...register('username')}
-                                defaultValue={user?.username}
-                            />
-                            {errors.username && <p className='text-danger'>{errors.username.message?.toString()}</p>}
-                        </div>
-                        <div className='d-flex flex-column w-100'>
-                            <label htmlFor='email' className='form-label'>
-                                Email:
-                            </label>
-                            <input
-                                type='text'
-                                id='email'
-                                className='form-control'
-                                {...register('email')}
-                                defaultValue={user?.email}
-                            />
-                            {errors.email && <p className='text-danger'>{errors.email.message?.toString()}</p>}
-                        </div>
-                        <div className='d-flex flex-column w-100'>
-                            <label htmlFor='firstName' className='form-label'>
-                                Nome:
-                            </label>
-                            <input
-                                type='text'
-                                id='firstName'
-                                className='form-control'
-                                {...register('first_name')}
-                                defaultValue={user?.first_name}
-                            />
-                            {errors.first_name && (
-                                <p className='text-danger'>{errors.first_name.message?.toString()}</p>
-                            )}
-                        </div>
-                        <div className='d-flex flex-column w-100'>
-                            <label htmlFor='lastName' className='form-label'>
-                                Sobrenome:
-                            </label>
-                            <input
-                                type='text'
-                                id='lastName'
-                                className='form-control'
-                                {...register('last_name')}
-                                defaultValue={user?.last_name}
-                            />
-                            {errors.last_name && <p className='text-danger'>{errors.last_name.message?.toString()}</p>}
-                        </div>
-                        <div className='d-flex flex-column w-100'>
-                            <label htmlFor='phone' className='form-label'>
-                                Celular
-                            </label>
-                            <input
-                                type='text'
-                                id='phone'
-                                className='form-control'
-                                {...register('phone')}
-                                onChange={handlePhoneChange}
-                                defaultValue={formatCellphone(user?.telefone_celular || '00000000000')}
-                            />
-                            {errors.phone && <p className='text-danger'>{errors.phone.message?.toString()}</p>}
-                        </div>
-                        <div className='d-flex flex-column w-100'>
-                            <p className='form-label'>Cargos:</p>
-                            {errors.groups && <p className='text-danger mb-0'>{errors.groups.message?.toString()}</p>}
-                            {isUserGroupsLoading && <p>Loading...</p>}
-                            {userGroups &&
-                                !isUserGroupsLoading &&
-                                userGroups.map((group) => (
-                                    <div key={group.id} className='w-100 d-flex flex-column mb-1'>
-                                        <div className='d-flex w-100 h-100 align-items-center gap-2'>
-                                            <input
-                                                type='checkbox'
-                                                id={`group-${group.name}`}
-                                                className='form-check'
-                                                value={group.id}
-                                                defaultChecked={user?.groups.includes(group.name)}
-                                                {...register('groups')}
-                                            />
-                                            <label htmlFor={`group-${group.name}`}>
-                                                {group.name.replace('_', ' ')}
-                                            </label>
+        <BaseModalProvider>
+            <BaseModalTrigger variant='ghost'>
+                <Pen size={18} />
+            </BaseModalTrigger>
+            <BaseModalRoot>
+                <BaseModalContent>
+                    <BaseModalHeader>
+                        <BaseModalTitle>{`Editar Usuário ${user?.username}`}</BaseModalTitle>
+                    </BaseModalHeader>
+                    <BaseModalBody>
+                        <form className='d-flex flex-column gap-2 w-100 h-100 px-1 overflow-auto'>
+                            <div className='d-flex flex-column w-100'>
+                                <label htmlFor='username' className='form-label'>
+                                    Nome de usuário:
+                                </label>
+                                <input
+                                    type='text'
+                                    id='username'
+                                    className='form-control'
+                                    {...register('username')}
+                                    defaultValue={user?.username}
+                                />
+                                {errors.username && (
+                                    <p className='text-danger'>{errors.username.message?.toString()}</p>
+                                )}
+                            </div>
+                            <div className='d-flex flex-column w-100'>
+                                <label htmlFor='email' className='form-label'>
+                                    Email:
+                                </label>
+                                <input
+                                    type='text'
+                                    id='email'
+                                    className='form-control'
+                                    {...register('email')}
+                                    defaultValue={user?.email}
+                                />
+                                {errors.email && <p className='text-danger'>{errors.email.message?.toString()}</p>}
+                            </div>
+                            <div className='d-flex flex-column w-100'>
+                                <label htmlFor='firstName' className='form-label'>
+                                    Nome:
+                                </label>
+                                <input
+                                    type='text'
+                                    id='firstName'
+                                    className='form-control'
+                                    {...register('first_name')}
+                                    defaultValue={user?.first_name}
+                                />
+                                {errors.first_name && (
+                                    <p className='text-danger'>{errors.first_name.message?.toString()}</p>
+                                )}
+                            </div>
+                            <div className='d-flex flex-column w-100'>
+                                <label htmlFor='lastName' className='form-label'>
+                                    Sobrenome:
+                                </label>
+                                <input
+                                    type='text'
+                                    id='lastName'
+                                    className='form-control'
+                                    {...register('last_name')}
+                                    defaultValue={user?.last_name}
+                                />
+                                {errors.last_name && (
+                                    <p className='text-danger'>{errors.last_name.message?.toString()}</p>
+                                )}
+                            </div>
+                            <div className='d-flex flex-column w-100'>
+                                <label htmlFor='phone' className='form-label'>
+                                    Celular
+                                </label>
+                                <input
+                                    type='text'
+                                    id='phone'
+                                    className='form-control'
+                                    {...register('phone')}
+                                    onChange={handlePhoneChange}
+                                    placeholder={formatCellphone('00000000000')}
+                                    defaultValue={user?.telefone_celular ? formatCellphone(user?.telefone_celular) : undefined}
+                                />
+                                {errors.phone && <p className='text-danger'>{errors.phone.message?.toString()}</p>}
+                            </div>
+                            <div className='d-flex flex-column w-100'>
+                                <p className='form-label'>Cargos:</p>
+                                {errors.groups && (
+                                    <p className='text-danger mb-0'>{errors.groups.message?.toString()}</p>
+                                )}
+                                {isUserGroupsLoading && <p>Loading...</p>}
+                                {userGroups &&
+                                    !isUserGroupsLoading &&
+                                    userGroups.map((group) => (
+                                        <div key={group.id} className='w-100 d-flex flex-column mb-1'>
+                                            <div className='d-flex w-100 h-100 align-items-center gap-2'>
+                                                <input
+                                                    type='checkbox'
+                                                    id={`group-${group.name}`}
+                                                    className='form-check'
+                                                    value={group.id}
+                                                    defaultChecked={user?.groups.includes(group.name)}
+                                                    {...register('groups')}
+                                                />
+                                                <label htmlFor={`group-${group.name}`}>
+                                                    {group.name.replace('_', ' ')}
+                                                </label>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                        </div>
+                                    ))}
+                            </div>
+                        </form>
+                    </BaseModalBody>
+                    <BaseModalFooter>
                         <button
                             className='btn btn-primary'
                             onClick={handleSubmit(onSubmit)}
@@ -250,10 +251,10 @@ const UpdateUserModal: React.FC = () => {
                         >
                             Salvar
                         </button>
-                    </form>
-                </div>
-            </div>
-        )
+                    </BaseModalFooter>
+                </BaseModalContent>
+            </BaseModalRoot>
+        </BaseModalProvider>
     );
 };
 

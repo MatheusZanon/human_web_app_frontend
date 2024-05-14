@@ -1,7 +1,6 @@
 import { Content } from '@/components/layout/content';
-import UserProfileCard from '@/components/user-profile-card';
-import { useUserProfileCard } from '@/components/user-profile-card/user-profile-card-provider';
-import { UpdateUserModal } from '@/components/update-user-modal';
+import ProfileCard from '@/components/profile-card';
+import { useProfileCard } from '@/components/profile-card/profile-card-provider';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { formatCellphone, formatCpf, formatRg } from '@/libs';
 import { useEffect } from 'react';
@@ -9,7 +8,7 @@ import { useEffect } from 'react';
 function Profile() {
     const { authenticatedUser } = useAuthenticatedUser();
 
-    const { setUser } = useUserProfileCard();
+    const { setUser } = useProfileCard();
 
     useEffect(() => {
         if (authenticatedUser) {
@@ -20,14 +19,7 @@ function Profile() {
     return (
         <Content title='Profile'>
             <div className='row'>
-                <UserProfileCard
-                    id={authenticatedUser?.id}
-                    profilePicture=''
-                    name={authenticatedUser?.username || ''}
-                    roles={authenticatedUser?.groups || []}
-                    email={authenticatedUser?.email || ''}
-                />
-                <UpdateUserModal />
+                <ProfileCard />
             </div>
             <div className='row py-2'>
                 <div className='col'>
