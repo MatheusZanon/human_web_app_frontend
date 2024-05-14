@@ -9,6 +9,7 @@ import { MdFolder, MdImage, MdPictureAsPdf, MdEditDocument } from 'react-icons/m
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 import { formatDateTime } from '@/libs';
+import { Link } from 'react-router-dom';
 
 
 function PastasGoogleDrive() {
@@ -42,13 +43,6 @@ function PastasGoogleDrive() {
     if (arquivosDrive.data?.length === 0) {
         return (
             <Content title="Arquivos Drive Financeiro">
-                <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleBackClick()}
-                    >
-                    <ArrowBigLeftDash />
-                </button>  
                 <AlertMessage message="Nenhum arquivo encontrado!" />
             </Content>
         )
@@ -130,7 +124,9 @@ function PastasGoogleDrive() {
                                         <button
                                             className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
                                         >
-                                            <Search width={16} height={16} />
+                                            <Link to={`preview/${arquivo.id}`}>
+                                                <Search width={16} height={16} />
+                                            </Link>
                                         </button>
                                         <button
                                             className='btn btn-sm p-1 d-flex justify-content-center align-items-center'

@@ -62,7 +62,7 @@ export function useActivateUser() {
         mutationKey: ['users'],
         mutationFn: ({ userId, data }: { userId: number; data: { id: number[] } }) => putActivateUser({ userId, data }),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['inactive_users'] });
         },
     });
 }
@@ -72,7 +72,7 @@ export function useDeactivateUser() {
         mutationKey: ['users'],
         mutationFn: (userId: number) => putDeactivateUser({ userId }),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['active_users'] });
         },
     });
 }

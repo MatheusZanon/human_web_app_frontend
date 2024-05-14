@@ -43,6 +43,7 @@ import PastasGoogleDrive from '@/pages/financeiro/pastas-google-drive';
 import Dashboard from '@/pages/dashboard';
 import { UserProfileCardProvider } from '@/components/user-profile-card/user-profile-card-provider';
 import { ClienteProfileCardProvider } from '@/components/update-cliente-modal/cliente-profile-card-provider';
+import PreviewArquivo from '@/pages/financeiro/pastas-google-drive/preview_arquivo';
 
 type route = {
     path: string;
@@ -93,6 +94,10 @@ const allRoutes: route[] = [
     {
         path: 'financeiro/drive',
         element: <PastasGoogleDrive />,
+    },
+    {
+        path: 'financeiro/drive/preview/:arquivoId',
+        element: <PreviewArquivo/>,
     },
     {
         path: 'rh/funcionarios',

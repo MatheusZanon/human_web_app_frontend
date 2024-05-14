@@ -20,7 +20,6 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
         api.post('session/logout/').then(() => 
             setIsAuthenticated(false)
         );
-        <Navigate to='/' state={{ from: location }} replace />
     };
 
     useEffect(() => {
