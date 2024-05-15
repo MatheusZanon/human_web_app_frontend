@@ -55,17 +55,26 @@ const BaseModalProvider: React.FC<BaseModalProviderProps> = ({
     onClose(onCloseCallback);
 
     useEffect(() => {
-        const originalOverflow = document.body.style.overflow;
+        function disableScrolling() {
+            const x = window.scrollX;
+            const y = window.scrollY;
+            window.onscroll = function () {
+                window.scrollTo({ left: x, top: y, behavior: 'instant' });
+            };
+        }
+
+        function enableScrolling() {
+            window.onscroll = function () {};
+        }
 
         if (open) {
-            document.body.style.overflow = 'hidden';
+            disableScrolling();
         } else {
-            document.body.style.overflow = originalOverflow;
+            enableScrolling();
         }
 
         return () => {
-            // Restaurar o valor original do overflow quando o componente for desmontado
-            document.body.style.overflow = originalOverflow;
+            enableScrolling();
         };
     }, [open]);
 
@@ -112,7 +121,11 @@ type baseModalTriggerProps = {
 const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({ children, variant = 'ghost', size = 'md' }) => {
     const { toggleOpen } = useContext(BaseModalContext);
     return (
-        <button type='button' onClick={toggleOpen} className={`${styles.modalTrigger} btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size}`}>
+        <button
+            type='button'
+            onClick={toggleOpen}
+            className={`${styles.modalTrigger} btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size}`}
+        >
             {children}
         </button>
     );
@@ -135,7 +148,9 @@ const BaseModalContent: React.FC<baseModalContentProps> = ({ children }) => {
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const clickedOutsideModal = modalRef.current && !modalRef.current.contains(event.target as Node);
-            const clickedOnOpenButton = (event.target as HTMLElement).className.includes('modalTrigger');
+            const clickedOnOpenButton =
+                (event.target as HTMLElement).className &&
+                (event.target as HTMLElement).className.includes('modalTrigger');
             if (clickedOutsideModal && !clickedOnOpenButton && open) {
                 handleClose();
             }
