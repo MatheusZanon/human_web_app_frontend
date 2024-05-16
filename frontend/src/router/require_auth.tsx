@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { api } from '@/utils/axios';
 import LoadingScreen from '@/components/loading-screen';
 import Modal from '@/components/user-alert-logout-modal';
@@ -14,12 +14,14 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
     const [isChecking, setIsChecking] = useState(true);
     const location = useLocation();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleModalClose = () => {
         setIsModalOpen(false);
         api.post('session/logout/').then(() => 
             setIsAuthenticated(false)
         );
+        navigate('/');
     };
 
     useEffect(() => {
@@ -28,10 +30,8 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
                 const response = await api.get('session/verify/',  {withCredentials: true});
                 if (response.status == 200) {
                     setIsAuthenticated(true);
-                } else {
-                    throw new Error('Token Expired');
                 }
-            } catch (error) {
+            } catch (error : any) {
                 setIsModalOpen(true);
             } finally {
                 setIsChecking(false);
@@ -42,10 +42,6 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
 
     if (isChecking) {
         return <div><LoadingScreen /></div>;
-    }
-
-    if (!isAuthenticated && !isModalOpen) {
-        return <Navigate to='/' state={{ from: location }} replace />;
     }
 
     return (
