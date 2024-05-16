@@ -21,6 +21,7 @@ import { Search } from '@/components/dashboard/search';
 import { toast } from 'react-toastify';
 import { CriarReembolsoType, criarReembolsoSchema } from '@/utils/types/criar_reembolso';
 import { AtualizarReembolsoType, atualizarReembolsoSchema } from '@/utils/types/atualizar_reembolso';
+import AlertMessage from '@/components/alert-message';
 
 function CardReembolsos({ ...props }) {
     const date = new Date();
@@ -478,14 +479,9 @@ function CardReembolsos({ ...props }) {
                             ))}
                     </TableBody>
                 </Table>
-                {!reembolsosResults.length && (
-                    <h6 className='text-center align-self-center'>
-                        Nenhum reembolso encontrado{' '}
-                        <p className='mt-2'>
-                            <AlertTriangle />
-                        </p>
-                    </h6>
-                )}
+                {!reembolsosResults.length && 
+                    <AlertMessage message="Nenhum reembolso encontrado!"/>
+                }  
             </div>
         </div>
     );

@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { useGetClientes, usePostCliente } from '@/api/http/clientes_financeiro';
 import { Search, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
-import { ArrowBigLeftDash, ArrowBigRightDash, AlertTriangle } from 'lucide-react';
+import { ArrowBigLeftDash, ArrowBigRightDash} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Content } from '@/components/layout/content';
 import { cnpjFormatter, cpfFormatter, formatCnpj, formatCpf, phoneFormatter } from '@/libs';
@@ -22,6 +22,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CriarClienteType } from '@/utils/types/criar_cliente';
 import { toast } from 'react-toastify';
+import AlertMessage from '@/components/alert-message';
 
 const newClienteFormSchema = z
     .object({
@@ -366,12 +367,7 @@ function ClientesFinanceiro() {
                     </TableBody>
                 </Table>
                 {!clienteResults.length && (
-                    <h6 className='text-center align-self-center'>
-                        Nenhum cliente encontrado{' '}
-                        <p className='mt-2'>
-                            <AlertTriangle />
-                        </p>
-                    </h6>
+                    <AlertMessage message="Nenhum cliente encontrado!"/>
                 )}
             </Content>
         </>

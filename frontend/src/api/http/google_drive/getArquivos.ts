@@ -1,16 +1,7 @@
 import { api } from "@/utils/axios";
-
-interface Arquivo {
-    kind: string;
-    id: string;
-    name: string;
-    mimeType: string;
-    parents: string[];
-    webViewLink: string;
-    modifiedTime: string;
-}
+import { ArquivosDrive } from "@/utils/types/arquivos_drive";
 
 export async function getArquivos(url: string) {
-    const response = await api.get<Arquivo[]>(url);
+    const response = await api.get<ArquivosDrive[]>(url);
     return response.data;
 }

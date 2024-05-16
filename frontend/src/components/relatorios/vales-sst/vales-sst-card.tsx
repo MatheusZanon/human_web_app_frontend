@@ -6,6 +6,7 @@ import { useGetValesSST, usePutValesSST } from '@/api/http/financeiro_valores';
 import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
 import ValesSSTModal from './vales-sst-modal';
 import { toast } from 'react-toastify';
+import AlertMessage from '@/components/alert-message';
 
 function CardValesSST({ ...props }) {
     const date = new Date();
@@ -158,11 +159,12 @@ function CardValesSST({ ...props }) {
                                     </TableData>
                                 </TableRow>
                             ))}
-                    </TableBody>
-                </Table>
-                {selectedVale && (
-                    <ValesSSTModal vale={selectedVale} onClose={() => setSelectedVale(null)} onUpdate={updateVale} />
-                )}
+                        </TableBody>
+                    </Table>
+                    {!valesSSTResults.length && 
+                        <AlertMessage message="Nenhum registro de vale encontrado!"/>
+                    }  
+                    {selectedVale && <ValesSSTModal vale={selectedVale} onClose={() => setSelectedVale(null)} onUpdate={updateVale}/>}
             </div>
         </div>
     );

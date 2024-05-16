@@ -4,6 +4,8 @@ import { queryClient } from '@/utils/queryClient';
 import { getUser } from './getUser';
 import { getAllUsers } from './getAllUsers';
 import { getAllGroups } from './getAllGroups';
+import { getActiveUsers } from './getActiveUsers';
+import { getInactiveUsers } from './getInactiveUsers'; 
 import { putActivateUser } from './putActivateUser';
 import { getUserById } from './getUserById';
 import { putDeactivateUser } from './putDesactivateUser';
@@ -26,12 +28,13 @@ export function useGetUserById({ userId }: { userId: number }) {
     });
 }
 
-export function useGetAllUsers() {
+export function usegetAllUsers() {
     return useQuery({
         queryKey: ['users'],
         queryFn: () => getAllUsers(),
     });
 }
+
 
 export function useGetAllGroups() {
     return useQuery({
@@ -40,12 +43,27 @@ export function useGetAllGroups() {
     });
 }
 
+
+export function useGetActiveUsers() {
+    return useQuery({
+        queryKey: ['active_users'],
+        queryFn: () => getActiveUsers(),
+    });
+}
+
+export function useGetInactiveUsers() {
+    return useQuery({
+        queryKey: ['inactive_users'],
+        queryFn: () => getInactiveUsers(),
+    });
+}
+
 export function useActivateUser() {
     return useMutation({
         mutationKey: ['users'],
         mutationFn: ({ userId, data }: { userId: number; data: { id: number[] } }) => putActivateUser({ userId, data }),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['inactive_users'] });
         },
     });
 }
@@ -55,7 +73,7 @@ export function useDeactivateUser() {
         mutationKey: ['users'],
         mutationFn: (userId: number) => putDeactivateUser({ userId }),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['active_users'] });
         },
     });
 }
