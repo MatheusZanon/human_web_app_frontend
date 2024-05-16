@@ -5,6 +5,10 @@ import { getValesSST } from './getValesSST';
 import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
 import { putValesSST } from './putValesSST';
 import { queryClient } from '@/utils/queryClient';
+import { FinanceiroReembolsos } from '@/utils/types/financeiro_reembolsos';
+import { postReembolso } from './postReembolsos';
+import { putReembolso } from './putReembolsos';
+import { deleteReembolso } from './deleteReembolsos';
 
 export function useGetFinanceiroValores() {
     return useQuery({
@@ -52,6 +56,36 @@ export function usePutValesSST() {
             }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['vales_sst'] });
+        },
+    });
+}
+
+export function usePostReembolso() {
+    return useMutation({
+        mutationKey: ['reembolsos'],
+        mutationFn: (data: Omit<FinanceiroReembolsos, 'id'>) => postReembolso(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['reembolsos'] });
+        },
+    });
+}
+
+export function usePutReembolso() {
+    return useMutation({
+        mutationKey: ['reembolsos'],
+        mutationFn: (data: Partial<FinanceiroReembolsos>) => putReembolso(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['reembolsos'] });
+        },
+    });
+}
+
+export function useDeleteReembolso() {
+    return useMutation({
+        mutationKey: ['reembolsos'],
+        mutationFn: ({ id }: Pick<FinanceiroReembolsos, 'id'>) => deleteReembolso(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['reembolsos'] });
         },
     });
 }

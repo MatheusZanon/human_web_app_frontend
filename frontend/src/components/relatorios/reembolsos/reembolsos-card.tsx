@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useGetReembolsos } from '@/api/http/financeiro_valores';
+import { useDeleteReembolso, useGetReembolsos, usePostReembolso, usePutReembolso } from '@/api/http/financeiro_valores';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
 import { ArrowBigLeftDash, ArrowBigRightDash, Pencil, Trash2, AlertTriangle, Plus } from 'lucide-react';
 import styles from './reembolsos-card.module.scss';
 import {
     BaseModalBody,
+    BaseModalCloseButton,
     BaseModalContent,
     BaseModalFooter,
     BaseModalHeader,
@@ -13,11 +14,13 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '@/components/baseModal';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useSearch } from '@/components/dashboard/search/search-provider';
 import { Search } from '@/components/dashboard/search';
+import { toast } from 'react-toastify';
+import { CriarReembolsoType, criarReembolsoSchema } from '@/utils/types/criar_reembolso';
+import { AtualizarReembolsoType, atualizarReembolsoSchema } from '@/utils/types/atualizar_reembolso';
 
 function CardReembolsos({ ...props }) {
     const date = new Date();
@@ -40,17 +43,7 @@ function CardReembolsos({ ...props }) {
         };
     }, [mes, ano]);
 
-    const { selected } = useSearch();
-
-    const criarReembolsoSchema = z.object({
-        mes: z.string().pipe(z.coerce.number().min(1, 'Este campo é obrigatório')),
-        ano: z.string().pipe(z.coerce.number().min(1, 'Este campo é obrigatório')),
-        nome_razao_social: z.string().min(1, 'Este campo é obrigatório'),
-        descricao: z.string().min(1, 'Este campo é obrigatório'),
-        valor: z.string().pipe(z.coerce.number().min(1, 'Este campo é obrigatório')),
-    });
-
-    type CriarReembolsoType = z.infer<typeof criarReembolsoSchema>;
+    const { selected, setSelected } = useSearch();
 
     const {
         register,
@@ -72,8 +65,106 @@ function CardReembolsos({ ...props }) {
         setValue('nome_razao_social', selected);
     }, [selected, setValue]);
 
+    const { mutate: postReembolso, isPending: isPostReembolsoPending, error: postReembolsoError } = usePostReembolso();
+
     const onSubmit = (data: CriarReembolsoType) => {
-        console.log(data);
+        postReembolso(data);
+
+        if (isPostReembolsoPending && !postReembolsoError) {
+            toast.info('Criando reembolso...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (postReembolsoError) {
+            toast.error(`Ocorreu um erro ao criar o reembolso: ${postReembolsoError.response?.data}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (!isPostReembolsoPending && !postReembolsoError) {
+            toast.success('Reembolso criado!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+            setSelected('');
+        }
+    };
+
+    const {
+        register: atualizarReembolsoRegister,
+        handleSubmit: atualizarReembolsoHandleSubmit,
+        formState: { errors: atualizarReembolsoErrors },
+        setValue: atualizarReembolsoSetValue,
+    } = useForm<AtualizarReembolsoType>({
+        mode: 'onChange',
+        reValidateMode: 'onChange',
+        criteriaMode: 'all',
+        shouldUnregister: false,
+        shouldFocusError: true,
+        shouldUseNativeValidation: false,
+        delayError: 500,
+        resolver: zodResolver(atualizarReembolsoSchema),
+    });
+
+    const { mutate: putReembolso, isPending: isPutReembolsoPending, error: putReembolsoError } = usePutReembolso();
+
+    const atualizarReembolsoOnSubmit = (data: AtualizarReembolsoType) => {
+        putReembolso(data);
+
+        if (isPutReembolsoPending && !putReembolsoError) {
+            toast.info('Atualizando reembolso...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (putReembolsoError) {
+            toast.error(`Ocorreu um erro ao atualizar o reembolso: ${putReembolsoError.response?.data}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (!isPutReembolsoPending && !putReembolsoError) {
+            toast.success('Reembolso atualizado!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    };
+
+    const {
+        mutate: deleteReembolso,
+        isPending: isDeleteReembolsoPending,
+        error: deleteReembolsoError,
+    } = useDeleteReembolso();
+
+    const excluirReembolsoHandleSubmit = (reembolsoId: number) => {
+        deleteReembolso({ id: reembolsoId });
+
+        if (isDeleteReembolsoPending && !deleteReembolsoError) {
+            toast.info('Excluindo reembolso...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (deleteReembolsoError) {
+            toast.error(`Ocorreu um erro ao excluir o reembolso: ${deleteReembolsoError.response?.data}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (!isDeleteReembolsoPending && !deleteReembolsoError) {
+            toast.success('Reembolso excluído!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
     };
 
     return (
@@ -184,10 +275,7 @@ function CardReembolsos({ ...props }) {
                                             <label htmlFor='mes' className='form-label'>
                                                 Mes
                                             </label>
-                                            <select
-                                                className='form-select'
-                                                {...register('mes')}
-                                            >
+                                            <select className='form-select' {...register('mes')}>
                                                 <option value='' disabled>
                                                     Mês
                                                 </option>
@@ -250,16 +338,140 @@ function CardReembolsos({ ...props }) {
                                     <TableData>{reembolso.mes}</TableData>
                                     <TableData>{reembolso.ano}</TableData>
                                     <TableData>
-                                        <div className='d-flex gap-2 justify-content-center'>
-                                            <button
-                                                className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                onClick={() => {}}
+                                        <div className='d-flex gap-2'>
+                                            <BaseModalProvider
+                                                onOpenCallback={() => atualizarReembolsoSetValue('id', reembolso.id)}
                                             >
-                                                <Pencil width={16} height={16} />
-                                            </button>
-                                            <button className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'>
-                                                <Trash2 width={16} height={16} />
-                                            </button>
+                                                <BaseModalTrigger variant='warning' size='sm'>
+                                                    <Pencil size={16} />
+                                                </BaseModalTrigger>
+                                                <BaseModalRoot>
+                                                    <BaseModalContent>
+                                                        <BaseModalHeader>
+                                                            <BaseModalTitle>{`Editar Reembolso`}</BaseModalTitle>
+                                                        </BaseModalHeader>
+                                                        <BaseModalBody>
+                                                            <form className='w-100'>
+                                                                <div className='w-100'>
+                                                                    <label htmlFor='descricao' className='form-label'>
+                                                                        Descrição
+                                                                    </label>
+                                                                    <input
+                                                                        type='text'
+                                                                        className='form-control'
+                                                                        placeholder='Descrição'
+                                                                        {...atualizarReembolsoRegister('descricao')}
+                                                                        defaultValue={reembolso.descricao}
+                                                                    />
+                                                                    {atualizarReembolsoErrors.descricao && (
+                                                                        <span className='text-danger'>
+                                                                            {atualizarReembolsoErrors.descricao.message}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <div className='w-100'>
+                                                                    <label htmlFor='valor' className='form-label'>
+                                                                        Valor
+                                                                    </label>
+                                                                    <input
+                                                                        type='number'
+                                                                        className='form-control'
+                                                                        placeholder='Valor'
+                                                                        {...atualizarReembolsoRegister('valor')}
+                                                                        defaultValue={reembolso.valor}
+                                                                    />
+                                                                    {atualizarReembolsoErrors.valor && (
+                                                                        <span className='text-danger'>
+                                                                            {atualizarReembolsoErrors.valor.message}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <div className='w-100'>
+                                                                    <label htmlFor='mes' className='form-label'>
+                                                                        Mes
+                                                                    </label>
+                                                                    <input
+                                                                        type='number'
+                                                                        className='form-control'
+                                                                        placeholder='Mes'
+                                                                        {...atualizarReembolsoRegister('mes')}
+                                                                        defaultValue={reembolso.mes}
+                                                                    />
+                                                                    {atualizarReembolsoErrors.mes && (
+                                                                        <span className='text-danger'>
+                                                                            {atualizarReembolsoErrors.mes.message}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <div className='w-100'>
+                                                                    <label htmlFor='ano' className='form-label'>
+                                                                        Ano
+                                                                    </label>
+                                                                    <input
+                                                                        type='number'
+                                                                        className='form-control'
+                                                                        placeholder='Ano'
+                                                                        {...atualizarReembolsoRegister('ano')}
+                                                                        defaultValue={reembolso.ano}
+                                                                    />
+                                                                    {atualizarReembolsoErrors.ano && (
+                                                                        <span className='text-danger'>
+                                                                            {atualizarReembolsoErrors.ano.message}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </form>
+                                                        </BaseModalBody>
+                                                        <BaseModalFooter>
+                                                            <div className='w-100'>
+                                                                <button
+                                                                    type='button'
+                                                                    onClick={atualizarReembolsoHandleSubmit(
+                                                                        atualizarReembolsoOnSubmit,
+                                                                    )}
+                                                                    className='btn btn-primary'
+                                                                >
+                                                                    Salvar
+                                                                </button>
+                                                            </div>
+                                                        </BaseModalFooter>
+                                                    </BaseModalContent>
+                                                </BaseModalRoot>
+                                            </BaseModalProvider>
+                                            <BaseModalProvider>
+                                                <BaseModalTrigger variant='danger' size='sm'>
+                                                    <Trash2 size={16} />
+                                                </BaseModalTrigger>
+                                                <BaseModalRoot>
+                                                    <BaseModalContent>
+                                                        <BaseModalHeader>
+                                                            <BaseModalTitle>
+                                                                <AlertTriangle size={20} />
+                                                                {`Excluir Reembolso`}
+                                                            </BaseModalTitle>
+                                                        </BaseModalHeader>
+                                                        <BaseModalBody>
+                                                            <div className='w-100'>
+                                                                <p>{`Tem certeza que deseja excluir o reembolso "${reembolso.descricao}" do cliente ${reembolso.nome_razao_social} de ${reembolso.mes}/${reembolso.ano}?`}</p>
+                                                                <div className='d-flex gap-2'>
+                                                                    <button
+                                                                        className='btn btn-danger'
+                                                                        type='button'
+                                                                        onClick={() =>
+                                                                            excluirReembolsoHandleSubmit(reembolso.id)
+                                                                        }
+                                                                    >
+                                                                        Sim
+                                                                    </button>
+                                                                    <BaseModalCloseButton variant='primary'>
+                                                                        Não
+                                                                    </BaseModalCloseButton>
+                                                                </div>
+                                                            </div>
+                                                        </BaseModalBody>
+                                                    </BaseModalContent>
+                                                </BaseModalRoot>
+                                            </BaseModalProvider>
                                         </div>
                                     </TableData>
                                 </TableRow>

@@ -203,9 +203,11 @@ const BaseModalBody: React.FC<baseModalBodyProps> = ({ children }) => {
 
 type baseModalCloseButtonProps = {
     children?: React.ReactNode;
+    variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'light' | 'dark' | 'ghost';
+    size?: 'sm' | 'md' | 'lg';
 };
 
-const BaseModalCloseButton: React.FC<baseModalCloseButtonProps> = ({ children }) => {
+const BaseModalCloseButton: React.FC<baseModalCloseButtonProps> = ({ children, variant = 'ghost', size = 'md' }) => {
     const { onClose, toggleOpen } = useContext(BaseModalContext);
 
     const handleClose = useCallback(() => {
@@ -214,7 +216,10 @@ const BaseModalCloseButton: React.FC<baseModalCloseButtonProps> = ({ children })
     }, [onClose, toggleOpen]);
 
     return (
-        <button className={`${styles.modalCloseButton} btn`} onClick={handleClose}>
+        <button
+            className={`${styles.modalCloseButton} d-flex align-items-center gap-1 btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size}`}
+            onClick={handleClose}
+        >
             <X size={18} />
             {children}
         </button>
@@ -228,7 +233,7 @@ type baseModalTitleProps = {
 const BaseModalTitle: React.FC<baseModalTitleProps> = ({ children }) => {
     return (
         <div className={`${styles.modalTitle} text-wrap`}>
-            <h3>{children}</h3>
+            <h3 className='d-flex gap-1 align-items-center'>{children}</h3>
         </div>
     );
 };

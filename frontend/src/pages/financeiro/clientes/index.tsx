@@ -184,7 +184,7 @@ function ClientesFinanceiro() {
                         />
                         {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO')) && (
                             <BaseModalProvider>
-                                <BaseModalTrigger variant='primary'>Adicionar Cliente</BaseModalTrigger>
+                                <BaseModalTrigger variant='secondary'>Adicionar Cliente</BaseModalTrigger>
                                 <BaseModalRoot>
                                     <BaseModalContent>
                                         <BaseModalHeader>
