@@ -5,7 +5,7 @@ import AlertMessage from '@/components/alert-message';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
 import { ArrowBigLeftDash, Search, Download } from 'lucide-react';
-import { MdFolder, MdImage, MdPictureAsPdf, MdEditDocument } from 'react-icons/md';
+import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary } from 'react-icons/md';
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 import { formatDateTime } from '@/libs';
@@ -78,6 +78,11 @@ function PastasGoogleDrive() {
                                             </div>
                                         </button>
                                     }
+                                    {arquivo.mimeType === "application/x-msdownload" && 
+                                        <div className='d-flex align-items-center gap-2'>
+                                            <MdArchive color="#626D0A" size={22}/> {arquivo.name}
+                                        </div>
+                                    } 
                                     {arquivo.mimeType === "application/x-zip-compressed" && 
                                         <div className='d-flex align-items-center gap-2'>
                                             <BsFileEarmarkZip color="#88770D" size={22}/> {arquivo.name}
@@ -86,6 +91,11 @@ function PastasGoogleDrive() {
                                     {(arquivo.mimeType === "image/png" || arquivo.mimeType === "image/jpeg") && 
                                         <div className='d-flex align-items-center gap-2'>
                                             <MdImage color='#EF3232' size={22}/> {arquivo.name}
+                                        </div>
+                                    }
+                                    {(arquivo.mimeType === "video/mp4" || arquivo.mimeType === "image/jpeg") && 
+                                        <div className='d-flex align-items-center gap-2'>
+                                            <MdVideoLibrary color='#EF3232' size={22}/> {arquivo.name}
                                         </div>
                                     }
                                     {arquivo.mimeType === "application/vnd.google-apps.document" && 
