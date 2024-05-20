@@ -84,6 +84,7 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm<ChangeSituacaoType>({
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -189,7 +190,7 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                             <span className='d-flex justify-content-center align-items-center flex-grow-1'>
                                                 {funcionario.situacao}
                                             </span>
-                                            <BaseModalProvider>
+                                            <BaseModalProvider onOpenCallback={() => setValue('situacao', funcionario.situacao as ChangeSituacaoType['situacao'])}>
                                                 <BaseModalTrigger size='sm'>
                                                     <Pen size={16} />
                                                 </BaseModalTrigger>
@@ -224,6 +225,7 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                                 onClick={handleSubmit((data) =>
                                                                     onSubmit(funcionario.id, data),
                                                                 )}
+                                                                
                                                             >
                                                                 Salvar
                                                             </button>

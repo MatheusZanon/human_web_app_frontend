@@ -6,6 +6,7 @@ import styles from './reembolsos-card.module.scss';
 import {
     BaseModalBody,
     BaseModalCloseButton,
+    BaseModalConfirmationButton,
     BaseModalContent,
     BaseModalFooter,
     BaseModalHeader,
@@ -49,7 +50,7 @@ function CardReembolsos({ ...props }) {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isValid },
         setValue,
     } = useForm<CriarReembolsoType>({
         mode: 'onChange',
@@ -66,8 +67,12 @@ function CardReembolsos({ ...props }) {
         setValue('nome_razao_social', selected);
     }, [selected, setValue]);
 
-    const { mutate: postReembolso, isPending: isPostReembolsoPending, error: postReembolsoError } = usePostReembolso();
-
+    const {
+        mutate: postReembolso,
+        isPending: isPostReembolsoPending,
+        isSuccess: isPostReembolsoSuccess,
+        error: postReembolsoError,
+    } = usePostReembolso();
     const onSubmit = (data: CriarReembolsoType) => {
         postReembolso(data);
 
@@ -85,7 +90,7 @@ function CardReembolsos({ ...props }) {
             });
         }
 
-        if (!isPostReembolsoPending && !postReembolsoError) {
+        if (isPostReembolsoSuccess) {
             toast.success('Reembolso criado!', {
                 position: 'bottom-right',
                 autoClose: 3000,
@@ -310,9 +315,9 @@ function CardReembolsos({ ...props }) {
                                     </form>
                                 </BaseModalBody>
                                 <BaseModalFooter>
-                                    <button type='button' className='btn btn-primary' onClick={handleSubmit(onSubmit)}>
+                                    <BaseModalConfirmationButton onClick={isValid ? handleSubmit(onSubmit) : undefined} disabled={isPostReembolsoPending}>
                                         Adicionar
-                                    </button>
+                                    </BaseModalConfirmationButton>
                                 </BaseModalFooter>
                             </BaseModalContent>
                         </BaseModalRoot>
@@ -341,7 +346,14 @@ function CardReembolsos({ ...props }) {
                                     <TableData>
                                         <div className='d-flex gap-2'>
                                             <BaseModalProvider
-                                                onOpenCallback={() => atualizarReembolsoSetValue('id', reembolso.id)}
+                                                onOpenCallback={() => {
+                                                    atualizarReembolsoSetValue('id', reembolso.id)
+                                                    atualizarReembolsoSetValue('descricao', reembolso.descricao)
+                                                    atualizarReembolsoSetValue('valor', reembolso.valor)
+                                                    atualizarReembolsoSetValue('mes', reembolso.mes)
+                                                    atualizarReembolsoSetValue('ano', reembolso.ano)
+
+                                                }}
                                             >
                                                 <BaseModalTrigger variant='warning' size='sm'>
                                                     <Pencil size={16} />
@@ -425,15 +437,13 @@ function CardReembolsos({ ...props }) {
                                                         </BaseModalBody>
                                                         <BaseModalFooter>
                                                             <div className='w-100'>
-                                                                <button
-                                                                    type='button'
+                                                                <BaseModalConfirmationButton
                                                                     onClick={atualizarReembolsoHandleSubmit(
                                                                         atualizarReembolsoOnSubmit,
                                                                     )}
-                                                                    className='btn btn-primary'
                                                                 >
                                                                     Salvar
-                                                                </button>
+                                                                </BaseModalConfirmationButton>
                                                             </div>
                                                         </BaseModalFooter>
                                                     </BaseModalContent>
@@ -455,15 +465,13 @@ function CardReembolsos({ ...props }) {
                                                             <div className='w-100'>
                                                                 <p>{`Tem certeza que deseja excluir o reembolso "${reembolso.descricao}" do cliente ${reembolso.nome_razao_social} de ${reembolso.mes}/${reembolso.ano}?`}</p>
                                                                 <div className='d-flex gap-2'>
-                                                                    <button
-                                                                        className='btn btn-danger'
-                                                                        type='button'
+                                                                    <BaseModalConfirmationButton
                                                                         onClick={() =>
                                                                             excluirReembolsoHandleSubmit(reembolso.id)
                                                                         }
                                                                     >
                                                                         Sim
-                                                                    </button>
+                                                                    </BaseModalConfirmationButton>
                                                                     <BaseModalCloseButton variant='primary'>
                                                                         Não
                                                                     </BaseModalCloseButton>
@@ -479,9 +487,7 @@ function CardReembolsos({ ...props }) {
                             ))}
                     </TableBody>
                 </Table>
-                {!reembolsosResults.length && 
-                    <AlertMessage message="Nenhum reembolso encontrado!"/>
-                }  
+                {!reembolsosResults.length && <AlertMessage message='Nenhum reembolso encontrado!' />}
             </div>
         </div>
     );

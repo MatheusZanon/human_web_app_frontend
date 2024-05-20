@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { Pen } from 'lucide-react';
 import {
     BaseModalBody,
+    BaseModalConfirmationButton,
     BaseModalContent,
     BaseModalFooter,
     BaseModalHeader,
@@ -211,7 +212,9 @@ const UpdateUserModal: React.FC = () => {
                                     {...register('phone')}
                                     onChange={handlePhoneChange}
                                     placeholder={formatCellphone('00000000000')}
-                                    defaultValue={user?.telefone_celular ? formatCellphone(user?.telefone_celular) : undefined}
+                                    defaultValue={
+                                        user?.telefone_celular ? formatCellphone(user?.telefone_celular) : undefined
+                                    }
                                 />
                                 {errors.phone && <p className='text-danger'>{errors.phone.message?.toString()}</p>}
                             </div>
@@ -244,13 +247,9 @@ const UpdateUserModal: React.FC = () => {
                         </form>
                     </BaseModalBody>
                     <BaseModalFooter>
-                        <button
-                            className='btn btn-primary'
-                            onClick={handleSubmit(onSubmit)}
-                            disabled={isUpdateUserPending}
-                        >
+                        <BaseModalConfirmationButton onClick={handleSubmit(onSubmit)}>
                             Salvar
-                        </button>
+                        </BaseModalConfirmationButton>
                     </BaseModalFooter>
                 </BaseModalContent>
             </BaseModalRoot>

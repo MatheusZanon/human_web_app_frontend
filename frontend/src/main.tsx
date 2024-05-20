@@ -6,8 +6,8 @@ import { queryClient } from './utils/queryClient';
 import '@/assets/scss/styles.scss';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <AllProviders />
-    <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-right' client={queryClient} />
-  </React.StrictMode>,
+    <React.StrictMode>
+        <AllProviders />
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-right' client={queryClient} />
+    </React.StrictMode>,
 );

@@ -1,10 +1,21 @@
-import { useState } from 'react';
 import { useDeleteRobo } from '@/api/http/robos';
 import { Robo } from '@/utils/types/robo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
+import {
+    BaseModalBody,
+    BaseModalCloseButton,
+    BaseModalConfirmationButton,
+    BaseModalContent,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalProvider,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '@/components/baseModal';
 
 const deletarRoboSchema = z.object({
     id: z.string().min(1, 'Selecione um robô'),
@@ -12,8 +23,7 @@ const deletarRoboSchema = z.object({
 type id = z.infer<typeof deletarRoboSchema>;
 
 function DeletarRoboCard({ robos }: { robos: Robo[] }) {
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const { register, handleSubmit } = useForm<id>({
+    const { register, handleSubmit, formState: { isValid } } = useForm<id>({
         mode: 'onChange',
         reValidateMode: 'onChange',
         criteriaMode: 'all',
@@ -42,7 +52,45 @@ function DeletarRoboCard({ robos }: { robos: Robo[] }) {
     }
 
     return (
-        <>
+        <BaseModalProvider>
+            <BaseModalTrigger variant='danger'>Excluir Robo</BaseModalTrigger>
+            <BaseModalRoot>
+                <BaseModalContent>
+                    <BaseModalHeader>
+                        <BaseModalTitle>Excluir Robo</BaseModalTitle>
+                    </BaseModalHeader>
+                    <BaseModalBody>
+                        {robos.length === 0 && <div>Não existem robos para serem deletados!</div>}
+                        {robos.length > 0 && (
+                            <form className='d-flex flex-column gap-2'>
+                                <div>
+                                    <label className='form-label'>Robos</label>
+                                    <select id='robos' className='form-select' defaultValue='' {...register('id')}>
+                                        <option value=''>Selecione um robô</option>
+                                        {robos.map((robo) => (
+                                            <option key={robo.id} value={robo.id}>
+                                                {robo.nome}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </form>
+                        )}
+                    </BaseModalBody>
+                    <BaseModalFooter>
+                        <BaseModalConfirmationButton
+                            onClick={isValid ? handleSubmit(onSubmit) : undefined}
+                            disabled={isPending}
+                            aria-disabled={isPending}
+                        >
+                            Excluir
+                        </BaseModalConfirmationButton>
+                        <BaseModalCloseButton>Cancelar</BaseModalCloseButton>
+                    </BaseModalFooter>
+                </BaseModalContent>
+            </BaseModalRoot>
+        </BaseModalProvider>
+        /*<>
             <button className='btn btn-danger' onClick={() => setShowDeleteModal(true)}>
                 Deletar Robo
             </button>
@@ -99,7 +147,7 @@ function DeletarRoboCard({ robos }: { robos: Robo[] }) {
                     </div>
                 </div>
             </div>
-        </>
+        </>*/
     );
 }
 

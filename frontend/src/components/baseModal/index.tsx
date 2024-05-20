@@ -186,9 +186,7 @@ const BaseModalContent: React.FC<baseModalContentProps> = ({ children }) => {
             <div className='d-flex w-100 justify-content-end'>
                 <BaseModalCloseButton />
             </div>
-            <div className='d-flex flex-column flex-grow-1 align-items-center w-100 overflow-y-scroll px-4 overflow-x-hidden'>
-                {children}
-            </div>
+            <div className='d-flex flex-column flex-grow-1 align-items-center w-100 overflow-x-hidden'>{children}</div>
         </motion.div>
     );
 };
@@ -198,7 +196,11 @@ type baseModalBodyProps = {
 };
 
 const BaseModalBody: React.FC<baseModalBodyProps> = ({ children }) => {
-    return <div className={`${styles.modalBody} d-flex flex-column w-100 flex-grow-1 my-2`}>{children}</div>;
+    return (
+        <div className={`${styles.modalBody} d-flex flex-column w-100 overflow-y-auto px-4 flex-grow-1 py-2`}>
+            {children}
+        </div>
+    );
 };
 
 type baseModalCloseButtonProps = {
@@ -217,10 +219,54 @@ const BaseModalCloseButton: React.FC<baseModalCloseButtonProps> = ({ children, v
 
     return (
         <button
+            type='button'
             className={`${styles.modalCloseButton} d-flex align-items-center gap-1 btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size}`}
             onClick={handleClose}
         >
             <X size={18} />
+            {children}
+        </button>
+    );
+};
+
+type baseModalConfirmationButtonPropsWithoutOnClick = {
+    onClick?: undefined;
+};
+
+type baseModalConfirmationButtonPropsWithOnClick = {
+    onClick: () => void;
+};
+
+type baseModalConfirmationButtonProps = {
+    children?: React.ReactNode;
+    variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'light' | 'dark' | 'ghost';
+    size?: 'sm' | 'md' | 'lg';
+    disabled?: boolean;
+} & (baseModalConfirmationButtonPropsWithoutOnClick | baseModalConfirmationButtonPropsWithOnClick);
+
+const BaseModalConfirmationButton: React.FC<baseModalConfirmationButtonProps> = ({
+    children,
+    variant = 'primary',
+    size = 'md',
+    onClick,
+    disabled = false,
+}) => {
+    const { onClose, toggleOpen } = useContext(BaseModalContext);
+    const handleClick = useCallback(() => {
+        if (onClick) {
+            onClick();
+            onClose?.();
+            toggleOpen();
+        }
+    }, [onClick, onClose, toggleOpen]);
+
+    return (
+        <button
+            type='button'
+            className={`${styles.modalConfirmationButton} d-flex align-items-center gap-1 btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size}`}
+            onClick={handleClick}
+            disabled={disabled}
+        >
             {children}
         </button>
     );
@@ -243,7 +289,7 @@ type baseModalHeaderProps = {
 };
 
 const BaseModalHeader: React.FC<baseModalHeaderProps> = ({ children }) => {
-    return <div className={`${styles.modalHeader} d-flex align-items-center w-100 border-bottom`}>{children}</div>;
+    return <div className={`${styles.modalHeader} d-flex align-items-center w-100 px-4 border-bottom`}>{children}</div>;
 };
 
 type baseModalFooterProps = {
@@ -251,7 +297,11 @@ type baseModalFooterProps = {
 };
 
 const BaseModalFooter: React.FC<baseModalFooterProps> = ({ children }) => {
-    return <div className={`${styles.modalFooter} d-flex align-items-center w-100 border-top py-2`}>{children}</div>;
+    return (
+        <div className={`${styles.modalFooter} d-flex align-items-center gap-1 w-100 px-4 border-top py-2`}>
+            {children}
+        </div>
+    );
 };
 
 export {
@@ -259,6 +309,7 @@ export {
     BaseModalTrigger,
     BaseModalContent,
     BaseModalBody,
+    BaseModalConfirmationButton,
     BaseModalCloseButton,
     BaseModalTitle,
     BaseModalHeader,
@@ -273,5 +324,6 @@ export type {
     baseModalHeaderProps,
     baseModalContentProps,
     baseModalBodyProps,
+    baseModalConfirmationButtonProps,
     baseModalCloseButtonProps,
 };
