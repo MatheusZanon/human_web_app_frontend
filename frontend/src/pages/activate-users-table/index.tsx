@@ -14,6 +14,18 @@ import { Content } from '@/components/layout/content';
 import { formatCellphone } from '@/libs';
 import { Badge } from '@/components/badge';
 import AlertMessage from '@/components/alert-message';
+import {
+    BaseModalBody,
+    BaseModalCloseButton,
+    BaseModalConfirmationButton,
+    BaseModalContent,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalProvider,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '@/components/baseModal';
 
 function ActivateUsersTable() {
     const { data, isSuccess, isLoading, isError } = useGetInactiveUsers();
@@ -22,9 +34,7 @@ function ActivateUsersTable() {
     const { hasRole } = useAuthenticatedUser();
     const [sortBy, setSortBy] = useState<keyof User>('id');
     const [sortDirection, setSortDirection] = useState('asc');
-    const [showModal, setShowModal] = useState<number | null>(null);
-    const [showActivateModal, setShowActivateModal] = useState<number | null>(null);
-    
+
     const schema = z.object({
         id: z.array(z.coerce.number(), { required_error: 'Selecione pelo menos um grupo' }),
     });
@@ -34,6 +44,7 @@ function ActivateUsersTable() {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm<GroupType>({
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -59,43 +70,43 @@ function ActivateUsersTable() {
     if (data.length === 0 && isSuccess) {
         return (
             <Content title='Ativação de Funcionários'>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableHeader columnKey='id' onSort={() => handleSort('id')}>
-                            ID
-                        </TableHeader>
-                        <TableHeader
-                            sortable
-                            sortDirection={sortBy === 'username' ? sortDirection : ''}
-                            columnKey='username'
-                            onSort={() => handleSort('username')}
-                        >
-                            Nome
-                        </TableHeader>
-                        <TableHeader
-                            sortable
-                            sortDirection={sortBy === 'groups' ? sortDirection : ''}
-                            columnKey='groups'
-                            onSort={() => handleSort('groups')}
-                        >
-                            Cargo
-                        </TableHeader>
-                        <TableHeader
-                            sortable
-                            sortDirection={sortBy === 'telefone_celular' ? sortDirection : ''}
-                            columnKey='telefone_celular'
-                            onSort={() => handleSort('telefone_celular')}
-                        >
-                            Telefone
-                        </TableHeader>
-                        {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
-                            <TableHeader>Actions</TableHeader>
-                        )}
-                    </TableRow>
-                </TableHead>
-            </Table>
-            <AlertMessage message="Não há funcionários inativos!" />
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableHeader columnKey='id' onSort={() => handleSort('id')}>
+                                ID
+                            </TableHeader>
+                            <TableHeader
+                                sortable
+                                sortDirection={sortBy === 'username' ? sortDirection : ''}
+                                columnKey='username'
+                                onSort={() => handleSort('username')}
+                            >
+                                Nome
+                            </TableHeader>
+                            <TableHeader
+                                sortable
+                                sortDirection={sortBy === 'groups' ? sortDirection : ''}
+                                columnKey='groups'
+                                onSort={() => handleSort('groups')}
+                            >
+                                Cargo
+                            </TableHeader>
+                            <TableHeader
+                                sortable
+                                sortDirection={sortBy === 'telefone_celular' ? sortDirection : ''}
+                                columnKey='telefone_celular'
+                                onSort={() => handleSort('telefone_celular')}
+                            >
+                                Telefone
+                            </TableHeader>
+                            {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
+                                <TableHeader>Actions</TableHeader>
+                            )}
+                        </TableRow>
+                    </TableHead>
+                </Table>
+                <AlertMessage message='Não há funcionários inativos!' />
             </Content>
         );
     }
@@ -120,7 +131,6 @@ function ActivateUsersTable() {
     });
 
     const handleActivate = (userId: number, data: GroupType) => {
-        setShowModal(null);
         activate({ userId, data });
 
         if (activateSuccess) {
@@ -141,10 +151,10 @@ function ActivateUsersTable() {
     const findGroupsIds = (funcionario: User, groups: Group[]) => {
         const groupsIds = funcionario.groups.map((funcionarioGroup) => {
             const match = groups?.find((group) => group.name === funcionarioGroup);
-            return match ? match.id : null;
+            return match && match.id;
         });
 
-        return groupsIds;
+        return groupsIds as number[];
     };
 
     return (
@@ -229,88 +239,49 @@ function ActivateUsersTable() {
                                     {(hasRole('RH_GERENCIA') || hasRole('ADMIN') || hasRole('TI')) && (
                                         <TableData>
                                             <div className='d-flex gap-2 justify-content-center'>
-                                                <>
-                                                    <button
-                                                        className='btn btn-success btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                        onClick={
-                                                            funcionario.groups.length > 0
-                                                                ? () => setShowActivateModal(funcionario.id)
-                                                                : () => setShowModal(funcionario.id)
-                                                        }
-                                                    >
-                                                        <ShieldCheck width={22} height={16} />
-                                                    </button>
-                                                    <div
-                                                        className={`modal ${showActivateModal === funcionario.id ? 'd-block' : 'd-none'}`}
-                                                        id='modalActivate'
-                                                    >
-                                                        <div className='modal-dialog modal-dialog-centered'>
-                                                            <div className='modal-content'>
-                                                                <div className='modal-header'>
-                                                                    <h5 className='modal-title'>Ativar Funcionário</h5>
-                                                                    <button
-                                                                        type='button'
-                                                                        className='btn-close'
-                                                                        data-bs-dismiss='modal'
-                                                                        aria-label='Close'
-                                                                        onClick={() => setShowActivateModal(null)}
-                                                                    ></button>
-                                                                </div>
-                                                                <div className='modal-body'>
-                                                                    <p>
-                                                                        Tem certeza que deseja ativar o funcionário{' '}
-                                                                        {`${funcionario.first_name} ${funcionario.last_name}`}
-                                                                        ?
-                                                                    </p>
-                                                                </div>
-                                                                <div className='modal-footer'>
-                                                                    <button
-                                                                        className='btn btn-success'
-                                                                        type='submit'
+                                                {funcionario.groups.length > 0 && (
+                                                    <BaseModalProvider>
+                                                        <BaseModalTrigger variant='success'>
+                                                            <ShieldCheck width={22} height={16} />
+                                                        </BaseModalTrigger>
+                                                        <BaseModalRoot>
+                                                            <BaseModalContent>
+                                                                <BaseModalHeader>
+                                                                    <BaseModalTitle>Ativar Funcionário</BaseModalTitle>
+                                                                </BaseModalHeader>
+                                                                <BaseModalBody>
+                                                                    <p>{`Tem certeza que deseja ativar o funcionário ${funcionario.first_name} ${funcionario.last_name}?`}</p>
+                                                                </BaseModalBody>
+                                                                <BaseModalFooter>
+                                                                    <BaseModalConfirmationButton
+                                                                        variant='success'
                                                                         onClick={() =>
-                                                                            funcionario.groups.length > 0
-                                                                                ? handleActivate(funcionario.id, {
-                                                                                      id: findGroupsIds(
-                                                                                          funcionario,
-                                                                                          groups!,
-                                                                                      ),
-                                                                                  })
-                                                                                : setShowModal(funcionario.id)
+                                                                            handleActivate(funcionario.id, {
+                                                                                id: findGroupsIds(funcionario, groups!),
+                                                                            })
                                                                         }
                                                                     >
                                                                         Ativar
-                                                                    </button>
-                                                                    <button
-                                                                        type='button'
-                                                                        className='btn'
-                                                                        data-bs-dismiss='modal'
-                                                                        onClick={() => setShowActivateModal(null)}
-                                                                    >
-                                                                        Fechar
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}
-                                                        id={`modal_${funcionario.id}`}
-                                                    >
-                                                        <div className='modal-dialog modal-dialog-centered'>
-                                                            <div className='modal-content'>
-                                                                <div className='modal-header'>
-                                                                    <h5 className='modal-title'>
-                                                                        Ativação — {funcionario.username}
-                                                                    </h5>
-                                                                    <button
-                                                                        type='button'
-                                                                        className='btn-close'
-                                                                        data-bs-dismiss='modal'
-                                                                        aria-label='Close'
-                                                                        onClick={() => setShowModal(null)}
-                                                                    />
-                                                                </div>
-                                                                <div className='modal-body'>
+                                                                    </BaseModalConfirmationButton>
+                                                                    <BaseModalCloseButton>
+                                                                        Cancelar
+                                                                    </BaseModalCloseButton>
+                                                                </BaseModalFooter>
+                                                            </BaseModalContent>
+                                                        </BaseModalRoot>
+                                                    </BaseModalProvider>
+                                                )}
+                                                {funcionario.groups.length <= 0 && (
+                                                    <BaseModalProvider>
+                                                        <BaseModalTrigger variant='success'>
+                                                            <ShieldCheck width={22} height={16} />
+                                                        </BaseModalTrigger>
+                                                        <BaseModalRoot>
+                                                            <BaseModalContent>
+                                                                <BaseModalHeader>
+                                                                    <BaseModalTitle>Ativar Funcionário</BaseModalTitle>
+                                                                </BaseModalHeader>
+                                                                <BaseModalBody>
                                                                     <form className='d-flex flex-column gap-2'>
                                                                         <p>
                                                                             Para ativar um funcionário selecione ao
@@ -356,30 +327,25 @@ function ActivateUsersTable() {
                                                                             )}
                                                                         </div>
                                                                     </form>
-                                                                </div>
-                                                                <div className='modal-footer'>
-                                                                    <button
-                                                                        className='btn btn-success'
-                                                                        type='button'
-                                                                        onClick={handleSubmit((data) =>
-                                                                            handleActivate(funcionario.id, data),
-                                                                        )}
+                                                                </BaseModalBody>
+                                                                <BaseModalFooter>
+                                                                    <BaseModalConfirmationButton
+                                                                        variant='success'
+                                                                        onClick={handleSubmit((data) => {
+                                                                            handleActivate(funcionario.id, data);
+                                                                            setValue('id', []);
+                                                                        })}
                                                                     >
                                                                         Ativar
-                                                                    </button>
-                                                                    <button
-                                                                        type='button'
-                                                                        className='btn'
-                                                                        data-bs-dismiss='modal'
-                                                                        onClick={() => setShowModal(null)}
-                                                                    >
-                                                                        Fechar
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </>
+                                                                    </BaseModalConfirmationButton>
+                                                                    <BaseModalCloseButton>
+                                                                        Cancelar
+                                                                    </BaseModalCloseButton>
+                                                                </BaseModalFooter>
+                                                            </BaseModalContent>
+                                                        </BaseModalRoot>
+                                                    </BaseModalProvider>
+                                                )}
                                             </div>
                                         </TableData>
                                     )}

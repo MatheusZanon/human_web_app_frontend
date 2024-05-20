@@ -124,7 +124,7 @@ const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({ children, variant =
         <button
             type='button'
             onClick={toggleOpen}
-            className={`${styles.modalTrigger} btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size}`}
+            className={`${styles.modalTrigger} btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size} d-flex align-items-center gap-1`}
         >
             {children}
         </button>

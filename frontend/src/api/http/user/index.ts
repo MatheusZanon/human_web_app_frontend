@@ -5,7 +5,7 @@ import { getUser } from './getUser';
 import { getAllUsers } from './getAllUsers';
 import { getAllGroups } from './getAllGroups';
 import { getActiveUsers } from './getActiveUsers';
-import { getInactiveUsers } from './getInactiveUsers'; 
+import { getInactiveUsers } from './getInactiveUsers';
 import { putActivateUser } from './putActivateUser';
 import { getUserById } from './getUserById';
 import { putDeactivateUser } from './putDesactivateUser';
@@ -28,13 +28,12 @@ export function useGetUserById({ userId }: { userId: number }) {
     });
 }
 
-export function usegetAllUsers() {
+export function useGetAllUsers() {
     return useQuery({
         queryKey: ['users'],
         queryFn: () => getAllUsers(),
     });
 }
-
 
 export function useGetAllGroups() {
     return useQuery({
@@ -42,7 +41,6 @@ export function useGetAllGroups() {
         queryFn: () => getAllGroups(),
     });
 }
-
 
 export function useGetActiveUsers() {
     return useQuery({
@@ -99,7 +97,7 @@ export function useUpdateSituacao() {
         mutationFn: ({ userId, data }: { userId: number; data: { situacao: 'ATIVO' | 'FERIAS' | 'SUSPENSO' } }) =>
             putSituacao(userId, data),
         onSuccess: ({ id }) => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['active_users'] });
             queryClient.invalidateQueries({ queryKey: [`user/${id}`] });
         },
     });

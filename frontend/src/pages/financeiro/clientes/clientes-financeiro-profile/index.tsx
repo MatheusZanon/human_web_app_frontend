@@ -7,14 +7,13 @@ import { UpdateClienteModal } from '@/components/update-cliente-modal';
 import { useClienteProfileCard } from '@/components/update-cliente-modal/cliente-profile-card-provider';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { Pen } from 'lucide-react';
 
 function ClienteFinanceiroProfile() {
     const { clienteId } = useParams();
     const clientId = parseInt(clienteId ? clienteId : '0');
     const { data: cliente, error: clienteError } = useGetClienteById({ clienteId: clientId });
     const { hasRole } = useAuthenticatedUser();
-    const { setCliente, handleEditMode } = useClienteProfileCard();
+    const { setCliente } = useClienteProfileCard();
 
     useEffect(() => {
         if (cliente) {
@@ -32,17 +31,9 @@ function ClienteFinanceiroProfile() {
                 <div className='row'>
                     {(hasRole('ADMIN') || hasRole('TI')) && (
                         <div className='d-flex align-items-center'>
-                            <button
-                                className='btn d-flex align-items-center gap-2'
-                                type='button'
-                                onClick={() => handleEditMode()}
-                            >
-                                <Pen size={18} />
-                                <span>Editar</span>
-                            </button>
+                            <UpdateClienteModal />
                         </div>
                     )}
-                    <UpdateClienteModal />
                     <div className='col-xl-3 col-xxl-4 col-lg-4'>
                         <div className='row'>
                             <div className='col-lg-12 mb-3'>

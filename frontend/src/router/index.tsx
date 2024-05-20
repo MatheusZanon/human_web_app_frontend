@@ -34,7 +34,7 @@ import RoboDetalhes from '@/pages/robos/detalhes';
  */
 import Relatorios from '@/pages/financeiro/relatorios';
 import ClientesFinanceiro from '@/pages/financeiro/clientes';
-import ClienteFinanceiroProfile from '@/pages/clientes-financeiro-profile';
+import ClienteFinanceiroProfile from '@/pages/financeiro/clientes/clientes-financeiro-profile';
 import PastasGoogleDrive from '@/pages/financeiro/pastas-google-drive';
 
 /**
