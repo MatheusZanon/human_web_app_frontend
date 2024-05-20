@@ -42,13 +42,13 @@ function PastasGoogleDrive() {
 
     if (arquivosDrive.data?.length === 0) {
         return (
-            <Content title="Arquivos Drive Financeiro">
+            <Content title="Arquivos">
                 <AlertMessage message="Nenhum arquivo encontrado!" />
             </Content>
         )
     } else {
         return (
-            <Content title="Arquivos Drive Financeiro">
+            <Content title="Arquivos">
                 {currentFolderId !== initialFolderId &&
                     <button
                         type='button'

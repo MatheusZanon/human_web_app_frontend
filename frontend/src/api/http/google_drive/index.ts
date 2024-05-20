@@ -9,9 +9,9 @@ export function useGetArquivos(url: string) {
     });
 }
 
-export function useGetArquivoById(id: string) {
+export function useGetArquivoById(url: string) {
     return useQuery({
-        queryKey: ["arquivo_preview", id],
-        queryFn: () => getArquivoById(id),
+        queryKey: ["arquivo_preview", url],
+        queryFn: () => getArquivoById(url),
     });
 }
