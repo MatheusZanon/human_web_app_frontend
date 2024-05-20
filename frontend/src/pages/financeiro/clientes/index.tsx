@@ -2,13 +2,14 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { useGetClientes, usePostCliente } from '@/api/http/clientes_financeiro';
 import { Search, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
-import { ArrowBigLeftDash, ArrowBigRightDash} from 'lucide-react';
+import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Content } from '@/components/layout/content';
 import { cnpjFormatter, cpfFormatter, formatCnpj, formatCpf, phoneFormatter } from '@/libs';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import {
     BaseModalBody,
+    BaseModalConfirmationButton,
     BaseModalContent,
     BaseModalFooter,
     BaseModalHeader,
@@ -192,7 +193,7 @@ function ClientesFinanceiro() {
                                             <BaseModalTitle>Adicionar Cliente</BaseModalTitle>
                                         </BaseModalHeader>
                                         <BaseModalBody>
-                                            <form className='d-flex flex-column gap-2 w-100 h-100 px-1 pb-1 overflow-auto'>
+                                            <form className='d-flex flex-column gap-2 w-100 h-100 px-1 pb-1'>
                                                 <div className='d-flex flex-column w-100'>
                                                     <label htmlFor='nome_razao_social' className='form-label'>
                                                         Nome Razão Social:
@@ -307,13 +308,9 @@ function ClientesFinanceiro() {
                                             </form>
                                         </BaseModalBody>
                                         <BaseModalFooter>
-                                            <button
-                                                type='button'
-                                                className='btn btn-primary'
-                                                onClick={handleSubmit(onSubmit)}
-                                            >
+                                            <BaseModalConfirmationButton onClick={handleSubmit(onSubmit)}>
                                                 Adicionar
-                                            </button>
+                                            </BaseModalConfirmationButton>
                                         </BaseModalFooter>
                                     </BaseModalContent>
                                 </BaseModalRoot>
@@ -366,9 +363,7 @@ function ClientesFinanceiro() {
                             ))}
                     </TableBody>
                 </Table>
-                {!clienteResults.length && (
-                    <AlertMessage message="Nenhum cliente encontrado!"/>
-                )}
+                {!clienteResults.length && <AlertMessage message='Nenhum cliente encontrado!' />}
             </Content>
         </>
     );

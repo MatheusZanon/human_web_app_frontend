@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from './vales-sst-card.module.scss';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
-import { ArrowBigLeftDash, ArrowBigRightDash, Pencil } from 'lucide-react';
+import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useGetValesSST, usePutValesSST } from '@/api/http/financeiro_valores';
 import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
 import ValesSSTModal from './vales-sst-modal';
@@ -18,7 +18,6 @@ function CardValesSST({ ...props }) {
     const valesSST = useGetValesSST(url);
     const valesSSTResults =
         valesSST.isSuccess && valesSST.data && 'results' in valesSST.data ? valesSST.data.results : [];
-    const [selectedVale, setSelectedVale] = useState<FinanceiroValesSST | null>(null);
     const { mutate: updateValeSST, isPending: isUpdatePending, error: updateError } = usePutValesSST();
 
     const updateVale = async (vale: FinanceiroValesSST) => {
@@ -149,22 +148,14 @@ function CardValesSST({ ...props }) {
                                     <TableData>{(vale.ano = ano)}</TableData>
                                     <TableData>
                                         <div className='d-flex gap-2 justify-content-center'>
-                                            <button
-                                                className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                onClick={() => setSelectedVale(vale)}
-                                            >
-                                                <Pencil width={16} height={16} />
-                                            </button>
+                                            <ValesSSTModal vale={vale} onUpdate={updateVale} />
                                         </div>
                                     </TableData>
                                 </TableRow>
                             ))}
-                        </TableBody>
-                    </Table>
-                    {!valesSSTResults.length && 
-                        <AlertMessage message="Nenhum registro de vale encontrado!"/>
-                    }  
-                    {selectedVale && <ValesSSTModal vale={selectedVale} onClose={() => setSelectedVale(null)} onUpdate={updateVale}/>}
+                    </TableBody>
+                </Table>
+                {!valesSSTResults.length && <AlertMessage message='Nenhum registro de vale encontrado!' />}
             </div>
         </div>
     );

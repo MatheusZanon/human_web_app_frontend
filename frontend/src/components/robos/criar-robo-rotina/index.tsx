@@ -1,13 +1,22 @@
-import { useState } from 'react';
 import { useCriarRotina } from '@/api/http/robos';
 import { CriarRotinaType, criarRotinaSchema } from '@/utils/types/criar_rotina';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import {
+    BaseModalBody,
+    BaseModalCloseButton,
+    BaseModalConfirmationButton,
+    BaseModalContent,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalProvider,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '@/components/baseModal';
 
 function CriarRoboRotinaModal({ roboId }: { roboId: string }) {
-    const [showCreateRotinaModal, setShowCreateRotinaModal] = useState(false);
-
     const { register, handleSubmit } = useForm<CriarRotinaType>({
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -38,61 +47,32 @@ function CriarRoboRotinaModal({ roboId }: { roboId: string }) {
         }
     };
     return (
-        <>
-            <button className='btn btn-secondary' onClick={() => setShowCreateRotinaModal(true)}>
-                Criar Rotina
-            </button>
-            <div className={`modal ${showCreateRotinaModal ? 'd-block' : 'd-none'}`} id='modalTeste'>
-                <div className='modal-dialog modal-dialog-centered'>
-                    <div className='modal-content'>
-                        <div className='modal-header'>
-                            <h5 className='modal-title'>Criar Rotina</h5>
-                            <button
-                                type='button'
-                                className='btn-close'
-                                data-bs-dismiss='modal'
-                                aria-label='Close'
-                                onClick={() => setShowCreateRotinaModal(false)}
-                            ></button>
-                        </div>
-                        <div className='modal-body'>
-                            <form className='d-flex flex-column gap-2'>
-                                <div>
-                                    <label htmlFor='nome_parametro' className='form-label'>
-                                        Nome
-                                    </label>
-                                    <input
-                                        id='nome_parametro'
-                                        type='text'
-                                        className='form-control'
-                                        {...register('nome')}
-                                    />
-                                </div>
-                            </form>
-                        </div>
-                        <div className='modal-footer'>
-                            <button
-                                type='submit'
-                                className='btn btn-primary'
-                                onClick={handleSubmit((data) => onSubmit(data))}
-                                disabled={isPending}
-                                aria-disabled={isPending}
-                            >
-                                Criar
-                            </button>
-                            <button
-                                type='button'
-                                className='btn'
-                                data-bs-dismiss='modal'
-                                onClick={() => setShowCreateRotinaModal(false)}
-                            >
-                                Fechar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+        <BaseModalProvider>
+            <BaseModalTrigger variant='secondary'>Criar Rotina</BaseModalTrigger>
+            <BaseModalRoot>
+                <BaseModalContent>
+                    <BaseModalHeader>
+                        <BaseModalTitle>Criar Rotina</BaseModalTitle>
+                    </BaseModalHeader>
+                    <BaseModalBody>
+                        <form className='d-flex flex-column gap-2'>
+                            <div>
+                                <label htmlFor='nome_parametro' className='form-label'>
+                                    Nome
+                                </label>
+                                <input id='nome_parametro' type='text' className='form-control' {...register('nome')} />
+                            </div>
+                        </form>
+                    </BaseModalBody>
+                    <BaseModalFooter>
+                        <BaseModalConfirmationButton variant='primary' onClick={handleSubmit(onSubmit)} disabled={isPending}>
+                            Criar
+                        </BaseModalConfirmationButton>
+                        <BaseModalCloseButton>Fechar</BaseModalCloseButton>
+                    </BaseModalFooter>
+                </BaseModalContent>
+            </BaseModalRoot>
+        </BaseModalProvider>
     );
 }
 
