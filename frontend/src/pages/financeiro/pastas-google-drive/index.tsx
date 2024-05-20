@@ -17,22 +17,29 @@ function PastasGoogleDrive() {
     const [currentFolderId, setCurrentFolderId] = useState(initialFolderId);
     const [ url, setUrl ] = useState<string>(`google_drive/listar_arquivos?folder_id=${initialFolderId}`);
     const arquivosDrive  = useGetArquivos(url);
-    const [history, setHistory] = useState<string[]>([]);
+    const [navegationHistory, setnavegationHistory] = useState<string[]>([]);
+    const [fileHistory, setfileHistory] = useState<string[]>([]);
 
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
     }, [currentFolderId]);
 
-    const handleClick = (folderId: string) => {
-        setHistory(prev => [...prev, currentFolderId]);
+    const handleClick = (folderId: string, fileName: string) => {
+        setnavegationHistory(prev => [...prev, currentFolderId]);
+        setfileHistory(prev => [...prev, fileName]);
         setCurrentFolderId(folderId);
     }
 
     const handleBackClick = () => {
-        setHistory(prev => {
+        setnavegationHistory(prev => {
             const newHistory = [...prev];
             const previousFolderId = newHistory.pop(); // Remove e obtém o último ID do histórico
             setCurrentFolderId(previousFolderId);
+            return newHistory;
+        });
+        setfileHistory(prev => {
+            const newHistory = [...prev];
+            newHistory.pop();
             return newHistory;
         });
     }
@@ -50,13 +57,24 @@ function PastasGoogleDrive() {
         return (
             <Content title="Arquivos">
                 {currentFolderId !== initialFolderId &&
-                    <button
-                        type='button'
-                        className='btn btn-primary'
-                        onClick={() => {handleBackClick();}}
-                    >
-                        <ArrowBigLeftDash />
-                    </button>      
+                    <>
+                    <div className='d-flex gap-3 align-items-center'>
+                        <button
+                            type='button'
+                            className='btn btn-primary'
+                            onClick={() => {handleBackClick();}}
+                        >
+                            <ArrowBigLeftDash />
+                        </button>      
+
+                        <div className='d-flex align-items-center gap-2'>
+                            <MdFolder size={22}/>
+                            {fileHistory.map( (file, index) => (
+                                <span>{file}{index !== fileHistory.length - 1 && ' > '}</span>
+                            ))}
+                        </div>
+                    </div>
+                    </>
                 }
                 <Table>
                     <TableHead>
@@ -72,7 +90,7 @@ function PastasGoogleDrive() {
                                 <TableData>
                                     {arquivo.mimeType === "application/vnd.google-apps.folder" && 
                                         <button 
-                                        type="button" className='btn' onClick={() => handleClick(arquivo.id)} style={{margin: 0, padding: 0, border: 'none'}}>
+                                        type="button" className='btn' onClick={() => handleClick(arquivo.id, arquivo.name)} style={{margin: 0, padding: 0, border: 'none'}}>
                                             <div className='d-flex align-items-center gap-2'>
                                                 <MdFolder size={22}/> {arquivo.name}
                                             </div>
@@ -132,7 +150,7 @@ function PastasGoogleDrive() {
                                     : 
                                     <div className='d-flex justify-content-center align-items-center gap-2'>
                                         <button
-                                            className='btn btn-warning btn-sm p-1 d-flex justify-content-center align-items-center'
+                                            className='btn btn-sm p-1 d-flex justify-content-center align-items-center'
                                         >
                                             <Link to={`preview/${arquivo.id}`}>
                                                 <Search width={16} height={16} />
