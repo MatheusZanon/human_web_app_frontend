@@ -96,7 +96,9 @@ function AlterarRoboParametro({ roboId, parametro }: { roboId: string; parametro
                     <BaseModalFooter>
                         <BaseModalConfirmationButton
                             variant='primary'
-                            onClick={handleSubmit((data) => onSubmit(Number(parametro.parametro_id), data))}
+                            onClick={handleSubmit((data) => {
+                                onSubmit(Number(parametro.parametro_info.id), data);
+                            })}
                             disabled={isPending}
                         >
                             Salvar
