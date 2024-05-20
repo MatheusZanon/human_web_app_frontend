@@ -96,7 +96,7 @@ const allRoutes: route[] = [
         element: <PastasGoogleDrive />,
     },
     {
-        path: 'financeiro/drive/preview/:arquivoId',
+        path: 'financeiro/drive/preview/:parentFolderId/:arquivoId',
         element: <PreviewArquivo/>,
     },
     {

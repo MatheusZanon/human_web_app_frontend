@@ -152,7 +152,7 @@ function PastasGoogleDrive() {
                                         <button
                                             className='btn btn-sm p-1 d-flex justify-content-center align-items-center'
                                         >
-                                            <Link to={`preview/${arquivo.id}`}>
+                                            <Link to={`preview/${arquivo.parents}/${arquivo.id}`}>
                                                 <Search width={16} height={16} />
                                             </Link>
                                         </button>
