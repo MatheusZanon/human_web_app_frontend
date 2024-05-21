@@ -20,11 +20,12 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '@/components/baseModal';
+import financeiroLogo from '/financeiro.svg';
+import relatorioLogo from '/relatorio.svg';
 
 type RoboCardProps = {
     children?: React.ReactNode;
     id: string;
-    image: string;
     title: string;
     text: string;
     categoria: string;
@@ -34,17 +35,7 @@ type RoboCardProps = {
     last_execution: string;
 };
 
-function RoboCard({
-    id,
-    image,
-    title,
-    text,
-    categoria,
-    details_link,
-    executions,
-    last_execution,
-    children,
-}: RoboCardProps) {
+function RoboCard({ id, title, text, categoria, details_link, executions, last_execution, children }: RoboCardProps) {
     const { hasRole } = useAuthenticatedUser();
 
     const { data: roboParametros } = useRoboParametrosById({
@@ -145,7 +136,23 @@ function RoboCard({
     };
     return (
         <div className={`card ${styles.card} shadow`}>
-            <img src={image} alt='dummy' className={`mt-2 card-img-top ${styles.img}`} />
+            <img
+                src={
+                    categoria
+                        .toLocaleLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '') === 'financeiro'
+                        ? financeiroLogo
+                        : categoria
+                                .toLocaleLowerCase()
+                                .normalize('NFD')
+                                .replace(/[\u0300-\u036f]/g, '') === 'relatorio'
+                          ? relatorioLogo
+                          : '/fallback-image.png'
+                }
+                alt={`Imagem categoria ${categoria}`}
+                className={`card-img-top p-2 ${styles.img}`}
+            />
             <div className='card-body d-flex flex-column justify-content-between'>
                 <div className='row'>
                     <h5 className='card-title d-flex justify-content-between align-items-center'>

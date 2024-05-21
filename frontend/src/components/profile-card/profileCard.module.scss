@@ -1,11 +1,16 @@
 @import '../../assets/scss/styles.scss';
 
+.profileCardHeader {
+    max-height: 280px;
+}
+
 .profileCardInfo {
     display: flex;
     padding: 0.8rem 1.1rem;
 
     .profileCardPicture {
-        max-width: 100px;
+        width: 100px;
+        height: 100px;
         position: relative;
         z-index: 1;
         margin-top: -40px;

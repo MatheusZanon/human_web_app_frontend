@@ -1,18 +1,18 @@
 import { Pen } from 'lucide-react';
-import styles from './profileCard.module.scss';
+import styles from './userProfileCard.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
-import { useProfileCard } from './profile-card-provider';
+import { useUserProfileCard } from './profile-card-provider';
 
-function ProfileCard() {
+function UserProfileCard() {
     const { hasRole } = useAuthenticatedUser();
-    const { user, handleEditMode } = useProfileCard();
+    const { user, handleEditMode } = useUserProfileCard();
     return (
         <div className='d-flex flex-column'>
-            <div className={`position-relative rounded overflow-hidden ${styles.profileCardHeader}`}>
+            <div className='position-relative rounded overflow-hidden'>
                 <img
-                    src={user?.profile_header || 'https://dummyimage.com/1600x451/000/ff'}
+                    src={user?.profile_header || 'https://dummyimage.com/1600x451/000/fff'}
                     alt={`${user?.username} profile header`}
-                    className='w-100 h-100 object-fit-cover img-fluid'
+                    className='img-fluid'
                 />
             </div>
             <div className='d-flex justify-content-between'>
@@ -26,7 +26,7 @@ function ProfileCard() {
                                         : 'https://dummyimage.com/160x160/000/fff'
                                 }
                                 alt={`${user?.username} profile picture`}
-                                className='w-100 h-100 img-thumbnail object-fit-cover rounded-circle'
+                                className='img-fluid rounded-circle'
                             />
                         </div>
                         <div className={`${styles.profileCardDetails} text-muted`}>
@@ -57,4 +57,4 @@ function ProfileCard() {
     );
 }
 
-export default ProfileCard;
+export default UserProfileCard;

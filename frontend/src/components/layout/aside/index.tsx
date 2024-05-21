@@ -2,7 +2,6 @@ import { createContext, useContext, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LineChart, Bot, Dot, DollarSign, UserCog2Icon, UsersRound, ChevronLeft, ChevronRight } from 'lucide-react';
-import logo from '@/assets/react.svg';
 import { SubMenu, SubMenuItem } from '@/components/sub-menu';
 import styles from './aside.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
@@ -68,14 +67,16 @@ function Sidebar() {
             }}
         >
             <div className={`d-flex align-items-center gap-2 ${styles.brandWrapper}`} style={{ padding: '1rem 0' }}>
-                <img className={'img-fluid'} src={logo} alt='Logo Human RH' />
+                <div className='w-100 d-flex justify-content-center align-items-center' style={{maxWidth: '56px'}}>
+                    <img className={'img-fluid'} src='/human-logo.svg' alt='Logo Human' />
+                </div>
                 <motion.span
                     className={`${styles.brandTitle}`}
                     initial={{ opacity: 0 }}
                     animate={open ? { x: 0, opacity: 1 } : { x: -100, opacity: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    {open ? 'Human RH' : null}
+                    {open ? 'Human' : null}
                 </motion.span>
             </div>
             <div className='d-flex justify-content-end align-items-center py-2'>
