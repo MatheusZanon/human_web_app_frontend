@@ -18,13 +18,13 @@ const initialState: AuthenticatedUserProviderState = {
 
 const authenticatedUserContext = createContext<AuthenticatedUserProviderState>(initialState);
 
-function AuthenticatedUserProvider({ children } : { children: React.ReactNode }) {
+function AuthenticatedUserProvider({ children }: { children: React.ReactNode }) {
     const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null);
     const authUser = useGetUser();
     const defineUser = (User: User | null) => setAuthenticatedUser(User);
     const hasRole = (role: string) => !!authenticatedUser?.groups.includes(role);
 
-    const value =  {
+    const value = {
         authenticatedUser,
         defineUser,
         hasRole,
@@ -32,10 +32,14 @@ function AuthenticatedUserProvider({ children } : { children: React.ReactNode })
 
     useEffect(() => {
         if (authUser.isSuccess && authUser.data) {
+            authUser.data.profile_header =
+                'https://images.unsplash.com/photo-1715942163364-5aa9e6d66bb4?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+            authUser.data.profile_picture =
+                'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
             defineUser(authUser.data);
         }
     }, [authUser.data, authUser.isSuccess]);
-    
+
     return (
         <authenticatedUserContext.Provider value={value}>
             {authenticatedUser ? children : <LoadingScreen />}

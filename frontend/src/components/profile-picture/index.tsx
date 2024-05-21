@@ -4,12 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from './profilePicture.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 
-type ProfilePictureProps = {
-    src?: string;
-    alt?: string;
-};
-
-function ProfilePicture({ src, alt }: ProfilePictureProps) {
+function ProfilePicture() {
     const { authenticatedUser } = useAuthenticatedUser();
 
     const logout = () => {
@@ -30,11 +25,11 @@ function ProfilePicture({ src, alt }: ProfilePictureProps) {
                 data-bs-toggle='dropdown'
                 aria-expanded='false'
             >
-                {src && alt ? (
+                {authenticatedUser?.profile_picture ? (
                     <img
-                        src={src}
+                        src={authenticatedUser.profile_picture}
                         alt={`${authenticatedUser.username} profile picture`}
-                        className='img-fluid rounded-circle'
+                        className='w-100 h-100 img-fluid object-fit-cover rounded-circle'
                     />
                 ) : (
                     <div

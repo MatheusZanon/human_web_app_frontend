@@ -1,5 +1,4 @@
 import RoboCard from '@/components/robos/robo-card';
-import logo from '@/assets/react.svg';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { CriarRoboCard } from '@/components/robos/criar-robo';
 import { useGetCategorias, useRobos } from '@/api/http/robos';
@@ -56,7 +55,6 @@ function Robos() {
                                 key={robo.id}
                                 id={robo.id.toString()}
                                 title={robo.nome}
-                                image={logo}
                                 text={robo.descricao}
                                 categoria={robo.categoria}
                                 details_link={'robos/' + robo.id}

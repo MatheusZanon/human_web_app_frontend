@@ -65,15 +65,15 @@ function Register() {
         const parsedData = schema.safeParse(data);
         if (parsedData.success) {
             api.post('user/', {
-                    username: parsedData.data.username,
-                    first_name: parsedData.data.firstname,
-                    last_name: parsedData.data.lastname,
-                    email: parsedData.data.email,
-                    password: parsedData.data.password,
-                    rg: null,
-                    cpf: parsedData.data.cpf,
-                    telefone_celular: null,
-                })
+                username: parsedData.data.username,
+                first_name: parsedData.data.firstname,
+                last_name: parsedData.data.lastname,
+                email: parsedData.data.email,
+                password: parsedData.data.password,
+                rg: null,
+                cpf: parsedData.data.cpf,
+                telefone_celular: null,
+            })
                 .then((response) => {
                     if (response.status == 201) {
                         toast('Solicitação de Cadastro efetuada com sucesso!');
@@ -92,7 +92,7 @@ function Register() {
 
     return (
         <div className='w-50 p-3 d-flex flex-column align-items-center shadow rounded'>
-            <img src='https://via.placeholder.com/250x100' alt={`Human logo`} className='w-50 mb-2' />
+            <img src='/human-logo-full.svg' alt={`Human logo`} className='w-50 mb-2' />
             <form onSubmit={handleSubmit(onSubmit)} className='w-100'>
                 <div>
                     <label htmlFor='username' className='form-label'>
