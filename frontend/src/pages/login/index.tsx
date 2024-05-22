@@ -43,7 +43,7 @@ function Login() {
                 if (response.status == 200) {
                     toast("Login efetuado com sucesso!");
                     setTimeout(() => {
-                        navigate('/main');
+                        navigate('/main/robos');
                     }, 1500);  
                 }  
         }).catch(error => {

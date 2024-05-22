@@ -2,6 +2,7 @@ import { Pen } from 'lucide-react';
 import styles from './profileCard.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import { useProfileCard } from './profile-card-provider';
+import { UpdateUserModal } from '../update-user-modal';
 
 function ProfileCard() {
     const { hasRole } = useAuthenticatedUser();
@@ -42,13 +43,7 @@ function ProfileCard() {
                 {(hasRole('admin') || hasRole('TI')) && (
                     <div className={`${styles.profileCardActions} d-flex gap-2`}>
                         <div className='d-flex align-items-center'>
-                            <button
-                                className='btn d-flex align-items-center gap-2'
-                                type='button'
-                                onClick={() => handleEditMode()}
-                            >
-                                <Pen size={18} />
-                            </button>
+                            <UpdateUserModal />
                         </div>
                     </div>
                 )}

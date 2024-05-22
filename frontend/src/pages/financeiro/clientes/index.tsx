@@ -9,6 +9,7 @@ import { cnpjFormatter, cpfFormatter, formatCnpj, formatCpf, phoneFormatter } fr
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import {
     BaseModalBody,
+    BaseModalCloseButton,
     BaseModalConfirmationButton,
     BaseModalContent,
     BaseModalFooter,
@@ -354,9 +355,35 @@ function ClientesFinanceiro() {
                                             >
                                                 <Search width={16} height={16} />
                                             </button>
-                                            <button className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'>
-                                                <Trash2 width={16} height={16} />
-                                            </button>
+                                            <BaseModalProvider>
+                                                <BaseModalTrigger variant='danger' size='sm'>
+                                                    <Trash2 size={16} />
+                                                </BaseModalTrigger>
+                                                <BaseModalRoot>
+                                                    <BaseModalContent>
+                                                        <BaseModalHeader>
+                                                            <BaseModalTitle>Desativar Cliente</BaseModalTitle>
+                                                        </BaseModalHeader>
+                                                        <BaseModalBody>
+                                                            <p>
+                                                                {`Tem certeza que deseja desativar o cliente? ${cliente.nome_razao_social}`}
+                                                            </p>
+                                                        </BaseModalBody>
+                                                        <BaseModalFooter>
+                                                            <button
+                                                                type='button'
+                                                                className='btn btn-danger'
+                                                                onClick={() => handleDelete(cliente.id)}
+                                                            >
+                                                                Excluir
+                                                            </button>
+                                                            <BaseModalCloseButton variant='ghost'>
+                                                                Cancelar
+                                                            </BaseModalCloseButton>
+                                                        </BaseModalFooter>
+                                                    </BaseModalContent>
+                                                </BaseModalRoot>
+                                            </BaseModalProvider>
                                         </div>
                                     </TableData>
                                 </TableRow>

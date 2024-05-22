@@ -10,6 +10,7 @@ import { formatCellphone } from '@/libs';
 import { Badge } from '../badge';
 import {
     BaseModalBody,
+    BaseModalCloseButton,
     BaseModalContent,
     BaseModalFooter,
     BaseModalHeader,
@@ -252,13 +253,35 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                     <Search width={16} height={16} />
                                                 </button>
                                                 {funcionario.id !== authenticatedUser?.id &&
-                                                    (hasRole('ADMIN') || hasRole('RH_GERENCIA') || hasRole('TI')) && (
-                                                        <button
-                                                            className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'
-                                                            onClick={() => setShowModal(funcionario.id)}
-                                                        >
-                                                            <Trash2 width={16} height={16} />
-                                                        </button>
+                                                    (
+                                                        hasRole('ADMIN') || hasRole('RH_GERENCIA') || hasRole('TI')) && (
+                                                            <BaseModalProvider>
+                                                            <BaseModalTrigger variant='danger' size='sm'><Trash2 size={16} /></BaseModalTrigger>
+                                                            <BaseModalRoot>
+                                                                <BaseModalContent>
+                                                                    <BaseModalHeader>
+                                                                        <BaseModalTitle>
+                                                                            Desativar Funcionário
+                                                                        </BaseModalTitle>
+                                                                    </BaseModalHeader>
+                                                                    <BaseModalBody>
+                                                                        <p>
+                                                                            Tem certeza que deseja desativar o funcionário{' '}
+                                                                            {`${funcionario.first_name} ${funcionario.last_name}`}?
+                                                                        </p>
+                                                                    </BaseModalBody>
+                                                                    <BaseModalFooter>
+                                                                        <button
+                                                                            className='btn btn-danger'
+                                                                            onClick={() => handleDeactivate(funcionario.id)}
+                                                                        >
+                                                                            Desativar
+                                                                        </button>
+                                                                        <BaseModalCloseButton variant='ghost'>Cancelar</BaseModalCloseButton>
+                                                                    </BaseModalFooter>
+                                                                </BaseModalContent>
+                                                            </BaseModalRoot>
+                                                        </BaseModalProvider>
                                                     )}
                                                 <div
                                                     className={`modal ${showModal === funcionario.id ? 'd-block' : 'd-none'}`}

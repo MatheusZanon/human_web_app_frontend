@@ -99,7 +99,7 @@ function Sidebar() {
                     <NavItem
                         icon={<LineChart className={open ? 'me-2' : ''} />}
                         title={open ? 'Dashboard' : ''}
-                        to=''
+                        to='dashboard'
                     />
                 )}
                 {(hasRole('ADMIN') || hasRole('TI') || hasRole('RH_GERENCIA')) && (

@@ -52,7 +52,7 @@ type route = {
 
 const allRoutes: route[] = [
     {
-        path: '',
+        path: 'dashboard',
         element: <Dashboard />,
     },
     {
@@ -97,7 +97,7 @@ const allRoutes: route[] = [
     },
     {
         path: 'financeiro/drive/preview/:parentFolderId/:arquivoId',
-        element: <PreviewArquivo/>,
+        element: <PreviewArquivo />,
     },
     {
         path: 'rh/funcionarios',
