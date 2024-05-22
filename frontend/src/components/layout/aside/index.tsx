@@ -67,7 +67,7 @@ function Sidebar() {
             }}
         >
             <div className={`d-flex align-items-center gap-2 ${styles.brandWrapper}`} style={{ padding: '1rem 0' }}>
-                <div className='w-100 d-flex justify-content-center align-items-center' style={{maxWidth: '56px'}}>
+                <div className='w-100 d-flex justify-content-center align-items-center' style={{ maxWidth: '56px' }}>
                     <img className={'img-fluid'} src='/human-logo.svg' alt='Logo Human' />
                 </div>
                 <motion.span
@@ -95,7 +95,7 @@ function Sidebar() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                {(hasRole('ADMIN') || hasRole('TI')) && (
+                {hasRole('ADMIN') && (
                     <NavItem
                         icon={<LineChart className={open ? 'me-2' : ''} />}
                         title={open ? 'Dashboard' : ''}
