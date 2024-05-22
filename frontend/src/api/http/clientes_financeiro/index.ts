@@ -6,6 +6,8 @@ import { patchCliente } from './patchCliente';
 import { Cliente } from '@/utils/types/cliente';
 import { CriarClienteType } from '@/utils/types/criar_cliente';
 import { postCliente } from './postCliente';
+import { putDeactivateCliente } from './putDesactivateCliente';
+import { putActivateCliente } from './putActivateCliente';
 
 export function useGetClientes(url: string) {
     return useQuery({
@@ -41,5 +43,25 @@ export function usePostCliente() {
         mutationKey: ['post-cliente'],
         mutationFn: (data: CriarClienteType) => postCliente(data),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clientes'] }),
+    });
+}
+
+export function useDeactivateCliente() {
+    return useMutation({
+        mutationKey: ['desativar-cliente'],
+        mutationFn: (clienteId: number) => putDeactivateCliente({ clienteId }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['clientes'] });
+        },
+    });
+}
+
+export function useActivateCliente() {
+    return useMutation({
+        mutationKey: ['ativar-cliente'],
+        mutationFn: (clienteId: number) => putActivateCliente({ clienteId }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['clientes'] });
+        },
     });
 }

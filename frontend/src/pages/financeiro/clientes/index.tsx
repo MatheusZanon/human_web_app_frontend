@@ -1,6 +1,11 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { useGetClientes, usePostCliente } from '@/api/http/clientes_financeiro';
-import { Search, Trash2 } from 'lucide-react';
+import {
+    useActivateCliente,
+    useDeactivateCliente,
+    useGetClientes,
+    usePostCliente,
+} from '@/api/http/clientes_financeiro';
+import { Search, ShieldCheck, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
 import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -74,6 +79,18 @@ function ClientesFinanceiro() {
     const inputRef = useRef<HTMLInputElement>(null);
     const { mutate: createCliente, isPending: isCreatingCliente, error: createClienteError } = usePostCliente();
     const { hasRole } = useAuthenticatedUser();
+    const {
+        mutate: deactivateCliente,
+        isPending: isDeactivatingCliente,
+        isSuccess: isClienteDeactivated,
+        error: deactivateClienteError,
+    } = useDeactivateCliente();
+    const {
+        mutate: activateCliente,
+        isPending: isActivatingCliente,
+        isSuccess: isClienteActivated,
+        error: activateClienteError,
+    } = useActivateCliente();
 
     const {
         register,
@@ -154,6 +171,56 @@ function ClientesFinanceiro() {
 
     const handleEdit = (id: number) => {
         navigate(`${id}`);
+    };
+
+    const handleDeactivate = (id: number) => {
+        deactivateCliente(id);
+
+        if (isDeactivatingCliente && !deactivateClienteError) {
+            toast.info('Desativando cliente...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (deactivateClienteError) {
+            toast.error(`Ocorreu um erro ao desativar o cliente: ${deactivateClienteError.response?.data}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (isClienteDeactivated) {
+            toast.success('Cliente desativado!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    };
+
+    const handleActivate = (id: number) => {
+        activateCliente(id);
+
+        if (isActivatingCliente && !activateClienteError) {
+            toast.info('Ativando cliente...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (activateClienteError) {
+            toast.error(`Ocorreu um erro ao ativar o cliente: ${activateClienteError.response?.data}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (isClienteActivated) {
+            toast.success('Cliente ativado!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
     };
 
     return (
@@ -355,35 +422,63 @@ function ClientesFinanceiro() {
                                             >
                                                 <Search width={16} height={16} />
                                             </button>
-                                            <BaseModalProvider>
-                                                <BaseModalTrigger variant='danger' size='sm'>
-                                                    <Trash2 size={16} />
-                                                </BaseModalTrigger>
-                                                <BaseModalRoot>
-                                                    <BaseModalContent>
-                                                        <BaseModalHeader>
-                                                            <BaseModalTitle>Desativar Cliente</BaseModalTitle>
-                                                        </BaseModalHeader>
-                                                        <BaseModalBody>
-                                                            <p>
-                                                                {`Tem certeza que deseja desativar o cliente? ${cliente.nome_razao_social}`}
-                                                            </p>
-                                                        </BaseModalBody>
-                                                        <BaseModalFooter>
-                                                            <button
-                                                                type='button'
-                                                                className='btn btn-danger'
-                                                                onClick={() => handleDelete(cliente.id)}
-                                                            >
-                                                                Excluir
-                                                            </button>
-                                                            <BaseModalCloseButton variant='ghost'>
-                                                                Cancelar
-                                                            </BaseModalCloseButton>
-                                                        </BaseModalFooter>
-                                                    </BaseModalContent>
-                                                </BaseModalRoot>
-                                            </BaseModalProvider>
+                                            {cliente.is_active ? (
+                                                <BaseModalProvider>
+                                                    <BaseModalTrigger variant='danger' size='sm'>
+                                                        <Trash2 size={16} />
+                                                    </BaseModalTrigger>
+                                                    <BaseModalRoot>
+                                                        <BaseModalContent>
+                                                            <BaseModalHeader>
+                                                                <BaseModalTitle>Desativar Cliente</BaseModalTitle>
+                                                            </BaseModalHeader>
+                                                            <BaseModalBody>
+                                                                <p>
+                                                                    {`Tem certeza que deseja desativar o cliente? ${cliente.nome_razao_social}`}
+                                                                </p>
+                                                            </BaseModalBody>
+                                                            <BaseModalFooter>
+                                                                <BaseModalConfirmationButton
+                                                                    onClick={() => handleDeactivate(cliente.id)}
+                                                                >
+                                                                    Excluir
+                                                                </BaseModalConfirmationButton>
+                                                                <BaseModalCloseButton variant='ghost'>
+                                                                    Cancelar
+                                                                </BaseModalCloseButton>
+                                                            </BaseModalFooter>
+                                                        </BaseModalContent>
+                                                    </BaseModalRoot>
+                                                </BaseModalProvider>
+                                            ) : (
+                                                <BaseModalProvider>
+                                                    <BaseModalTrigger variant='success' size='sm'>
+                                                        <ShieldCheck size={16} />
+                                                    </BaseModalTrigger>
+                                                    <BaseModalRoot>
+                                                        <BaseModalContent>
+                                                            <BaseModalHeader>
+                                                                <BaseModalTitle>Ativar Cliente</BaseModalTitle>
+                                                            </BaseModalHeader>
+                                                            <BaseModalBody>
+                                                                <p>
+                                                                    {`Tem certeza que deseja ativar o cliente? ${cliente.nome_razao_social}`}
+                                                                </p>
+                                                            </BaseModalBody>
+                                                            <BaseModalFooter>
+                                                                <BaseModalConfirmationButton
+                                                                    onClick={() => handleActivate(cliente.id)}
+                                                                >
+                                                                    Excluir
+                                                                </BaseModalConfirmationButton>
+                                                                <BaseModalCloseButton variant='ghost'>
+                                                                    Cancelar
+                                                                </BaseModalCloseButton>
+                                                            </BaseModalFooter>
+                                                        </BaseModalContent>
+                                                    </BaseModalRoot>
+                                                </BaseModalProvider>
+                                            )}
                                         </div>
                                     </TableData>
                                 </TableRow>
