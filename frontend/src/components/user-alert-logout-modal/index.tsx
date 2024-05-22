@@ -1,23 +1,46 @@
 import React from "react";
-import styles from "./user-alert-logout-modal.module.scss";
+import {
+    BaseModalBody,
+    BaseModalConfirmationButton,
+    BaseModalContent,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalProvider,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '../baseModal';
+import { AlertCircle } from 'lucide-react';
 
-interface ModalProps {
+
+interface LogoutModalProps {
     isOpen: boolean;
     onClose: () => void;
-    children: React.ReactNode;
 }
 
-const Modal : React.FC<ModalProps> = ({isOpen, onClose, children}) => {
+const LogoutModal : React.FC<LogoutModalProps> = ({isOpen, onClose}) => {
     if (!isOpen) return null;
 
     return (
-        <div className={styles.logoutModal}>
-            <div className={styles.logoutModalContent} onClick={e => e.stopPropagation}>
-                {children}
-                <button className="btn btn-primary" onClick={onClose} style={{ marginTop: 20 }}>Continuar</button>
-            </div>
-        </div>
+        <BaseModalProvider defaultOpen={isOpen}>
+            <BaseModalRoot>
+                <BaseModalContent>
+                    <BaseModalHeader>
+                        <BaseModalTitle>Sessão expirada <AlertCircle color='red'/></BaseModalTitle>
+                    </BaseModalHeader>
+                    <BaseModalBody>
+                        <div className='alert alert-danger'>
+                            <h4 className='mb-0'>Sua sessão expirou.</h4> 
+                            <h4>Por favor, faça login novamente.</h4>
+                        </div>
+                    </BaseModalBody>
+                    <BaseModalFooter>
+                        <BaseModalConfirmationButton onClick={onClose}>Continuar</BaseModalConfirmationButton>
+                    </BaseModalFooter>
+                </BaseModalContent>
+            </BaseModalRoot>
+        </BaseModalProvider>
     );
 }
 
-export default Modal;
+export default LogoutModal;

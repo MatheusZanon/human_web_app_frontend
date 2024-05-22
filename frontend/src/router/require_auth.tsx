@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { api } from '@/utils/axios';
 import LoadingScreen from '@/components/loading-screen';
-import Modal from '@/components/user-alert-logout-modal';
-import { AlertCircle } from 'lucide-react';
+import LogoutModal from '@/components/user-alert-logout-modal';
 
 interface RequireAuthProps {
     children: React.ReactNode; // Define o tipo dos filhos como React.ReactNode
@@ -48,13 +47,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
         <>
             {isAuthenticated ? children : null}
             {isModalOpen && (
-                <Modal isOpen={isModalOpen} onClose={handleModalClose}>
-                    <div className='alert alert-danger'>
-                        <h4 className='mb-0'>Seu token de acesso expirou.</h4> 
-                        <h4>Por favor, faça login novamente.</h4>
-                        <AlertCircle color='red'/>
-                    </div>
-                </Modal>
+                <LogoutModal isOpen={isModalOpen} onClose={handleModalClose}/>
             )}
         </>
     );
