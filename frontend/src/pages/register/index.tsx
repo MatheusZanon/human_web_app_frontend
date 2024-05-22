@@ -5,30 +5,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { api } from '@/utils/axios';
+import { phoneFormatter } from '@/libs';
 
 const schema = z
     .object({
         username: z.string().min(3, 'É necessário pelo menos 3 caracteres'),
         firstname: z.string(),
         lastname: z.string(),
-        cpf: z.string().refine((cpf: string) => {
-            if (typeof cpf !== 'string') return false;
-            cpf = cpf.replace(/[^\d]+/g, '');
-            if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) return false;
-            const cpfDigits = cpf.split('').map((el) => +el);
-            const rest = (count: number): number => {
-                return (
-                    ((cpfDigits.slice(0, count - 12).reduce((soma, el, index) => soma + el * (count - index), 0) * 10) %
-                        11) %
-                    10
-                );
-            };
-            return rest(10) === cpfDigits[9] && rest(11) === cpfDigits[10];
-        }, 'Digite um cpf válido.'),
         email: z.string().email('Email inválido'),
+        telefone: z.string().trim(),
         password: z.string().min(6, 'É necessário pelo menos 6 caracteres'),
         confirmPassword: z.string().min(6, 'É necessário pelo menos 6 caracteres'),
-        setor: z.string().min(6, 'É necessário pelo menos 6 caracteres'),
     })
     .refine((data) => data.password === data.confirmPassword, {
         path: ['confirmPassword'],
@@ -40,9 +27,15 @@ type RegisterData = z.infer<typeof schema>;
 function Register() {
     const navigate = useNavigate();
 
+    const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedPhone = phoneFormatter(event.target.value);
+        setValue('telefone', formattedPhone);
+    };
+
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm<RegisterData>({
         mode: 'onChange',
@@ -54,7 +47,6 @@ function Register() {
         delayError: 500,
         defaultValues: {
             email: '',
-            cpf: '',
             password: '',
             confirmPassword: '',
         },
@@ -69,10 +61,8 @@ function Register() {
                 first_name: parsedData.data.firstname,
                 last_name: parsedData.data.lastname,
                 email: parsedData.data.email,
+                telefone_celular: parsedData.data.telefone,
                 password: parsedData.data.password,
-                rg: null,
-                cpf: parsedData.data.cpf,
-                telefone_celular: null,
             })
                 .then((response) => {
                     if (response.status == 201) {
@@ -103,29 +93,31 @@ function Register() {
                 </div>
                 <div>
                     <label htmlFor='firstname' className='form-label'>
-                        Nome: <span>(Opcional)</span>
+                        Nome:
                     </label>
                     <input type='text' id='firstname' className='form-control' {...register('firstname')} />
                 </div>
                 <div>
                     <label htmlFor='lastname' className='form-label'>
-                        Sobrenome: <span>(Opcional)</span>
+                        Sobrenome:
                     </label>
                     <input type='text' id='lastname' className='form-control' {...register('lastname')} />
                 </div>
-                <div>
-                    <label htmlFor='cpf' className='form-label'>
-                        CPF:<span className='text-danger'>*</span>
-                    </label>
-                    <input type='text' id='cpf' className='form-control' {...register('cpf')} />
-                    {errors.cpf && <p className='text-danger'>{errors.cpf.message}</p>}
-                </div>
-                <div>
-                    <label htmlFor='email' className='form-label'>
-                        Email:<span className='text-danger'>*</span>
-                    </label>
-                    <input type='email' id='email' className='form-control' {...register('email')} />
-                    {errors.email && <p className='text-danger'>{errors.email.message}</p>}
+                <div className='d-flex gap-3 mt-2 mb-2'>
+                    <div className='w-100'>
+                        <label htmlFor='email' className='form-label'>
+                            Email:<span className='text-danger'>*</span>
+                        </label>
+                        <input type='email' id='email' className='form-control' {...register('email')} />
+                        {errors.email && <p className='text-danger'>{errors.email.message}</p>}
+                    </div>
+                    <div className='w-100'>
+                        <label htmlFor='telefone' className='form-label'>
+                            Telefone:
+                        </label>
+                        <input type='text' id='telefone' className='form-control' {...register('telefone')} onChange={handlePhoneChange} placeholder='(00) 00000-0000'/>
+                        {errors.telefone && <p className='text-danger'>{errors.telefone.message}</p>}
+                    </div>
                 </div>
                 <div>
                     <label htmlFor='password' className='form-label'>
@@ -145,13 +137,6 @@ function Register() {
                         {...register('confirmPassword')}
                     />
                     {errors.confirmPassword && <p className='text-danger'>{errors.confirmPassword.message}</p>}
-                </div>
-                <div>
-                    <label htmlFor='setor' className='form-label'>
-                        Setor:<span className='text-danger'>*</span>
-                    </label>
-                    <input type='text' id='setor' className='form-control' {...register('setor')} />
-                    {errors.setor && <p className='text-danger'>{errors.setor.message}</p>}
                 </div>
                 <button type='submit' className='btn btn-primary mt-2'>
                     Requisitar cadastro

@@ -1,6 +1,7 @@
 .main {
   padding: 0 0.5rem;
   margin-top: 4.75rem;
+  min-height: calc(100vh - 4.75rem);
   overflow-y: auto;
   background-color: var(--bs-body-bg);
 }
