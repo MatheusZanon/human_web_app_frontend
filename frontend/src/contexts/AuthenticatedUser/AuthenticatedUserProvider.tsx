@@ -3,6 +3,7 @@ import { User } from '@/utils/types/user';
 import { createContext } from 'react';
 import { useGetUser } from '@/api/http/user';
 import LoadingScreen from '@/components/loading-screen';
+import { useNavigate } from 'react-router-dom';
 
 type AuthenticatedUserProviderState = {
     authenticatedUser: User | null;
@@ -21,6 +22,8 @@ const authenticatedUserContext = createContext<AuthenticatedUserProviderState>(i
 function AuthenticatedUserProvider({ children }: { children: React.ReactNode }) {
     const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null);
     const authUser = useGetUser();
+    const navigate = useNavigate();
+
     const defineUser = (User: User | null) => setAuthenticatedUser(User);
     const hasRole = (role: string) => !!authenticatedUser?.groups.includes(role);
 
@@ -37,8 +40,14 @@ function AuthenticatedUserProvider({ children }: { children: React.ReactNode }) 
             authUser.data.profile_picture =
                 'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
             defineUser(authUser.data);
+
+            if (authUser.data.groups.includes('ADMIN')) {
+                navigate('/main/dashboard');
+            } else {
+                navigate('/main/robos');
+            }
         }
-    }, [authUser.data, authUser.isSuccess]);
+    }, [authUser.data, authUser.isSuccess, navigate]);
 
     return (
         <authenticatedUserContext.Provider value={value}>
