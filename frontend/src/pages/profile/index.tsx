@@ -46,7 +46,14 @@ function Profile() {
                     <div className='row'>
                         <h3>Contato</h3>
                         <p>Email: {authenticatedUser?.email}</p>
-                        <p>Telefone: {formatCellphone(authenticatedUser?.telefone_celular || '00000000000')}</p>
+                        <p>
+                            Telefone:{' '}
+                            <span className={`${authenticatedUser?.telefone_celular ? '' : 'text-muted'}`}>
+                                {authenticatedUser?.telefone_celular
+                                    ? formatCellphone(authenticatedUser.telefone_celular)
+                                    : formatCellphone('00000000000')}
+                            </span>
+                        </p>
                     </div>
                     <div className='row'>
                         <h3>Endereço</h3>

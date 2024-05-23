@@ -217,7 +217,11 @@ function ActivateUsersTable() {
                                             : 'Sem Cargo'}
                                     </TableData>
                                     <TableData>
-                                        {formatCellphone(funcionario.telefone_celular || '00000000000')}
+                                        <span className={`${funcionario.telefone_celular ? '' : 'text-muted'}`}>
+                                            {funcionario.telefone_celular
+                                                ? formatCellphone(funcionario.telefone_celular)
+                                                : formatCellphone('00000000000')}
+                                        </span>
                                     </TableData>
                                     <TableData>
                                         {funcionario.situacao ? (

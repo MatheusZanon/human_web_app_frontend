@@ -17,20 +17,21 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
 
     const handleModalClose = () => {
         setIsModalOpen(false);
-        api.post('session/logout/').then(() => 
-            setIsAuthenticated(false)
-        );
+        api.post('session/logout/').then(() => {
+            setIsAuthenticated(false);
+            sessionStorage.setItem('redirected', 'false');
+        });
         navigate('/');
     };
 
     useEffect(() => {
         const verifyToken = async () => {
             try {
-                const response = await api.get('session/verify/',  {withCredentials: true});
+                const response = await api.get('session/verify/', { withCredentials: true });
                 if (response.status == 200) {
                     setIsAuthenticated(true);
                 }
-            } catch (error : any) {
+            } catch (error: any) {
                 setIsModalOpen(true);
             } finally {
                 setIsChecking(false);
@@ -40,18 +41,19 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
     }, [location.pathname]);
 
     if (isChecking) {
-        return <div><LoadingScreen /></div>;
+        return (
+            <div>
+                <LoadingScreen />
+            </div>
+        );
     }
 
     return (
         <>
             {isAuthenticated ? children : null}
-            {isModalOpen && (
-                <LogoutModal isOpen={isModalOpen} onClose={handleModalClose}/>
-            )}
+            {isModalOpen && <LogoutModal isOpen={isModalOpen} onClose={handleModalClose} />}
         </>
     );
-
 };
 
 export default RequireAuth;

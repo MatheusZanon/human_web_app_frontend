@@ -10,6 +10,7 @@ function ProfilePicture() {
     const logout = () => {
         return () => {
             api.post('session/logout/');
+            sessionStorage.setItem('redirected', 'false');
         };
     };
     if (!authenticatedUser) return null;

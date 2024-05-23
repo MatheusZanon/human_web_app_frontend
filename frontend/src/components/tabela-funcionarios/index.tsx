@@ -176,7 +176,13 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                           )
                                         : 'Sem Cargo'}
                                 </TableData>
-                                <TableData>{formatCellphone(funcionario.telefone_celular || '00000000000')}</TableData>
+                                <TableData>
+                                    <span className={`${funcionario.telefone_celular ? '' : 'text-muted'}`}>
+                                        {funcionario.telefone_celular
+                                            ? formatCellphone(funcionario.telefone_celular)
+                                            : formatCellphone('00000000000')}
+                                    </span>
+                                </TableData>
                                 <TableData>
                                     {funcionario.situacao ? (
                                         <Badge
@@ -191,7 +197,14 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                             <span className='d-flex justify-content-center align-items-center flex-grow-1'>
                                                 {funcionario.situacao}
                                             </span>
-                                            <BaseModalProvider onOpenCallback={() => setValue('situacao', funcionario.situacao as ChangeSituacaoType['situacao'])}>
+                                            <BaseModalProvider
+                                                onOpenCallback={() =>
+                                                    setValue(
+                                                        'situacao',
+                                                        funcionario.situacao as ChangeSituacaoType['situacao'],
+                                                    )
+                                                }
+                                            >
                                                 <BaseModalTrigger size='sm'>
                                                     <Pen size={16} />
                                                 </BaseModalTrigger>
@@ -226,7 +239,6 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                                 onClick={handleSubmit((data) =>
                                                                     onSubmit(funcionario.id, data),
                                                                 )}
-                                                                
                                                             >
                                                                 Salvar
                                                             </button>
@@ -253,10 +265,11 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                     <Search width={16} height={16} />
                                                 </button>
                                                 {funcionario.id !== authenticatedUser?.id &&
-                                                    (
-                                                        hasRole('ADMIN') || hasRole('RH_GERENCIA') || hasRole('TI')) && (
-                                                            <BaseModalProvider>
-                                                            <BaseModalTrigger variant='danger' size='sm'><Trash2 size={16} /></BaseModalTrigger>
+                                                    (hasRole('ADMIN') || hasRole('RH_GERENCIA') || hasRole('TI')) && (
+                                                        <BaseModalProvider>
+                                                            <BaseModalTrigger variant='danger' size='sm'>
+                                                                <Trash2 size={16} />
+                                                            </BaseModalTrigger>
                                                             <BaseModalRoot>
                                                                 <BaseModalContent>
                                                                     <BaseModalHeader>
@@ -266,18 +279,24 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                                     </BaseModalHeader>
                                                                     <BaseModalBody>
                                                                         <p>
-                                                                            Tem certeza que deseja desativar o funcionário{' '}
-                                                                            {`${funcionario.first_name} ${funcionario.last_name}`}?
+                                                                            Tem certeza que deseja desativar o
+                                                                            funcionário{' '}
+                                                                            {`${funcionario.first_name} ${funcionario.last_name}`}
+                                                                            ?
                                                                         </p>
                                                                     </BaseModalBody>
                                                                     <BaseModalFooter>
                                                                         <button
                                                                             className='btn btn-danger'
-                                                                            onClick={() => handleDeactivate(funcionario.id)}
+                                                                            onClick={() =>
+                                                                                handleDeactivate(funcionario.id)
+                                                                            }
                                                                         >
                                                                             Desativar
                                                                         </button>
-                                                                        <BaseModalCloseButton variant='ghost'>Cancelar</BaseModalCloseButton>
+                                                                        <BaseModalCloseButton variant='ghost'>
+                                                                            Cancelar
+                                                                        </BaseModalCloseButton>
                                                                     </BaseModalFooter>
                                                                 </BaseModalContent>
                                                             </BaseModalRoot>
