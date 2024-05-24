@@ -197,18 +197,19 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                             <span className='d-flex justify-content-center align-items-center flex-grow-1'>
                                                 {funcionario.situacao}
                                             </span>
-                                            <BaseModalProvider
-                                                onOpenCallback={() =>
-                                                    setValue(
-                                                        'situacao',
-                                                        funcionario.situacao as ChangeSituacaoType['situacao'],
-                                                    )
-                                                }
-                                            >
-                                                <BaseModalTrigger size='sm'>
+                                            <BaseModalProvider>
+                                                <BaseModalTrigger size='sm' modalKey='alterar-situacao'>
                                                     <Pen size={16} />
                                                 </BaseModalTrigger>
-                                                <BaseModalRoot>
+                                                <BaseModalRoot
+                                                    onOpen={() =>
+                                                        setValue(
+                                                            'situacao',
+                                                            funcionario.situacao as ChangeSituacaoType['situacao'],
+                                                        )
+                                                    }
+                                                    modalKey='alterar-situacao'
+                                                >
                                                     <BaseModalContent>
                                                         <BaseModalHeader>
                                                             <BaseModalTitle>
@@ -267,10 +268,14 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
                                                 {funcionario.id !== authenticatedUser?.id &&
                                                     (hasRole('ADMIN') || hasRole('RH_GERENCIA') || hasRole('TI')) && (
                                                         <BaseModalProvider>
-                                                            <BaseModalTrigger variant='danger' size='sm'>
+                                                            <BaseModalTrigger
+                                                                variant='danger'
+                                                                size='sm'
+                                                                modalKey='desativar-funcionario'
+                                                            >
                                                                 <Trash2 size={16} />
                                                             </BaseModalTrigger>
-                                                            <BaseModalRoot>
+                                                            <BaseModalRoot modalKey='desativar-funcionario'>
                                                                 <BaseModalContent>
                                                                     <BaseModalHeader>
                                                                         <BaseModalTitle>
