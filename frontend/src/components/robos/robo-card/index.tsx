@@ -154,8 +154,10 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                         </p>
                     </div>
                     <BaseModalProvider>
-                        <BaseModalTrigger variant='primary'>Executar</BaseModalTrigger>
-                        <BaseModalRoot>
+                        <BaseModalTrigger variant='primary' modalKey='executar-robo'>
+                            Executar
+                        </BaseModalTrigger>
+                        <BaseModalRoot modalKey='executar-robo'>
                             <BaseModalContent>
                                 <BaseModalHeader>
                                     <BaseModalTitle>{title}</BaseModalTitle>

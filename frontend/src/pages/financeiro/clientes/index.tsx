@@ -254,8 +254,10 @@ function ClientesFinanceiro() {
                         />
                         {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO')) && (
                             <BaseModalProvider>
-                                <BaseModalTrigger variant='secondary'>Adicionar Cliente</BaseModalTrigger>
-                                <BaseModalRoot>
+                                <BaseModalTrigger variant='secondary' modalKey='criar-cliente'>
+                                    Adicionar Cliente
+                                </BaseModalTrigger>
+                                <BaseModalRoot modalKey='criar-cliente'>
                                     <BaseModalContent>
                                         <BaseModalHeader>
                                             <BaseModalTitle>Adicionar Cliente</BaseModalTitle>
@@ -424,10 +426,14 @@ function ClientesFinanceiro() {
                                             </button>
                                             {cliente.is_active ? (
                                                 <BaseModalProvider>
-                                                    <BaseModalTrigger variant='danger' size='sm'>
+                                                    <BaseModalTrigger
+                                                        variant='danger'
+                                                        size='sm'
+                                                        modalKey={`desativar-${cliente.id}`}
+                                                    >
                                                         <Trash2 size={16} />
                                                     </BaseModalTrigger>
-                                                    <BaseModalRoot>
+                                                    <BaseModalRoot modalKey={`desativar-${cliente.id}`}>
                                                         <BaseModalContent>
                                                             <BaseModalHeader>
                                                                 <BaseModalTitle>Desativar Cliente</BaseModalTitle>
@@ -452,10 +458,14 @@ function ClientesFinanceiro() {
                                                 </BaseModalProvider>
                                             ) : (
                                                 <BaseModalProvider>
-                                                    <BaseModalTrigger variant='success' size='sm'>
+                                                    <BaseModalTrigger
+                                                        variant='success'
+                                                        size='sm'
+                                                        modalKey={`ativar-${cliente.id}`}
+                                                    >
                                                         <ShieldCheck size={16} />
                                                     </BaseModalTrigger>
-                                                    <BaseModalRoot>
+                                                    <BaseModalRoot modalKey={`ativar-${cliente.id}`}>
                                                         <BaseModalContent>
                                                             <BaseModalHeader>
                                                                 <BaseModalTitle>Ativar Cliente</BaseModalTitle>
@@ -469,7 +479,7 @@ function ClientesFinanceiro() {
                                                                 <BaseModalConfirmationButton
                                                                     onClick={() => handleActivate(cliente.id)}
                                                                 >
-                                                                    Excluir
+                                                                    Ativar
                                                                 </BaseModalConfirmationButton>
                                                                 <BaseModalCloseButton variant='ghost'>
                                                                     Cancelar

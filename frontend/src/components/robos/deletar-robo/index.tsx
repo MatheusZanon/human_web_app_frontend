@@ -23,7 +23,11 @@ const deletarRoboSchema = z.object({
 type id = z.infer<typeof deletarRoboSchema>;
 
 function DeletarRoboCard({ robos }: { robos: Robo[] }) {
-    const { register, handleSubmit, formState: { isValid } } = useForm<id>({
+    const {
+        register,
+        handleSubmit,
+        formState: { isValid },
+    } = useForm<id>({
         mode: 'onChange',
         reValidateMode: 'onChange',
         criteriaMode: 'all',
@@ -53,8 +57,10 @@ function DeletarRoboCard({ robos }: { robos: Robo[] }) {
 
     return (
         <BaseModalProvider>
-            <BaseModalTrigger variant='danger'>Excluir Robo</BaseModalTrigger>
-            <BaseModalRoot>
+            <BaseModalTrigger variant='danger' modalKey='deletar-robo'>
+                Excluir Robo
+            </BaseModalTrigger>
+            <BaseModalRoot modalKey='deletar-robo'>
                 <BaseModalContent>
                     <BaseModalHeader>
                         <BaseModalTitle>Excluir Robo</BaseModalTitle>

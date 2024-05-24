@@ -48,8 +48,8 @@ function CriarRoboRotinaModal({ roboId }: { roboId: string }) {
     };
     return (
         <BaseModalProvider>
-            <BaseModalTrigger variant='secondary'>Criar Rotina</BaseModalTrigger>
-            <BaseModalRoot>
+            <BaseModalTrigger variant='secondary' modalKey='criar-robo-rotina'>Criar Rotina</BaseModalTrigger>
+            <BaseModalRoot modalKey='criar-robo-rotina'>
                 <BaseModalContent>
                     <BaseModalHeader>
                         <BaseModalTitle>Criar Rotina</BaseModalTitle>

@@ -50,8 +50,8 @@ function CriarRoboParametroModal({ roboId }: { roboId: string }) {
 
     return (
         <BaseModalProvider>
-            <BaseModalTrigger variant='primary'>Criar Parâmetro</BaseModalTrigger>
-            <BaseModalRoot>
+            <BaseModalTrigger variant='primary' modalKey='criar-robo-parametro'>Criar Parâmetro</BaseModalTrigger>
+            <BaseModalRoot modalKey='criar-robo-parametro'>
                 <BaseModalContent>
                     <BaseModalHeader>
                         <BaseModalTitle>Criar Parâmetro</BaseModalTitle>

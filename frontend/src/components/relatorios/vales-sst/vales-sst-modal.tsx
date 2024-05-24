@@ -46,10 +46,10 @@ const ValesSSTModal: React.FC<ModalProps> = ({ vale, onUpdate }) => {
 
     return (
         <BaseModalProvider>
-            <BaseModalTrigger variant='warning'>
+            <BaseModalTrigger variant='warning' modalKey='editar-vale-sst'>
                 <Pencil size={16} />
             </BaseModalTrigger>
-            <BaseModalRoot>
+            <BaseModalRoot modalKey='editar-vale-sst'>
                 <BaseModalContent>
                     <BaseModalHeader>
                         <BaseModalTitle>Editar Vale/SST</BaseModalTitle>
