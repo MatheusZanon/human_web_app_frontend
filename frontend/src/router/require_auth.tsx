@@ -31,6 +31,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
                     setIsAuthenticated(true);
                 }
             } catch (error : any) {
+                console.log(" Houve um erro no login: ", error);
                 setIsModalOpen(true);
             } finally {
                 setIsChecking(false);

@@ -36,24 +36,38 @@ function Login() {
     function onSubmit(data: LoginData) {
         const parsedData = schema.safeParse(data);
         if (parsedData.success) {
-        api.post('token/', {
-            username: parsedData.data.username,
-            password: parsedData.data.password,
-        }, {withCredentials: true}).then(response => {
-                if (response.status == 200) {
-                    toast("Login efetuado com sucesso!");
-                    setTimeout(() => {
-                        navigate('/main');
-                    }, 1500);  
-                }  
-        }).catch(error => {
-            console.error('Houve um erro no login: ', error, error.response.status);
-            if (error.response.status == 401) {
-            toast("Credenciais Inválidas!");
-            } else if (error.response.status == 500) {
-            toast("Erro Interno do Servidor");
-            }
-        });
+            api.post('check_user', {
+                username: parsedData.data.username,
+                password: parsedData.data.password,
+            }).then(() => {
+                api.post('token/', {
+                    username: parsedData.data.username,
+                    password: parsedData.data.password,
+                }, {withCredentials: true}).then(response => {
+                        if (response.status == 200) {
+                            toast("Login efetuado com sucesso!");
+                            setTimeout(() => {
+                                navigate('/main');
+                            }, 1500);  
+                        }  
+                }).catch(error => {
+                    console.error('Houve um erro no login: ', error, error.response.status);
+                    if (error.response.status == 401) {
+                    toast("Credenciais Inválidas!");
+                    } else if (error.response.status == 500) {
+                    toast("Erro Interno do Servidor");
+                    }
+                });
+            }).catch((error) => {
+                if (error.response.status == 403) {
+                    toast("Conta desativada!");
+                } else if (error.response.status == 404) {
+                    toast("Conta não encontrada no sistema!");
+                }
+            })
+            /*
+            
+            */
         }
     };
 
