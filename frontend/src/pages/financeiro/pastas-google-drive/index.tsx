@@ -1,14 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useGetArquivos } from "@/api/http/google_drive";
+import { useAuthenticatedUser } from "@/contexts/AuthenticatedUser/AuthenticatedUserProvider";
 import { Content } from "@/components/layout/content";
+import ArquivoPreview from './arquivo_preview';
 import AlertMessage from '@/components/alert-message';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
 import { ArrowBigLeftDash, Search, Download } from 'lucide-react';
-import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary } from 'react-icons/md';
+import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload } from 'react-icons/md';
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 import { formatDateTime } from '@/libs';
+import {
+    BaseModalBody,
+    BaseModalConfirmationButton,
+    BaseModalContent,
+    BaseModalFooter,
+    BaseModalHeader,
+    BaseModalProvider,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '@/components/baseModal';
 import { Link } from 'react-router-dom';
 
 
@@ -19,6 +32,7 @@ function PastasGoogleDrive() {
     const arquivosDrive  = useGetArquivos(url);
     const [navegationHistory, setnavegationHistory] = useState<string[]>([]);
     const [fileHistory, setfileHistory] = useState<string[]>([]);
+    const { hasRole } = useAuthenticatedUser();
 
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
@@ -56,26 +70,50 @@ function PastasGoogleDrive() {
     } else {
         return (
             <Content title="Arquivos">
-                {currentFolderId !== initialFolderId &&
-                    <>
-                    <div className='d-flex gap-3 align-items-center'>
-                        <button
-                            type='button'
-                            className='btn btn-primary'
-                            onClick={() => {handleBackClick();}}
-                        >
-                            <ArrowBigLeftDash />
-                        </button>      
+                <div className='d-flex gap-3 align-items-center mb-3'>
+                    {currentFolderId === initialFolderId ?
+                                <button
+                                    type='button'
+                                    className='btn btn-primary disabled'
+                                    >
+                                    <ArrowBigLeftDash />
+                                </button> 
+                        :
+                        <>
+                        
+                            <button
+                                type='button'
+                                className='btn btn-primary'
+                                onClick={() => {handleBackClick();}}
+                                >
+                                <ArrowBigLeftDash />
+                            </button>
+                            <div className='d-flex align-items-center gap-2'>
+                                <MdFolder size={22}/>
+                                {fileHistory.map( (file, index) => (
+                                    <span>{file}{index !== fileHistory.length - 1 && ' > '}</span>
+                                ))}
+                            </div>      
+                        </>
+                    }
+                </div>
+                <BaseModalProvider>
+                    <BaseModalTrigger variant='secondary'> <MdUpload size={22}/> Upload</BaseModalTrigger>
+                    <BaseModalRoot>
+                        <BaseModalContent>
+                            <BaseModalHeader>
+                                <BaseModalTitle>Arquivos</BaseModalTitle>
+                            </BaseModalHeader>
+                            <BaseModalBody>
+                                <p>Upload de arquivos</p>
+                            </BaseModalBody>
+                            <BaseModalFooter>
+                                <BaseModalConfirmationButton>Upload</BaseModalConfirmationButton>
+                            </BaseModalFooter>
+                        </BaseModalContent>
+                    </BaseModalRoot>
+                </BaseModalProvider>
 
-                        <div className='d-flex align-items-center gap-2'>
-                            <MdFolder size={22}/>
-                            {fileHistory.map( (file, index) => (
-                                <span>{file}{index !== fileHistory.length - 1 && ' > '}</span>
-                            ))}
-                        </div>
-                    </div>
-                    </>
-                }
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -149,17 +187,21 @@ function PastasGoogleDrive() {
                                     </div>
                                     : 
                                     <div className='d-flex justify-content-center align-items-center gap-2'>
-                                        <button
-                                            className='btn btn-sm p-1 d-flex justify-content-center align-items-center'
-                                        >
-                                            <Link to={`preview/${arquivo.parents}/${arquivo.id}`}>
-                                                <Search width={16} height={16} />
-                                            </Link>
-                                        </button>
-                                        <button
-                                            className='btn btn-sm p-1 d-flex justify-content-center align-items-center'
-                                        >
-                                            <Download width={16} height={16} />
+                                        <BaseModalProvider>
+                                            <BaseModalTrigger variant='warning' size='sm'> <Search width={16} height={16} /></BaseModalTrigger>
+                                            <BaseModalRoot>
+                                                <BaseModalContent style={{maxWidth:'900px', width: '100%', height: '100%'}}>
+                                                    <BaseModalHeader>
+                                                        <BaseModalTitle>{arquivo.name}</BaseModalTitle>
+                                                    </BaseModalHeader>
+                                                    <BaseModalBody>
+                                                        <ArquivoPreview arquivo_id={arquivo.id}/>
+                                                    </BaseModalBody>
+                                                </BaseModalContent>
+                                            </BaseModalRoot>
+                                        </BaseModalProvider>
+                                        <button className='btn btn-sm p-1 d-flex justify-content-center align-items-center'>
+                                            <Download width={16} height={16}/>
                                         </button>
                                     </div>
                                     }
@@ -169,10 +211,9 @@ function PastasGoogleDrive() {
                         ))}
                     </TableBody>
                 </Table>
-            </Content>      
+            </Content>  
         )
     }
 }
-
 
 export default PastasGoogleDrive;

@@ -1,7 +1,7 @@
 import { api } from "@/utils/axios";
-import { ArquivoDrivePreview } from "@/utils/types/arquivos_drive";	
+import { ArquivosDrivePreview } from "@/utils/types/arquivos_drive";	
 
 export async function getArquivoById(url: string) {
-    const response = await api.get<ArquivoDrivePreview>(url);
+    const response = await api.get<ArquivosDrivePreview>(url);
     return response.data;
 }

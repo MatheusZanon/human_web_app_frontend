@@ -133,9 +133,10 @@ const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({ children, variant =
 
 type baseModalContentProps = {
     children: React.ReactNode;
+    style?: React.CSSProperties;
 };
 
-const BaseModalContent: React.FC<baseModalContentProps> = ({ children }) => {
+const BaseModalContent: React.FC<baseModalContentProps> = ({ children, style }) => {
     const { open, toggleOpen, onClose } = useContext(BaseModalContext);
 
     const modalRef = useRef<HTMLDivElement>(null);
@@ -177,6 +178,7 @@ const BaseModalContent: React.FC<baseModalContentProps> = ({ children }) => {
         <motion.div
             ref={modalRef}
             className={`${styles.modalContent} d-flex flex-column`}
+            style={{ ...style }}
             initial='initial'
             animate='animate'
             exit='exit'
@@ -278,7 +280,7 @@ type baseModalTitleProps = {
 
 const BaseModalTitle: React.FC<baseModalTitleProps> = ({ children }) => {
     return (
-        <div className={`${styles.modalTitle} text-wrap`}>
+        <div className={`${styles.modalTitle} text-wrap mb-2`}>
             <h3 className='d-flex gap-1 align-items-center'>{children}</h3>
         </div>
     );

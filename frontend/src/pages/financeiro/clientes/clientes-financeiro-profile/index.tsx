@@ -30,7 +30,7 @@ function ClienteFinanceiroProfile() {
             <Content title='Perfil do Cliente'>
                 <div className='row'>
                     {(hasRole('ADMIN') || hasRole('TI')) && (
-                        <div className='d-flex align-items-center'>
+                        <div className='d-flex align-items-center mb-2'>
                             <UpdateClienteModal />
                         </div>
                     )}
