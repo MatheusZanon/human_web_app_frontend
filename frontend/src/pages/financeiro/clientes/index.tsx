@@ -402,7 +402,7 @@ function ClientesFinanceiro() {
                     <TableBody>
                         {clienteResults.length > 0 &&
                             clienteResults.map((cliente) => (
-                                <TableRow key={cliente.id}>
+                                <TableRow key={cliente.id} className={cliente.is_active ? '' : 'table-danger'}>
                                     <TableData>{cliente.id}</TableData>
                                     <TableData>{cliente.nome_razao_social}</TableData>
                                     {cliente.cnpj ? (

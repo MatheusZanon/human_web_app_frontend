@@ -24,7 +24,9 @@ function AuthenticatedUserProvider({ children }: { children: React.ReactNode }) 
     const authUser = useGetUser();
     const navigate = useNavigate();
 
-    const defineUser = (User: User | null) => setAuthenticatedUser(User);
+    const defineUser = (User: User | null) => {
+        setAuthenticatedUser(User);
+    };
     const hasRole = (role: string) => !!authenticatedUser?.groups.includes(role);
 
     const value = {
@@ -40,18 +42,8 @@ function AuthenticatedUserProvider({ children }: { children: React.ReactNode }) 
             authUser.data.profile_picture =
                 'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
             defineUser(authUser.data);
-
-            const redirected = sessionStorage.getItem('redirected');
-            if (!redirected || redirected === 'false') {
-                if (authUser.data.groups.includes('ADMIN')) {
-                    navigate('/main/dashboard');
-                } else {
-                    navigate('/main/robos');
-                }
-                sessionStorage.setItem('redirected', 'true');
-            }
         }
-    }, [authUser.data, authUser.isSuccess, navigate]);
+    }, [authUser, navigate]);
 
     return (
         <authenticatedUserContext.Provider value={value}>
