@@ -22,8 +22,6 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '@/components/baseModal';
-import { Link } from 'react-router-dom';
-
 
 function PastasGoogleDrive() {
     const initialFolderId = import.meta.env.VITE_FOLDER_ID;

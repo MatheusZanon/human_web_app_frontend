@@ -51,23 +51,23 @@ function Login() {
                             }, 1500);  
                         }  
                 }).catch(error => {
-                    console.error('Houve um erro no login: ', error, error.response.status);
-                    if (error.response.status == 401) {
-                    toast("Credenciais Inválidas!");
-                    } else if (error.response.status == 500) {
-                    toast("Erro Interno do Servidor");
-                    }
+                    console.log('Error: ', error);
                 });
             }).catch((error) => {
-                if (error.response.status == 403) {
-                    toast("Conta desativada!");
-                } else if (error.response.status == 404) {
-                    toast("Conta não encontrada no sistema!");
+                switch(error.response.status) {
+                    case 403:
+                        toast("Credenciais inválidas!");
+                        break;
+                    case 406:
+                        toast("Conta inativa!");
+                        break
+                    case 404:
+                        toast("Conta não encontrada no sistema!");
+                        break;
+                    default:
+                        toast("Ocorreu um erro inesperado, entre em contato com o administrador do sistema");
                 }
             })
-            /*
-            
-            */
         }
     };
 
