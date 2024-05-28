@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { api } from '@/utils/axios';
 import LoadingScreen from '@/components/loading-screen';
 import LogoutModal from '@/components/user-alert-logout-modal';
+import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 
 interface RequireAuthProps {
     children: React.ReactNode; // Define o tipo dos filhos como React.ReactNode
@@ -14,13 +15,15 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
     const location = useLocation();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+    const { handleLogout } = useAuthenticatedUser();
 
     const handleModalClose = () => {
         setIsModalOpen(false);
         api.post('session/logout/').then(() => {
             setIsAuthenticated(false);
-            sessionStorage.setItem('redirected', 'false');
         });
+        handleLogout();
+        sessionStorage.setItem('redirected', 'false');
         navigate('/');
     };
 

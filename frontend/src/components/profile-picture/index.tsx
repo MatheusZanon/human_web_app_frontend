@@ -5,12 +5,12 @@ import styles from './profilePicture.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 
 function ProfilePicture() {
-    const { authenticatedUser } = useAuthenticatedUser();
+    const { authenticatedUser, handleLogout } = useAuthenticatedUser();
 
     const logout = () => {
         return () => {
+            handleLogout();
             api.post('session/logout/');
-            sessionStorage.setItem('redirected', 'false');
         };
     };
     if (!authenticatedUser) return null;

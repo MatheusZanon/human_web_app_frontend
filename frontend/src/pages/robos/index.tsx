@@ -6,7 +6,6 @@ import { DeletarRoboCard } from '@/components/robos/deletar-robo';
 import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 function Robos() {
     const [categoria, setCategoria] = useState('');
@@ -14,14 +13,6 @@ function Robos() {
     const { data: categorias, isLoading: isCategoriasLoading, isSuccess: isCategoriasSuccess } = useGetCategorias();
 
     const { hasRole } = useAuthenticatedUser();
-
-    const navigate = useNavigate();
-    const redirected = sessionStorage.getItem('redirected');
-    console.log(redirected);
-    if ((!redirected || redirected === 'false') && hasRole('ADMIN')) {
-        navigate('/main/dashboard');
-        sessionStorage.setItem('redirected', 'true');
-    }
 
     return (
         <>
