@@ -10,7 +10,6 @@ api.interceptors.response.use(
     response => response,
     async error => {
         const originalRequest = error.config;
-        console.log(" Erro na requisição: ", originalRequest, error.response.status);
         if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
           try {
@@ -24,7 +23,6 @@ api.interceptors.response.use(
             } catch (renewError : any) {
               if (renewError.response && (renewError.response.status === 401 || renewError.response.status === 404)) {
                 // A renovação falhou e não pode ser recuperada, rejeite explicitamente com uma mensagem
-                console.log("Token de refresh expirado - usuário precisa relogar");
                 return Promise.reject("Token de refresh expirado - usuário precisa relogar");
               }
             }

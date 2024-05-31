@@ -11,7 +11,7 @@ export function useGetArquivos(url: string) {
 
 export function useGetArquivoById(url: string) {
     return useQuery({
-        queryKey: ["arquivo_preview", url],
+        queryKey: ["arquivo_preview"],
         queryFn: () => getArquivoById(url),
     });
 }
