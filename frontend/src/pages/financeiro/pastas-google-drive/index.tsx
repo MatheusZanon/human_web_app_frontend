@@ -140,46 +140,46 @@ function PastasGoogleDrive() {
                         </BaseModalProvider>
                         
                         {isModalPrevOpen !== -1 &&
-                        (
-                            <BaseModalProvider defaultOpen onCloseCallback={() => 
-                                    {
-                                        setArquivoPrevUrl(''); 
-                                        setArquivoPrevId(''); 
-                                        setArquivoPrevName(''); 
-                                        setIsModalPrevOpen(-1);
-                                    } 
-                                }
-                            >
-                                <BaseModalRoot>
-                                    <BaseModalContent style={{maxWidth:'1200px', width: '100%', height: '100%'}}>
-                                        <BaseModalHeader>
-                                            <BaseModalTitle>{arquivoPrevName}</BaseModalTitle>
-                                        </BaseModalHeader>
-                                        <BaseModalBody>
-                                            {!arquivoPrevUrl ? <LoadingScreen /> : 
-                                                arquivoPrevTipo === 'application/pdf' ? 
-                                                    <iframe src={`${arquivoPrevUrl}#navpanes=0`} width="100%" height="600px" style={{ border: 'none' }}></iframe>
-                                                : arquivoPrevTipo === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || 
-                                                arquivoPrevTipo === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 
-                                                    <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=${arquivoPrevUrl}`} width="100%" height="500" />
-                                                : arquivoPrevTipo === 'text/plain' ? 
-                                                    <iframe src={arquivoPrevUrl} width="100%" height="500" />
-                                                : arquivoPrevTipo === 'image/png' || arquivoPrevTipo === 'image/jpeg' ? 
-                                                    <img src={arquivoPrevUrl} alt="Imagem" className="img-fluid align-self-center" width="50%" height="500" />
-                                                : arquivoPrevTipo === 'image/gif' ? 
-                                                    <img src={arquivoPrevUrl} alt="Gif" className="img-fluid align-self-center" width="50%" height="500" />
-                                                : arquivoPrevTipo === 'video/mp4' ? 
-                                                    <video src={arquivoPrevUrl} className="img-fluid align-self-center" width="100%" height="500" controls />
-                                                : 
-                                                    <p>Formato de arquivo não suportado para visualização.</p>
-                                            }
-                                        </BaseModalBody>
-                                    </BaseModalContent>
-                                </BaseModalRoot>
-                            </BaseModalProvider>
-                        )
+                            (
+                                <BaseModalProvider defaultOpen onCloseCallback={() => 
+                                        {
+                                            setArquivoPrevUrl(''); 
+                                            setArquivoPrevId(''); 
+                                            setArquivoPrevName(''); 
+                                            setIsModalPrevOpen(-1);
+                                        } 
+                                    }
+                                >
+                                    <BaseModalRoot>
+                                        <BaseModalContent style={{maxWidth:'1200px', width: '100%', height: '100%'}}>
+                                            <BaseModalHeader>
+                                                <BaseModalTitle>{arquivoPrevName}</BaseModalTitle>
+                                            </BaseModalHeader>
+                                            <BaseModalBody>
+                                                {!arquivoPrevUrl ? <LoadingScreen /> : 
+                                                    arquivoPrevTipo === 'application/pdf' ? 
+                                                        <iframe src={`${arquivoPrevUrl}#navpanes=0`} width="100%" height="600px" style={{ border: 'none' }}></iframe>
+                                                    : arquivoPrevTipo === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || 
+                                                    arquivoPrevTipo === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 
+                                                        <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=${arquivoPrevUrl}`} width="100%" height="500" />
+                                                    : arquivoPrevTipo === 'text/plain' ? 
+                                                        <iframe src={arquivoPrevUrl} width="100%" height="500" />
+                                                    : arquivoPrevTipo === 'image/png' || arquivoPrevTipo === 'image/jpeg' ? 
+                                                        <img src={arquivoPrevUrl} alt="Imagem" className="img-fluid align-self-center" width="50%" height="500" />
+                                                    : arquivoPrevTipo === 'image/gif' ? 
+                                                        <img src={arquivoPrevUrl} alt="Gif" className="img-fluid align-self-center" width="50%" height="500" />
+                                                    : arquivoPrevTipo === 'video/mp4' ? 
+                                                        <video src={arquivoPrevUrl} className="img-fluid align-self-center" width="100%" height="500" controls />
+                                                    : 
+                                                        <p>Formato de arquivo não suportado para visualização.</p>
+                                                }
+                                            </BaseModalBody>
+                                        </BaseModalContent>
+                                    </BaseModalRoot>
+                                </BaseModalProvider>
+                            )
                         }
-
+                        
                         <Table>
                             <TableHead>
                                 <TableRow>

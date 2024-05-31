@@ -22,7 +22,7 @@ const LogoutModal : React.FC<LogoutModalProps> = ({isOpen, onClose}) => {
     if (!isOpen) return null;
 
     return (
-        <BaseModalProvider defaultOpen={isOpen}>
+        <BaseModalProvider defaultOpen={isOpen} onCloseCallback={onClose}>
             <BaseModalRoot>
                 <BaseModalContent>
                     <BaseModalHeader>
