@@ -253,10 +253,13 @@ function PastasGoogleDrive() {
                                             </div>
                                             : 
                                             <div className='d-flex justify-content-center align-items-center gap-2'>
-                                                <button type="button" className='btn btn-sm btn-warning p-1 d-flex justify-content-center align-items-center' 
-                                                        onClick={() => handlePreviewClick(arquivo.id, arquivo.name, index)}>
-                                                    <Search width={16} height={16}/>
-                                                </button>
+                                                {(arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && 
+                                                  arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document") &&                 
+                                                    <button type="button" className='btn btn-sm btn-warning p-1 d-flex justify-content-center align-items-center' 
+                                                            onClick={() => handlePreviewClick(arquivo.id, arquivo.name, index)}>
+                                                        <Search width={16} height={16}/>
+                                                    </button>
+                                                }
                                                 <button className='btn btn-sm p-1 d-flex justify-content-center align-items-center'>
                                                     <Download width={16} height={16}/>
                                                 </button>
