@@ -305,7 +305,10 @@ function RoboDetalhes() {
                                                         {watch('rotina') &&
                                                             watch('rotina') === '5. Refazer Processo' &&
                                                             isGetClientesFinanceiroSuccess && (
-                                                                <div className='d-flex flex-column gap-1'>
+                                                                <div
+                                                                    className='d-flex flex-column gap-1 overflow-y-auto'
+                                                                    style={{ maxHeight: '200px' }}
+                                                                >
                                                                     {clientesFinanceiro.map((cliente) => (
                                                                         <div key={cliente.id}>
                                                                             <div className='form-check'>

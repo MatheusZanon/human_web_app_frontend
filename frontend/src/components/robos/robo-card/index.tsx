@@ -20,6 +20,7 @@ import {
 import financeiroLogo from '/financeiro.svg';
 import relatorioLogo from '/relatorio.svg';
 import { useNavigate } from 'react-router-dom';
+import { useGetClientesFinanceiro } from '@/api/http/dashboard';
 
 type RoboCardProps = {
     children?: React.ReactNode;
@@ -39,6 +40,9 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
     });
 
     const { data: roboRotinas, isSuccess: isRoboRotinasSuccess } = useGetRoboRotinasById({ roboId: id ? id : '' });
+
+    const { data: clientesFinanceiro, isSuccess: isGetClientesFinanceiroSuccess } = useGetClientesFinanceiro();
+
     const createSchemaFromResponse = (response: typeof roboParametros) => {
         const schemaObject: Record<string, z.ZodType> = {};
 
@@ -79,6 +83,7 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
         register,
         getValues,
         formState: { errors },
+        watch,
     } = useForm<RoboParametrosType>({
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -257,6 +262,34 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                                 </option>
                                                             ))}
                                                         </select>
+                                                        {watch('rotina') &&
+                                                            watch('rotina') === '5. Refazer Processo' &&
+                                                            isGetClientesFinanceiroSuccess && (
+                                                                <div
+                                                                    className='d-flex flex-column gap-1 overflow-y-auto'
+                                                                    style={{ maxHeight: '200px' }}
+                                                                >
+                                                                    {clientesFinanceiro.map((cliente) => (
+                                                                        <div key={cliente.id}>
+                                                                            <div className='form-check'>
+                                                                                <input
+                                                                                    className='form-check-input'
+                                                                                    type='checkbox'
+                                                                                    id={`cliente_${cliente.id}`}
+                                                                                    value={cliente.id}
+                                                                                    {...register('clientes')}
+                                                                                />
+                                                                                <label
+                                                                                    className='form-check-label'
+                                                                                    htmlFor={`cliente_${cliente.id}`}
+                                                                                >
+                                                                                    {cliente.nome_razao_social}
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            )}
                                                     </div>
                                                 )}
                                             </form>
