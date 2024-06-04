@@ -133,7 +133,7 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                     <h5 className='card-title d-flex justify-content-between align-items-center'>
                         {title}
                         <a onClick={() => navigate('/main/' + details_link)}>
-                            <Search width={20} height={20} />
+                            <Search width={20} height={20} color='#588fe8' type='button'/>
                         </a>
                     </h5>
                     <p className='card-text'>{text}</p>
