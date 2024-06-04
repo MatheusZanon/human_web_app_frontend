@@ -1,6 +1,11 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { useGetClientes, usePostCliente } from '@/api/http/clientes_financeiro';
-import { Search, Trash2 } from 'lucide-react';
+import {
+    useActivateCliente,
+    useDeactivateCliente,
+    useGetClientes,
+    usePostCliente,
+} from '@/api/http/clientes_financeiro';
+import { Search, ShieldCheck, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
 import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +14,7 @@ import { cnpjFormatter, cpfFormatter, formatCnpj, formatCpf, phoneFormatter } fr
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
 import {
     BaseModalBody,
+    BaseModalCloseButton,
     BaseModalConfirmationButton,
     BaseModalContent,
     BaseModalFooter,
@@ -73,6 +79,18 @@ function ClientesFinanceiro() {
     const inputRef = useRef<HTMLInputElement>(null);
     const { mutate: createCliente, isPending: isCreatingCliente, error: createClienteError } = usePostCliente();
     const { hasRole } = useAuthenticatedUser();
+    const {
+        mutate: deactivateCliente,
+        isPending: isDeactivatingCliente,
+        isSuccess: isClienteDeactivated,
+        error: deactivateClienteError,
+    } = useDeactivateCliente();
+    const {
+        mutate: activateCliente,
+        isPending: isActivatingCliente,
+        isSuccess: isClienteActivated,
+        error: activateClienteError,
+    } = useActivateCliente();
 
     const {
         register,
@@ -155,6 +173,56 @@ function ClientesFinanceiro() {
         navigate(`${id}`);
     };
 
+    const handleDeactivate = (id: number) => {
+        deactivateCliente(id);
+
+        if (isDeactivatingCliente && !deactivateClienteError) {
+            toast.info('Desativando cliente...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (deactivateClienteError) {
+            toast.error(`Ocorreu um erro ao desativar o cliente: ${deactivateClienteError.response?.data}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (isClienteDeactivated) {
+            toast.success('Cliente desativado!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    };
+
+    const handleActivate = (id: number) => {
+        activateCliente(id);
+
+        if (isActivatingCliente && !activateClienteError) {
+            toast.info('Ativando cliente...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (activateClienteError) {
+            toast.error(`Ocorreu um erro ao ativar o cliente: ${activateClienteError.response?.data}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+
+        if (isClienteActivated) {
+            toast.success('Cliente ativado!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    };
+
     return (
         <>
             <Content title='Clientes'>
@@ -186,8 +254,10 @@ function ClientesFinanceiro() {
                         />
                         {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO')) && (
                             <BaseModalProvider>
-                                <BaseModalTrigger variant='secondary'>Adicionar Cliente</BaseModalTrigger>
-                                <BaseModalRoot>
+                                <BaseModalTrigger variant='secondary' modalKey='criar-cliente'>
+                                    Adicionar Cliente
+                                </BaseModalTrigger>
+                                <BaseModalRoot modalKey='criar-cliente'>
                                     <BaseModalContent>
                                         <BaseModalHeader>
                                             <BaseModalTitle>Adicionar Cliente</BaseModalTitle>
@@ -332,7 +402,7 @@ function ClientesFinanceiro() {
                     <TableBody>
                         {clienteResults.length > 0 &&
                             clienteResults.map((cliente) => (
-                                <TableRow key={cliente.id}>
+                                <TableRow key={cliente.id} className={cliente.is_active ? '' : 'table-danger'}>
                                     <TableData>{cliente.id}</TableData>
                                     <TableData>{cliente.nome_razao_social}</TableData>
                                     {cliente.cnpj ? (
@@ -354,9 +424,71 @@ function ClientesFinanceiro() {
                                             >
                                                 <Search width={16} height={16} />
                                             </button>
-                                            <button className='btn btn-danger btn-sm p-1 d-flex justify-content-center align-items-center'>
-                                                <Trash2 width={16} height={16} />
-                                            </button>
+                                            {cliente.is_active ? (
+                                                <BaseModalProvider>
+                                                    <BaseModalTrigger
+                                                        variant='danger'
+                                                        size='sm'
+                                                        modalKey={`desativar-${cliente.id}`}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </BaseModalTrigger>
+                                                    <BaseModalRoot modalKey={`desativar-${cliente.id}`}>
+                                                        <BaseModalContent>
+                                                            <BaseModalHeader>
+                                                                <BaseModalTitle>Desativar Cliente</BaseModalTitle>
+                                                            </BaseModalHeader>
+                                                            <BaseModalBody>
+                                                                <p>
+                                                                    {`Tem certeza que deseja desativar o cliente? ${cliente.nome_razao_social}`}
+                                                                </p>
+                                                            </BaseModalBody>
+                                                            <BaseModalFooter>
+                                                                <BaseModalConfirmationButton
+                                                                    onClick={() => handleDeactivate(cliente.id)}
+                                                                >
+                                                                    Excluir
+                                                                </BaseModalConfirmationButton>
+                                                                <BaseModalCloseButton variant='ghost'>
+                                                                    Cancelar
+                                                                </BaseModalCloseButton>
+                                                            </BaseModalFooter>
+                                                        </BaseModalContent>
+                                                    </BaseModalRoot>
+                                                </BaseModalProvider>
+                                            ) : (
+                                                <BaseModalProvider>
+                                                    <BaseModalTrigger
+                                                        variant='success'
+                                                        size='sm'
+                                                        modalKey={`ativar-${cliente.id}`}
+                                                    >
+                                                        <ShieldCheck size={16} />
+                                                    </BaseModalTrigger>
+                                                    <BaseModalRoot modalKey={`ativar-${cliente.id}`}>
+                                                        <BaseModalContent>
+                                                            <BaseModalHeader>
+                                                                <BaseModalTitle>Ativar Cliente</BaseModalTitle>
+                                                            </BaseModalHeader>
+                                                            <BaseModalBody>
+                                                                <p>
+                                                                    {`Tem certeza que deseja ativar o cliente? ${cliente.nome_razao_social}`}
+                                                                </p>
+                                                            </BaseModalBody>
+                                                            <BaseModalFooter>
+                                                                <BaseModalConfirmationButton
+                                                                    onClick={() => handleActivate(cliente.id)}
+                                                                >
+                                                                    Ativar
+                                                                </BaseModalConfirmationButton>
+                                                                <BaseModalCloseButton variant='ghost'>
+                                                                    Cancelar
+                                                                </BaseModalCloseButton>
+                                                            </BaseModalFooter>
+                                                        </BaseModalContent>
+                                                    </BaseModalRoot>
+                                                </BaseModalProvider>
+                                            )}
                                         </div>
                                     </TableData>
                                 </TableRow>

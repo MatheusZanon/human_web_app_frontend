@@ -3,56 +3,111 @@ import { motion, AnimatePresence } from 'framer-motion';
 import styles from './baseModal.module.scss';
 import { X } from 'lucide-react';
 
-type BaseModalContextType = {
-    open: boolean;
-    toggleOpen: () => void;
-    onOpen?: (fn?: () => void) => void;
-    onClose?: (fn?: () => void) => void;
+type ModalConfig = {
+    isOpen: boolean;
+    props?: object[];
+    onOpen?: () => void;
+    onClose?: () => void;
 };
-const BaseModalContext = createContext<BaseModalContextType>({
-    open: false,
-    onOpen: () => {},
-    onClose: () => {},
+
+type BaseModalContextType = {
+    openModals: { [key: string]: ModalConfig };
+    toggleOpen: (modalKey: string) => void;
+    setModalConfig: (modalKey: string, config: Partial<ModalConfig>) => void;
+};
+export const BaseModalContext = createContext<BaseModalContextType>({
+    openModals: {},
     toggleOpen: () => {},
+    setModalConfig: () => {},
 });
 
 type BaseModalProviderProps = {
     children: React.ReactNode;
-    defaultOpen?: boolean;
-    onOpenCallback?: () => void;
-    onCloseCallback?: () => void;
 };
 
-const BaseModalProvider: React.FC<BaseModalProviderProps> = ({
-    children,
+const BaseModalProvider: React.FC<BaseModalProviderProps> = ({ children }) => {
+    const [openModals, setOpenModals] = useState<{ [key: string]: ModalConfig }>({});
+
+    const toggleOpen = useCallback((modalKey: string) => {
+        setOpenModals((prevOpenModals) => {
+            const isOpen = !prevOpenModals[modalKey]?.isOpen;
+            const modalConfig = {
+                ...prevOpenModals[modalKey],
+                isOpen,
+            };
+
+            if (isOpen && modalConfig.onOpen) {
+                modalConfig.onOpen();
+            }
+            if (!isOpen && modalConfig.onClose) {
+                modalConfig.onClose();
+            }
+
+            return {
+                ...prevOpenModals,
+                [modalKey]: modalConfig,
+            };
+        });
+    }, []);
+
+    const setModalConfig = useCallback((modalKey: string, config: Partial<ModalConfig>) => {
+        setOpenModals((prevOpenModals) => ({
+            ...prevOpenModals,
+            [modalKey]: {
+                ...prevOpenModals[modalKey],
+                ...config,
+            },
+        }));
+    }, []);
+
+    return (
+        <BaseModalContext.Provider value={{ openModals, toggleOpen, setModalConfig }}>
+            {children}
+        </BaseModalContext.Provider>
+    );
+};
+
+type BaseModalRootProps = {
+    modalKey: string;
+    modalProps?: object[];
+    defaultOpen?: boolean;
+    onOpen?: () => void;
+    onClose?: () => void;
+    children: React.ReactNode;
+} & React.HTMLProps<HTMLDivElement>;
+
+// Tipos e contexto para o modal específico
+type ModalContextType = {
+    modalKey: string;
+    toggleOpen: () => void;
+};
+
+const ModalContext = createContext<ModalContextType | undefined>(undefined);
+
+const useModalContext = () => {
+    const context = useContext(ModalContext);
+    if (!context) {
+        throw new Error('useModalContext must be used within a ModalProvider');
+    }
+    return context;
+};
+
+const BaseModalRoot: React.FC<BaseModalRootProps> = ({
+    modalKey,
+    modalProps,
     defaultOpen = false,
-    onOpenCallback,
-    onCloseCallback,
+    onOpen,
+    onClose,
+    children,
+    className: classNameProp,
 }) => {
-    const [open, setOpen] = useState(defaultOpen);
+    const { openModals, setModalConfig, toggleOpen } = useContext(BaseModalContext);
 
-    const toggleOpen = useCallback(() => {
-        setOpen((prevOpen) => !prevOpen);
-    }, [setOpen]);
+    useEffect(() => {
+        setModalConfig(modalKey, { isOpen: defaultOpen, props: modalProps, onOpen, onClose });
+    }, [defaultOpen, onOpen, onClose, modalKey, modalProps, setModalConfig]);
 
-    const onOpen = useCallback(
-        (fn?: () => void) => {
-            if (open === true && fn) return fn();
-            return;
-        },
-        [open],
-    );
-
-    const onClose = useCallback(
-        (fn?: () => void) => {
-            if (open === false && fn) return fn();
-            return;
-        },
-        [open],
-    );
-
-    onOpen(onOpenCallback);
-    onClose(onCloseCallback);
+    const isOpen = openModals[modalKey]?.isOpen || false;
 
     useEffect(() => {
         function disableScrolling() {
@@ -67,7 +122,7 @@ const BaseModalProvider: React.FC<BaseModalProviderProps> = ({
             window.onscroll = function () {};
         }
 
-        if (open) {
+        if (openModals[modalKey]?.isOpen) {
             disableScrolling();
         } else {
             enableScrolling();
@@ -76,54 +131,68 @@ const BaseModalProvider: React.FC<BaseModalProviderProps> = ({
         return () => {
             enableScrolling();
         };
-    }, [open]);
+    }, [openModals, modalKey]);
 
-    return (
-        <BaseModalContext.Provider value={{ open, toggleOpen, onOpen, onClose }}>{children}</BaseModalContext.Provider>
-    );
-};
-
-type BaseModalRootProps = {
-    children: React.ReactNode;
-} & React.HTMLProps<HTMLDivElement>;
-
-const BaseModalRoot: React.FC<BaseModalRootProps> = ({ children, className: classNameProp }) => {
-    const { open } = useContext(BaseModalContext);
     const containerVariants = {
         initial: { opacity: 0, blur: '0px' },
         animate: { opacity: 1, blur: '5px' },
         exit: { opacity: 0, blur: '0px' },
     };
+
     return (
-        <AnimatePresence mode='wait'>
-            {open && (
-                <motion.div
-                    className={`${styles.baseModalRoot} ${classNameProp} 'd-flex' flex-column`}
-                    initial='initial'
-                    animate='animate'
-                    exit='exit'
-                    variants={containerVariants}
-                    transition={{ duration: 0.2, type: 'tween' }}
-                >
-                    {children}
-                </motion.div>
-            )}
-        </AnimatePresence>
+        <ModalContext.Provider value={{ modalKey, toggleOpen: () => toggleOpen(modalKey) }}>
+            <AnimatePresence mode='wait'>
+                {isOpen && (
+                    <motion.div
+                        className={`${styles.baseModalRoot} ${classNameProp} d-flex flex-column`}
+                        initial='initial'
+                        animate='animate'
+                        exit='exit'
+                        variants={containerVariants}
+                        transition={{ duration: 0.2, type: 'tween' }}
+                    >
+                        {children}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </ModalContext.Provider>
     );
 };
 
 type baseModalTriggerProps = {
+    modalKey: string;
     children: React.ReactNode;
+    onClick?: () => void;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
     variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'light' | 'dark' | 'ghost';
     size?: 'sm' | 'md' | 'lg';
 };
 
-const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({ children, variant = 'ghost', size = 'md' }) => {
+const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({
+    modalKey,
+    children,
+    onClick: onClickProps,
+    onMouseEnter: onMouseEnterProps,
+    onMouseLeave: onMouseLeaveProps,
+    variant = 'ghost',
+    size = 'md',
+}) => {
     const { toggleOpen } = useContext(BaseModalContext);
+
     return (
         <button
             type='button'
-            onClick={toggleOpen}
+            onClick={() => {
+                onClickProps && onClickProps();
+                toggleOpen(modalKey);
+            }}
+            onMouseEnter={() => {
+                onMouseEnterProps && onMouseEnterProps();
+            }}
+            onMouseLeave={() => {
+                onMouseLeaveProps && onMouseLeaveProps();
+            }}
             className={`${styles.modalTrigger} btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size} d-flex align-items-center gap-1`}
         >
             {children}
@@ -133,18 +202,14 @@ const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({ children, variant =
 
 type baseModalContentProps = {
     children: React.ReactNode;
-    style?: React.CSSProperties;
+    styles?: React.CSSProperties;
 };
 
-const BaseModalContent: React.FC<baseModalContentProps> = ({ children, style }) => {
-    const { open, toggleOpen, onClose } = useContext(BaseModalContext);
-
+const BaseModalContent: React.FC<baseModalContentProps> = ({ children, styles: stylesProps }) => {
+    const { openModals } = useContext(BaseModalContext);
+    const { toggleOpen, modalKey } = useModalContext();
+    const isOpen = openModals[modalKey]?.isOpen || false;
     const modalRef = useRef<HTMLDivElement>(null);
-
-    const handleClose = useCallback(() => {
-        onClose?.();
-        toggleOpen();
-    }, [onClose, toggleOpen]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -152,13 +217,13 @@ const BaseModalContent: React.FC<baseModalContentProps> = ({ children, style }) 
             const clickedOnOpenButton =
                 (event.target as HTMLElement).className &&
                 (event.target as HTMLElement).className.includes('modalTrigger');
-            if (clickedOutsideModal && !clickedOnOpenButton && open) {
-                handleClose();
+            if (clickedOutsideModal && !clickedOnOpenButton && isOpen) {
+                toggleOpen();
             }
         };
         const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape' && open) {
-                handleClose();
+            if (event.key === 'Escape' && isOpen) {
+                toggleOpen();
             }
         };
         document.addEventListener('keydown', handleKeyDown);
@@ -167,7 +232,7 @@ const BaseModalContent: React.FC<baseModalContentProps> = ({ children, style }) 
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('click', handleClickOutside);
         };
-    }, [open, handleClose]);
+    }, [isOpen, toggleOpen]);
 
     const contentVariants = {
         initial: { opacity: 0, scale: 0.9 },
@@ -178,7 +243,7 @@ const BaseModalContent: React.FC<baseModalContentProps> = ({ children, style }) 
         <motion.div
             ref={modalRef}
             className={`${styles.modalContent} d-flex flex-column`}
-            style={{ ...style }}
+            style={{ ...stylesProps }}
             initial='initial'
             animate='animate'
             exit='exit'
@@ -212,18 +277,13 @@ type baseModalCloseButtonProps = {
 };
 
 const BaseModalCloseButton: React.FC<baseModalCloseButtonProps> = ({ children, variant = 'ghost', size = 'md' }) => {
-    const { onClose, toggleOpen } = useContext(BaseModalContext);
-
-    const handleClose = useCallback(() => {
-        onClose?.();
-        toggleOpen();
-    }, [onClose, toggleOpen]);
+    const { toggleOpen } = useModalContext();
 
     return (
         <button
             type='button'
             className={`${styles.modalCloseButton} d-flex align-items-center gap-1 btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size}`}
-            onClick={handleClose}
+            onClick={toggleOpen}
         >
             <X size={18} />
             {children}
@@ -253,14 +313,13 @@ const BaseModalConfirmationButton: React.FC<baseModalConfirmationButtonProps> = 
     onClick,
     disabled = false,
 }) => {
-    const { onClose, toggleOpen } = useContext(BaseModalContext);
+    const { toggleOpen } = useModalContext();
     const handleClick = useCallback(() => {
         if (onClick) {
             onClick();
-            onClose?.();
             toggleOpen();
         }
-    }, [onClick, onClose, toggleOpen]);
+    }, [onClick, toggleOpen]);
 
     return (
         <button

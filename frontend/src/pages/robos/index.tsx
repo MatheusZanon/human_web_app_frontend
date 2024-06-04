@@ -48,7 +48,9 @@ function Robos() {
                             <LoadingScreen />
                         </div>
                     )}
-                    {robos.isSuccess && robos.data.length === 0 && <div>Não existe nenhum robô para ser executado.</div>}
+                    {robos.isSuccess && robos.data.length === 0 && (
+                        <div>Não existe nenhum robô para ser executado.</div>
+                    )}
                     {robos.isSuccess &&
                         robos.data.map((robo) => (
                             <RoboCard

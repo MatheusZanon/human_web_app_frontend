@@ -59,8 +59,8 @@ function CriarRoboCard() {
 
     return (
         <BaseModalProvider>
-            <BaseModalTrigger variant='primary'>Criar Robo</BaseModalTrigger>
-            <BaseModalRoot>
+            <BaseModalTrigger variant='primary' modalKey='criar-robo'>Criar Robo</BaseModalTrigger>
+            <BaseModalRoot modalKey='criar-robo'>
                 <BaseModalContent>
                     <BaseModalHeader>
                         <BaseModalTitle>Criar Robo</BaseModalTitle>

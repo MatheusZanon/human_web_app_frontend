@@ -5,6 +5,7 @@ export type Cliente = {
     cnpj: string;
     cpf: string;
     email: string;
+    is_active: boolean;
     telefone_celular: string;
     regiao: string;
-}
+};

@@ -1,5 +1,5 @@
 import api from '@/utils/axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useGetArquivos } from "@/api/http/google_drive";
 import { useAuthenticatedUser } from "@/contexts/AuthenticatedUser/AuthenticatedUserProvider";
 import { Content } from "@/components/layout/content";
@@ -15,6 +15,7 @@ import {
     BaseModalBody,
     BaseModalConfirmationButton,
     BaseModalContent,
+    BaseModalContext,
     BaseModalFooter,
     BaseModalHeader,
     BaseModalProvider,
@@ -22,6 +23,8 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '@/components/baseModal';
+import ArquivoPreview from './arquivo-preview';
+import { toast } from 'react-toastify';
 
 function PastasGoogleDrive() {
     const { hasRole } = useAuthenticatedUser();
@@ -32,6 +35,7 @@ function PastasGoogleDrive() {
     const [navegationHistory, setnavegationHistory] = useState<string[]>([]);
     const [fileHistory, setfileHistory] = useState<string[]>([]);
     const [prevUrl, setPrevUrl] = useState<string>('');
+    const {openModals} = useContext(BaseModalContext);
     const [arquivoPrevId, setArquivoPrevId] = useState('');
     const [arquivoPrevName, setArquivoPrevName] = useState('');
     const [arquivoPrevUrl, setArquivoPrevUrl] = useState('');
@@ -41,7 +45,7 @@ function PastasGoogleDrive() {
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
     }, [currentFolderId]);
-
+    
     useEffect(() => {
         const fetchArquivoInfo = async () => {
             if (isModalPrevOpen === -1) {
@@ -77,6 +81,14 @@ function PastasGoogleDrive() {
             newHistory.pop();
             return newHistory;
         });
+    }
+
+    function resetPreview() {
+        // Ajuste os estados conforme necessário
+        setArquivoPrevUrl('');
+        setArquivoPrevName('');
+        setArquivoPrevTipo('');
+        setIsModalPrevOpen(-1);
     }
 
     const handlePreviewClick = (id: string, nome: string, index: number) => {
@@ -123,63 +135,30 @@ function PastasGoogleDrive() {
                 {arquivosDrive.data && arquivosDrive.data.length > 0 && !arquivosDrive.error && (
                     <>
                         <BaseModalProvider>
-                            <BaseModalTrigger variant='secondary'> <MdUpload size={22}/> Upload</BaseModalTrigger>
-                            <BaseModalRoot>
-                                <BaseModalContent>
-                                    <BaseModalHeader>
-                                        <BaseModalTitle>Arquivos</BaseModalTitle>
-                                    </BaseModalHeader>
-                                    <BaseModalBody>
-                                        <p>Upload de arquivos</p>
-                                    </BaseModalBody>
-                                    <BaseModalFooter>
-                                        <BaseModalConfirmationButton>Upload</BaseModalConfirmationButton>
-                                    </BaseModalFooter>
-                                </BaseModalContent>
-                            </BaseModalRoot>
+                        <BaseModalTrigger modalKey='arquivo_upload' variant='secondary'> <MdUpload size={22}/> Upload</BaseModalTrigger>
+                        <BaseModalRoot modalKey='arquivo_upload'>
+                            <BaseModalContent>
+                                <BaseModalHeader>
+                                    <BaseModalTitle>Arquivos</BaseModalTitle>
+                                </BaseModalHeader>
+                                <BaseModalBody>
+                                    <p>Upload de arquivos</p>
+                                </BaseModalBody>
+                                <BaseModalFooter>
+                                    <BaseModalConfirmationButton>Upload</BaseModalConfirmationButton>
+                                </BaseModalFooter>
+                            </BaseModalContent>
+                        </BaseModalRoot>
                         </BaseModalProvider>
                         
-                        {isModalPrevOpen !== -1 &&
-                            (
-                                <BaseModalProvider defaultOpen onCloseCallback={() => 
-                                        {
-                                            setArquivoPrevUrl(''); 
-                                            setArquivoPrevId(''); 
-                                            setArquivoPrevName(''); 
-                                            setIsModalPrevOpen(-1);
-                                        } 
-                                    }
-                                >
-                                    <BaseModalRoot>
-                                        <BaseModalContent style={{maxWidth:'1200px', width: '100%', height: '100%'}}>
-                                            <BaseModalHeader>
-                                                <BaseModalTitle>{arquivoPrevName}</BaseModalTitle>
-                                            </BaseModalHeader>
-                                            <BaseModalBody>
-                                                {!arquivoPrevUrl ? <LoadingScreen /> : 
-                                                    arquivoPrevTipo === 'application/pdf' ? 
-                                                        <iframe src={`${arquivoPrevUrl}#navpanes=0`} width="100%" height="600px" style={{ border: 'none' }}></iframe>
-                                                    : arquivoPrevTipo === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || 
-                                                    arquivoPrevTipo === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 
-                                                        <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=${arquivoPrevUrl}`} width="100%" height="500" />
-                                                    : arquivoPrevTipo === 'text/plain' ? 
-                                                        <iframe src={arquivoPrevUrl} width="100%" height="500" />
-                                                    : arquivoPrevTipo === 'image/png' || arquivoPrevTipo === 'image/jpeg' ? 
-                                                        <img src={arquivoPrevUrl} alt="Imagem" className="img-fluid align-self-center" width="50%" height="500" />
-                                                    : arquivoPrevTipo === 'image/gif' ? 
-                                                        <img src={arquivoPrevUrl} alt="Gif" className="img-fluid align-self-center" width="50%" height="500" />
-                                                    : arquivoPrevTipo === 'video/mp4' ? 
-                                                        <video src={arquivoPrevUrl} className="img-fluid align-self-center" width="100%" height="500" controls />
-                                                    : 
-                                                        <p>Formato de arquivo não suportado para visualização.</p>
-                                                }
-                                            </BaseModalBody>
-                                        </BaseModalContent>
-                                    </BaseModalRoot>
-                                </BaseModalProvider>
-                            )
-                        }
-                        
+                        <ArquivoPreview 
+                            url={arquivoPrevUrl} 
+                            name={arquivoPrevName} 
+                            tipo={arquivoPrevTipo} 
+                            isOpen={isModalPrevOpen} 
+                            onDismiss={resetPreview}
+                        />
+
                         <Table>
                             <TableHead>
                                 <TableRow>
@@ -254,7 +233,7 @@ function PastasGoogleDrive() {
                                             : 
                                             <div className='d-flex justify-content-center align-items-center gap-2'>
                                                 {(arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && 
-                                                  arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document") &&                 
+                                                  arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document") &&               
                                                     <button type="button" className='btn btn-sm btn-warning p-1 d-flex justify-content-center align-items-center' 
                                                             onClick={() => handlePreviewClick(arquivo.id, arquivo.name, index)}>
                                                         <Search width={16} height={16}/>
@@ -264,10 +243,10 @@ function PastasGoogleDrive() {
                                                     <Download width={16} height={16}/>
                                                 </button>
                                             </div>
-                                            }
+                                        }
                                         </TableData>
                                         <TableData>{formatDateTime(new Date(arquivo.modifiedTime))}</TableData>
-                                    </TableRow>
+                                        </TableRow>
                                 ))}
                             </TableBody>
                         </Table>

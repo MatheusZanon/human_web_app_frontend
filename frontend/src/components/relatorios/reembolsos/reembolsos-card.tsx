@@ -230,10 +230,10 @@ function CardReembolsos({ ...props }) {
                         onChange={(e) => setAno(parseInt(e.target.value))}
                     />
                     <BaseModalProvider>
-                        <BaseModalTrigger variant='secondary'>
+                        <BaseModalTrigger variant='secondary' modalKey='adicionar-reembolso'>
                             <Plus /> Adicionar Reembolso
                         </BaseModalTrigger>
-                        <BaseModalRoot>
+                        <BaseModalRoot modalKey='adicionar-reembolso'>
                             <BaseModalContent>
                                 <BaseModalHeader>
                                     <BaseModalTitle>Adicionar Reembolso</BaseModalTitle>
@@ -315,7 +315,10 @@ function CardReembolsos({ ...props }) {
                                     </form>
                                 </BaseModalBody>
                                 <BaseModalFooter>
-                                    <BaseModalConfirmationButton onClick={isValid ? handleSubmit(onSubmit) : undefined} disabled={isPostReembolsoPending}>
+                                    <BaseModalConfirmationButton
+                                        onClick={isValid ? handleSubmit(onSubmit) : undefined}
+                                        disabled={isPostReembolsoPending}
+                                    >
                                         Adicionar
                                     </BaseModalConfirmationButton>
                                 </BaseModalFooter>
@@ -345,20 +348,24 @@ function CardReembolsos({ ...props }) {
                                     <TableData>{reembolso.ano}</TableData>
                                     <TableData>
                                         <div className='d-flex gap-2'>
-                                            <BaseModalProvider
-                                                onOpenCallback={() => {
-                                                    atualizarReembolsoSetValue('id', reembolso.id)
-                                                    atualizarReembolsoSetValue('descricao', reembolso.descricao)
-                                                    atualizarReembolsoSetValue('valor', reembolso.valor)
-                                                    atualizarReembolsoSetValue('mes', reembolso.mes)
-                                                    atualizarReembolsoSetValue('ano', reembolso.ano)
-
-                                                }}
-                                            >
-                                                <BaseModalTrigger variant='warning' size='sm'>
+                                            <BaseModalProvider>
+                                                <BaseModalTrigger
+                                                    variant='warning'
+                                                    size='sm'
+                                                    modalKey={`editar-reembolso-${reembolso.id}`}
+                                                >
                                                     <Pencil size={16} />
                                                 </BaseModalTrigger>
-                                                <BaseModalRoot>
+                                                <BaseModalRoot
+                                                    modalKey={`editar-reembolso-${reembolso.id}`}
+                                                    onOpen={() => {
+                                                        atualizarReembolsoSetValue('id', reembolso.id);
+                                                        atualizarReembolsoSetValue('descricao', reembolso.descricao);
+                                                        atualizarReembolsoSetValue('valor', reembolso.valor);
+                                                        atualizarReembolsoSetValue('mes', reembolso.mes);
+                                                        atualizarReembolsoSetValue('ano', reembolso.ano);
+                                                    }}
+                                                >
                                                     <BaseModalContent>
                                                         <BaseModalHeader>
                                                             <BaseModalTitle>{`Editar Reembolso`}</BaseModalTitle>
@@ -450,10 +457,10 @@ function CardReembolsos({ ...props }) {
                                                 </BaseModalRoot>
                                             </BaseModalProvider>
                                             <BaseModalProvider>
-                                                <BaseModalTrigger variant='danger' size='sm'>
+                                                <BaseModalTrigger variant='danger' size='sm' modalKey={`excluir-reembolso-${reembolso.id}`}>
                                                     <Trash2 size={16} />
                                                 </BaseModalTrigger>
-                                                <BaseModalRoot>
+                                                <BaseModalRoot modalKey={`excluir-reembolso-${reembolso.id}`}>
                                                     <BaseModalContent>
                                                         <BaseModalHeader>
                                                             <BaseModalTitle>

@@ -133,10 +133,10 @@ const UpdateUserModal: React.FC = () => {
 
     return (
         <BaseModalProvider>
-            <BaseModalTrigger variant='ghost'>
+            <BaseModalTrigger variant='ghost' modalKey='atualizar-usuario'>
                 <Pen size={18} />
             </BaseModalTrigger>
-            <BaseModalRoot>
+            <BaseModalRoot modalKey='atualizar-usuario'>
                 <BaseModalContent>
                     <BaseModalHeader>
                         <BaseModalTitle>{`Editar Usuário ${user?.username}`}</BaseModalTitle>

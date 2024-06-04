@@ -217,7 +217,11 @@ function ActivateUsersTable() {
                                             : 'Sem Cargo'}
                                     </TableData>
                                     <TableData>
-                                        {formatCellphone(funcionario.telefone_celular || '00000000000')}
+                                        <span className={`${funcionario.telefone_celular ? '' : 'text-muted'}`}>
+                                            {funcionario.telefone_celular
+                                                ? formatCellphone(funcionario.telefone_celular)
+                                                : formatCellphone('00000000000')}
+                                        </span>
                                     </TableData>
                                     <TableData>
                                         {funcionario.situacao ? (
@@ -241,10 +245,13 @@ function ActivateUsersTable() {
                                             <div className='d-flex gap-2 justify-content-center'>
                                                 {funcionario.groups.length > 0 && (
                                                     <BaseModalProvider>
-                                                        <BaseModalTrigger variant='success'>
+                                                        <BaseModalTrigger
+                                                            variant='success'
+                                                            modalKey='reativar-funcionario'
+                                                        >
                                                             <ShieldCheck width={22} height={16} />
                                                         </BaseModalTrigger>
-                                                        <BaseModalRoot>
+                                                        <BaseModalRoot modalKey='reativar-funcionario'>
                                                             <BaseModalContent>
                                                                 <BaseModalHeader>
                                                                     <BaseModalTitle>Ativar Funcionário</BaseModalTitle>
@@ -273,10 +280,13 @@ function ActivateUsersTable() {
                                                 )}
                                                 {funcionario.groups.length <= 0 && (
                                                     <BaseModalProvider>
-                                                        <BaseModalTrigger variant='success'>
+                                                        <BaseModalTrigger
+                                                            variant='success'
+                                                            modalKey='ativar-funcionario'
+                                                        >
                                                             <ShieldCheck width={22} height={16} />
                                                         </BaseModalTrigger>
-                                                        <BaseModalRoot>
+                                                        <BaseModalRoot modalKey='ativar-funcionario'>
                                                             <BaseModalContent>
                                                                 <BaseModalHeader>
                                                                     <BaseModalTitle>Ativar Funcionário</BaseModalTitle>

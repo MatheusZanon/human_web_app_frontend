@@ -68,10 +68,10 @@ function ClienteFinanceiroProfile() {
                                             </li>
                                             <li className='list-group-item d-flex flex-wrap px-0 justify-content-between'>
                                                 <strong>Telefone:</strong>
-                                                <span className='mb-0'>
+                                                <span className={`${cliente?.telefone_celular ? '' : 'text-muted'}`}>
                                                     {cliente?.telefone_celular
                                                         ? formatCellphone(cliente.telefone_celular)
-                                                        : ''}
+                                                        : formatCellphone('00000000000')}
                                                 </span>
                                             </li>
                                         </ul>

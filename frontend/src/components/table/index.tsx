@@ -4,10 +4,6 @@ type TableProps = {
     children: React.ReactNode;
 };
 
-type TableRowProps = {
-    children: React.ReactNode;
-};
-
 type TableHeaderProps = {
     children: React.ReactNode;
     sortable?: boolean;
@@ -55,8 +51,13 @@ function TableBody({ children }: TableProps) {
     return <tbody className={`align-middle`}>{children}</tbody>;
 }
 
-function TableRow({ children }: TableRowProps) {
-    return <tr>{children}</tr>;
+interface TableRowProps {
+    children: React.ReactNode;
+    className?: string;
+};
+
+function TableRow({ children, className: classNameProps }: TableRowProps) {
+    return <tr className={classNameProps}>{children}</tr>;
 }
 
 function TableData({ children, colSpan }: TableDataProps) {

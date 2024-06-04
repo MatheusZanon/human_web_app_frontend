@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 import React from 'react';
 import RequireAuth from './require_auth';
 
@@ -51,7 +51,7 @@ type route = {
 
 const allRoutes: route[] = [
     {
-        path: '',
+        path: 'dashboard',
         element: <Dashboard />,
     },
     {
@@ -132,10 +132,16 @@ const router = createBrowserRouter([
                 <MainLayout />
             </RequireAuth>
         ),
-        children: allRoutes.map(({ path, element }) => ({
-            path,
-            element,
-        })),
+        children: [
+            {
+                path: '',
+                element: <Navigate to='robos' />,
+            },
+            ...allRoutes.map(({ path, element }) => ({
+                path,
+                element,
+            })),
+        ],
     },
     {
         path: '*',

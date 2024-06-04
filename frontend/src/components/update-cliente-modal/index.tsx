@@ -156,11 +156,11 @@ const UpdateClienteModal: React.FC = () => {
 
     return (
         <BaseModalProvider>
-            <BaseModalTrigger>
+            <BaseModalTrigger modalKey='atualizar-cliente'>
                 <Pen size={18} />
                 Editar
             </BaseModalTrigger>
-            <BaseModalRoot>
+            <BaseModalRoot modalKey='atualizar-cliente'>
                 <BaseModalContent>
                     <BaseModalHeader>
                         <BaseModalTitle>Editar dados do cliente</BaseModalTitle>
