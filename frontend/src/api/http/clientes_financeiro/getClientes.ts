@@ -1,5 +1,5 @@
 import { api } from '@/utils/axios';
-import { Cliente } from '@/utils/types/cliente';
+import { Cliente } from '@/utils/types/financeiro/cliente';
 import PaginatedResponse from '@/utils/types/paginated_response';
 
 export async function getClientes(url:string) {

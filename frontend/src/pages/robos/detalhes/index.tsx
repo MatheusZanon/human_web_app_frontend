@@ -21,8 +21,8 @@ import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
 import { BaseModalProvider, BaseModalTrigger } from '@/components/baseModal';
 import { useMemo, useState } from 'react';
-import { RoboParametros } from '@/utils/types/robo_parametros';
-import RoboRotina from '@/utils/types/robo_rotinas';
+import { RoboParametros } from '@/utils/types/robos/robo_parametros';
+import RoboRotina from '@/utils/types/robos/robo_rotinas';
 import { useGetClientesFinanceiro } from '@/api/http/dashboard';
 
 function RoboDetalhes() {

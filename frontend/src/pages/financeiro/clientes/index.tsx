@@ -27,7 +27,7 @@ import {
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CriarClienteType } from '@/utils/types/criar_cliente';
+import { CriarClienteType } from '@/utils/types/financeiro/criar_cliente';
 import { toast } from 'react-toastify';
 import AlertMessage from '@/components/alert-message';
 

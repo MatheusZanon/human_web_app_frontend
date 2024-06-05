@@ -1,5 +1,5 @@
 import { api } from '@/utils/axios';
-import { Cliente } from '@/utils/types/cliente';
+import { Cliente } from '@/utils/types/financeiro/cliente';
 
 export async function patchCliente({ clienteId, data }: { clienteId: number; data: Partial<Cliente> }) {
     const res = await api.patch<Cliente>(`clientes_financeiro/${clienteId}/`, data).then((res) => res.data);

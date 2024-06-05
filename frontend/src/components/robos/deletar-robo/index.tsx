@@ -1,5 +1,5 @@
 import { useDeleteRobo } from '@/api/http/robos';
-import { Robo } from '@/utils/types/robo';
+import { Robo } from '@/utils/types/robos/robo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';

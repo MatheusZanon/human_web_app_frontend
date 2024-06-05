@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableData } from '@/components/table';
 import { Pen, Search, Trash2 } from 'lucide-react';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
-import { User } from '@/utils/types/user';
+import { User } from '@/utils/types/user/user';
 import { useNavigate } from 'react-router-dom';
 import { useDeactivateUser, useUpdateSituacao } from '@/api/http/user';
 import { toast } from 'react-toastify';

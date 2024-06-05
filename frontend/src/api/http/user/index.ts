@@ -9,7 +9,7 @@ import { getInactiveUsers } from './getInactiveUsers';
 import { putActivateUser } from './putActivateUser';
 import { getUserById } from './getUserById';
 import { putDeactivateUser } from './putDesactivateUser';
-import { User } from '@/utils/types/user';
+import { User } from '@/utils/types/user/user';
 import { patchUser } from './patchUser';
 import { putSituacao } from './putSituação';
 

@@ -3,7 +3,7 @@ import styles from './vales-sst-card.module.scss';
 import { Table, TableBody, TableData, TableHeader, TableRow, TableHead } from '@/components/table';
 import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useGetValesSST, usePutValesSST } from '@/api/http/financeiro_valores';
-import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
+import { FinanceiroValesSST } from '@/utils/types/dashboard/financeiro_vales_sst';
 import ValesSSTModal from './vales-sst-modal';
 import { toast } from 'react-toastify';
 import AlertMessage from '@/components/alert-message';

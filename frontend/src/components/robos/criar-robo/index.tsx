@@ -11,7 +11,7 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '@/components/baseModal';
-import { CriarRoboType } from '@/utils/types/criar_robo';
+import { CriarRoboType } from '@/utils/types/robos/criar_robo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';

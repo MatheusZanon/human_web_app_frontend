@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import RoboRotina from '@/utils/types/robo_rotinas';
-import { CriarRotinaType, criarRotinaSchema } from '@/utils/types/criar_rotina';
+import RoboRotina from '@/utils/types/robos/robo_rotinas';
+import { CriarRotinaType, criarRotinaSchema } from '@/utils/types/robos/criar_rotina';
 import { useAlterarRotina } from '@/api/http/robos';
 import {
     BaseModalBody,

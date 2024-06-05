@@ -1,0 +1,29 @@
+.contextMenu {
+    display: flex;
+    border-radius: 4px;
+    box-sizing: border-box;
+    box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+    position: absolute;
+    width: 200px;
+
+    .contextMenuBody {
+        padding: 0%;
+        width: 100%;
+    }
+    
+    .contextMenuButton {      
+        border-radius: 0%;
+        width: 100%;
+    }
+
+    .contextMenuButton:hover {
+        background-color: #e7e5e5;
+    }
+
+    .contextMenuButton:active {
+        background-color: #d1d0d0;
+        border: 1px solid #e7e5e5;
+    }
+
+}

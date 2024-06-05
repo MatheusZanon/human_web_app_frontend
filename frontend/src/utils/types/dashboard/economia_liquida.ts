@@ -1,4 +1,4 @@
-import { Cliente } from "./cliente";
+import { Cliente } from "../financeiro/cliente";
 
 export interface getEconomiaLiquida extends Pick<Cliente, 'nome_razao_social'> {
     mes: number;

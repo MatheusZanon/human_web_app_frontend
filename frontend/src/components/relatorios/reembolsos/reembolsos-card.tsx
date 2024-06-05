@@ -20,8 +20,8 @@ import { useForm } from 'react-hook-form';
 import { useSearch } from '@/components/dashboard/search/search-provider';
 import { Search } from '@/components/dashboard/search';
 import { toast } from 'react-toastify';
-import { CriarReembolsoType, criarReembolsoSchema } from '@/utils/types/criar_reembolso';
-import { AtualizarReembolsoType, atualizarReembolsoSchema } from '@/utils/types/atualizar_reembolso';
+import { CriarReembolsoType, criarReembolsoSchema } from '@/utils/types/financeiro/criar_reembolso';
+import { AtualizarReembolsoType, atualizarReembolsoSchema } from '@/utils/types/financeiro/atualizar_reembolso';
 import AlertMessage from '@/components/alert-message';
 
 function CardReembolsos({ ...props }) {

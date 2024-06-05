@@ -1,5 +1,5 @@
 import { api } from '@/utils/axios';
-import { RoboParametros } from '@/utils/types/robo_parametros';
+import { RoboParametros } from '@/utils/types/robos/robo_parametros';
 
 interface getRoboParametrosByIdProps {
     robo_id: string;

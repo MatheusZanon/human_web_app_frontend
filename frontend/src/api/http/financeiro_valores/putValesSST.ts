@@ -1,5 +1,5 @@
 import { api } from '@/utils/axios';
-import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
+import { FinanceiroValesSST } from '@/utils/types/dashboard/financeiro_vales_sst';
 
 export async function putValesSST(data: Partial<FinanceiroValesSST>) {
     const res = await api

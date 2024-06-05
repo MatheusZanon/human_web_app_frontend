@@ -1,5 +1,5 @@
 import { api } from '@/utils/axios';
-import { User } from '@/utils/types/user';
+import { User } from '@/utils/types/user/user';
 
 export async function getAllUsers() {
   const data = await api.get<User[]>('funcionarios').then((res) => res.data);

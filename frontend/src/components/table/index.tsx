@@ -2,6 +2,7 @@ import { ChevronUp, ChevronDown } from 'lucide-react';
 
 type TableProps = {
     children: React.ReactNode;
+    onContextMenu?: (e: React.MouseEvent) => void;
 };
 
 type TableHeaderProps = {
@@ -11,11 +12,18 @@ type TableHeaderProps = {
     sortDirection?: string;
     onSort?: () => void;
     className?: string;
+    onContextMenu?: (e: React.MouseEvent) => void;
+};
+
+interface TableRowProps {
+    children: React.ReactNode;
+    className?: string;
 };
 
 type TableDataProps = {
     children?: React.ReactNode;
     colSpan?: number;
+    onContextMenu?: (e: React.MouseEvent) => void;
 };
 
 function Table({ children }: TableProps) {
@@ -43,25 +51,20 @@ function TableHeader({ children, sortable, columnKey, sortDirection, onSort, cla
     );
 }
 
-function TableHead({ children }: TableProps) {
-    return <thead className='align-middle'>{children}</thead>;
+function TableHead({ children, onContextMenu }: TableProps) {
+    return <thead className='align-middle' onContextMenu={onContextMenu}>{children}</thead>;
 }
 
 function TableBody({ children }: TableProps) {
     return <tbody className={`align-middle`}>{children}</tbody>;
 }
 
-interface TableRowProps {
-    children: React.ReactNode;
-    className?: string;
-};
-
 function TableRow({ children, className: classNameProps }: TableRowProps) {
     return <tr className={classNameProps}>{children}</tr>;
 }
 
-function TableData({ children, colSpan }: TableDataProps) {
-    return <td colSpan={colSpan}>{children}</td>;
+function TableData({ children, colSpan, onContextMenu }: TableDataProps) {
+    return <td colSpan={colSpan} onContextMenu={onContextMenu}>{children}</td>;
 }
 
 function TableFooter({ children }: TableProps) {

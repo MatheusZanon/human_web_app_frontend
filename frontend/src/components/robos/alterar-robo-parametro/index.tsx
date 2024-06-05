@@ -1,8 +1,8 @@
-import { criarParametroSchema, CriarParametroType } from '@/utils/types/criar_parametro';
+import { criarParametroSchema, CriarParametroType } from '@/utils/types/robos/criar_parametro';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { RoboParametros } from '@/utils/types/robo_parametros';
+import { RoboParametros } from '@/utils/types/robos/robo_parametros';
 import { useAlterarParametro } from '@/api/http/robos';
 import {
     BaseModalBody,

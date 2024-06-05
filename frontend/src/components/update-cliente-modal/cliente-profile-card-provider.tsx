@@ -1,4 +1,4 @@
-import { Cliente } from '@/utils/types/cliente';
+import { Cliente } from '@/utils/types/financeiro/cliente';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 interface ClienteProfileCardContextType {

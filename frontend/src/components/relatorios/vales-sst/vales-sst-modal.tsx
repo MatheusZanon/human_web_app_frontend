@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styles from './vales-sst-modal.module.scss';
-import { FinanceiroValesSST } from '@/utils/types/financeiro_vales_sst';
+import { FinanceiroValesSST } from '@/utils/types/dashboard/financeiro_vales_sst';
 import {
     BaseModalBody,
     BaseModalCloseButton,

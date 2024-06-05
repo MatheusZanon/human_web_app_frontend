@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Table, TableBody, TableHeader, TableHead, TableData, TableRow, TableFooter } from '@/components/table';
-import type { getEconomiaLiquida } from '@/utils/types/economia_liquida';
+import type { getEconomiaLiquida } from '@/utils/types/dashboard/economia_liquida';
 import styles from './economia_liquida_table.module.scss';
 
 function EconomiaLiquidaTable({ data }: { data?: getEconomiaLiquida[] }) {

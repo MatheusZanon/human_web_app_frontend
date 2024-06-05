@@ -1,6 +1,6 @@
 import { api } from '@/utils/axios';
-import { Robo } from '@/utils/types/robo';
-import { RoboParametros } from '@/utils/types/robo_parametros';
+import { Robo } from '@/utils/types/robos/robo';
+import { RoboParametros } from '@/utils/types/robos/robo_parametros';
 
 interface getRoboByIdProps {
   robo_id: string;

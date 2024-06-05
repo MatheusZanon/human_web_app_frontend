@@ -1,8 +1,8 @@
 import { useActivateUser, useGetAllGroups, useGetInactiveUsers } from '@/api/http/user';
 import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '@/components/table';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
-import { Group } from '@/utils/types/group';
-import { User } from '@/utils/types/user';
+import { Group } from '@/utils/types/user/group';
+import { User } from '@/utils/types/user/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ShieldCheck } from 'lucide-react';
 import { useState } from 'react';

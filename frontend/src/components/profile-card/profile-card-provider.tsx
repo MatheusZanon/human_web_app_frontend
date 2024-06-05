@@ -1,4 +1,4 @@
-import { User } from '@/utils/types/user';
+import { User } from '@/utils/types/user/user';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 interface ProfileCardContextType {

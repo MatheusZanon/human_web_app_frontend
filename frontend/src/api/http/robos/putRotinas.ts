@@ -1,5 +1,5 @@
 import { api } from '@/utils/axios';
-import { CriarRotinaType } from '@/utils/types/criar_rotina';
+import { CriarRotinaType } from '@/utils/types/robos/criar_rotina';
 
 export async function putRotinas({
     roboId,

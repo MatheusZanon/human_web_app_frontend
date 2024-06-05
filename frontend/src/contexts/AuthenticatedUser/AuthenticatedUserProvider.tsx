@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { User } from '@/utils/types/user';
+import { User } from '@/utils/types/user/user';
 import { createContext } from 'react';
 import { useGetUser } from '@/api/http/user';
 import LoadingScreen from '@/components/loading-screen';

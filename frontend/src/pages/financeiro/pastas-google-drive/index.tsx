@@ -7,7 +7,7 @@ import AlertMessage from '@/components/alert-message';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
 import { ArrowBigLeftDash, Search, Download } from 'lucide-react';
-import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload } from 'react-icons/md';
+import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload, MdDownload } from 'react-icons/md';
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 import { formatDateTime } from '@/libs';
@@ -24,7 +24,8 @@ import {
     BaseModalTrigger,
 } from '@/components/baseModal';
 import ArquivoPreview from './arquivo-preview';
-import { toast } from 'react-toastify';
+import ContextMenu from '@/components/context-menu';
+import styles from '@/components/context-menu/contextMenu.module.scss';
 
 function PastasGoogleDrive() {
     const { hasRole } = useAuthenticatedUser();
@@ -35,6 +36,9 @@ function PastasGoogleDrive() {
     const [navegationHistory, setnavegationHistory] = useState<string[]>([]);
     const [fileHistory, setfileHistory] = useState<string[]>([]);
     const [prevUrl, setPrevUrl] = useState<string>('');
+    const [showHeaderContextMenu, setShowHeaderContextMenu] = useState(false);
+    const [showDataContextMenu, setShowDataContextMenu] = useState(false);
+    const [mousePoints, setMousePoints] = useState({x: 0, y: 0});
     const {openModals} = useContext(BaseModalContext);
     const [arquivoPrevId, setArquivoPrevId] = useState('');
     const [arquivoPrevName, setArquivoPrevName] = useState('');
@@ -62,6 +66,15 @@ function PastasGoogleDrive() {
 
         fetchArquivoInfo();
     }, [isModalPrevOpen]);
+
+    useEffect (() => {
+        const handleOutsideMenuClick = () => {
+            setShowHeaderContextMenu(false);
+            setShowDataContextMenu(false);
+        }
+        window.addEventListener('click', handleOutsideMenuClick);
+        return () => window.removeEventListener('click', handleOutsideMenuClick);
+    }, []);
 
     const handleClick = (folderId: string, fileName: string) => {
         setnavegationHistory(prev => [...prev, currentFolderId]);
@@ -116,7 +129,7 @@ function PastasGoogleDrive() {
                             <button
                                 type='button'
                                 className='btn btn-primary'
-                                onClick={() => {handleBackClick();}}
+                                onClick={() => {handleBackClick()}}
                                 >
                                 <ArrowBigLeftDash />
                             </button>
@@ -125,32 +138,49 @@ function PastasGoogleDrive() {
                                 {fileHistory.map( (file, index) => (
                                     <span>{file}{index !== fileHistory.length - 1 && ' > '}</span>
                                 ))}
-                            </div>      
+                            </div>    
                         </>
                     }
+                    <div className='d-flex gap-2' style={{alignItems: 'flex-end'}}>
+                        <BaseModalProvider>
+                            <BaseModalTrigger modalKey='arquivo_upload' variant='secondary'> <MdUpload size={22}/> Upload</BaseModalTrigger>
+                            <BaseModalRoot modalKey='arquivo_upload'>
+                                <BaseModalContent>
+                                    <BaseModalHeader>
+                                        <BaseModalTitle>Arquivos</BaseModalTitle>
+                                    </BaseModalHeader>
+                                    <BaseModalBody>
+                                        <p>Upload de arquivos</p>
+                                    </BaseModalBody>
+                                    <BaseModalFooter>
+                                        <BaseModalConfirmationButton>Upload</BaseModalConfirmationButton>
+                                    </BaseModalFooter>
+                                </BaseModalContent>
+                            </BaseModalRoot>
+                        </BaseModalProvider>
+                    </div>  
                 </div>
+                {showHeaderContextMenu && 
+                    <ContextMenu top={mousePoints.y} left={mousePoints.x}>
+                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdUpload size={25}/> Upload</button>
+                        <hr className='my-2'/>
+                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdFolder size={25}/> Criar Pasta</button>
+                    </ContextMenu>
+                }
+                
+                {showDataContextMenu &&
+                    <ContextMenu top={mousePoints.y} left={mousePoints.x}>
+                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdUpload size={25}/> Upload</button>
+                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdDownload size={25}/> Download</button>
+                        <hr className='my-2'/>
+                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdFolder size={25}/> Criar Pasta</button>
+                    </ContextMenu>
+                }
 
                 {arquivosDrive.error && <AlertMessage message="Erro ao buscar arquivos!" />}
                 {arquivosDrive.data?.length === 0 && <AlertMessage message="Nenhum arquivo encontrado!" />}
                 {arquivosDrive.data && arquivosDrive.data.length > 0 && !arquivosDrive.error && (
-                    <>
-                        <BaseModalProvider>
-                        <BaseModalTrigger modalKey='arquivo_upload' variant='secondary'> <MdUpload size={22}/> Upload</BaseModalTrigger>
-                        <BaseModalRoot modalKey='arquivo_upload'>
-                            <BaseModalContent>
-                                <BaseModalHeader>
-                                    <BaseModalTitle>Arquivos</BaseModalTitle>
-                                </BaseModalHeader>
-                                <BaseModalBody>
-                                    <p>Upload de arquivos</p>
-                                </BaseModalBody>
-                                <BaseModalFooter>
-                                    <BaseModalConfirmationButton>Upload</BaseModalConfirmationButton>
-                                </BaseModalFooter>
-                            </BaseModalContent>
-                        </BaseModalRoot>
-                        </BaseModalProvider>
-                        
+                    <> 
                         <ArquivoPreview 
                             url={arquivoPrevUrl} 
                             name={arquivoPrevName} 
@@ -160,7 +190,7 @@ function PastasGoogleDrive() {
                         />
 
                         <Table>
-                            <TableHead>
+                            <TableHead onContextMenu={(e) => {setShowHeaderContextMenu(true), setMousePoints({x: e.clientX, y: e.clientY}), e.preventDefault()}}>
                                 <TableRow>
                                     <TableHeader>Nome</TableHeader>
                                     <TableHeader>Ações</TableHeader>
@@ -170,7 +200,7 @@ function PastasGoogleDrive() {
                             <TableBody>
                                 {arquivosDrive.data?.map((arquivo, index) => (
                                     <TableRow key={arquivo.id}>
-                                        <TableData>
+                                        <TableData onContextMenu={(e) => {setShowDataContextMenu(true), setMousePoints({x: e.clientX, y: e.clientY}), e.preventDefault()}}>
                                             {arquivo.mimeType === "application/vnd.google-apps.folder" && 
                                                 <button 
                                                 type="button" className='btn' onClick={() => handleClick(arquivo.id, arquivo.name)} style={{margin: 0, padding: 0, border: 'none'}}>
@@ -246,7 +276,7 @@ function PastasGoogleDrive() {
                                         }
                                         </TableData>
                                         <TableData>{formatDateTime(new Date(arquivo.modifiedTime))}</TableData>
-                                        </TableRow>
+                                    </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
