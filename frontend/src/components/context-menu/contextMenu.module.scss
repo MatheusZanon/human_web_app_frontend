@@ -1,20 +1,24 @@
 .contextMenu {
+    position: fixed;
     display: flex;
     border-radius: 4px;
     box-sizing: border-box;
     box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.3);
     background-color: #ffffff;
-    position: absolute;
     width: 200px;
 
     .contextMenuBody {
-        padding: 0%;
+        padding: 0;
         width: 100%;
     }
     
-    .contextMenuButton {      
+    .contextMenuButton {    
+        --bs-btn-padding-x: 0rem;
+        --bs-btn-padding-y: 0rem;
         border-radius: 0%;
         width: 100%;
+        min-height: 40px;
+        align-content: center;
     }
 
     .contextMenuButton:hover {

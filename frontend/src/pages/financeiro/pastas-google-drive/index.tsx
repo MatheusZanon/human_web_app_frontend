@@ -7,15 +7,14 @@ import AlertMessage from '@/components/alert-message';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
 import { ArrowBigLeftDash, Search, Download } from 'lucide-react';
-import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload, MdDownload } from 'react-icons/md';
-import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
+import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload, MdDownload, MdDelete } from 'react-icons/md';
+import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt, BsThreeDotsVertical } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 import { formatDateTime } from '@/libs';
 import {
     BaseModalBody,
     BaseModalConfirmationButton,
     BaseModalContent,
-    BaseModalContext,
     BaseModalFooter,
     BaseModalHeader,
     BaseModalProvider,
@@ -24,8 +23,7 @@ import {
     BaseModalTrigger,
 } from '@/components/baseModal';
 import ArquivoPreview from './arquivo-preview';
-import ContextMenu from '@/components/context-menu';
-import styles from '@/components/context-menu/contextMenu.module.scss';
+import {ContextMenu, ContextMenuButton} from '@/components/context-menu';
 
 function PastasGoogleDrive() {
     const { hasRole } = useAuthenticatedUser();
@@ -36,15 +34,11 @@ function PastasGoogleDrive() {
     const [navegationHistory, setnavegationHistory] = useState<string[]>([]);
     const [fileHistory, setfileHistory] = useState<string[]>([]);
     const [prevUrl, setPrevUrl] = useState<string>('');
-    const [showHeaderContextMenu, setShowHeaderContextMenu] = useState(false);
-    const [showDataContextMenu, setShowDataContextMenu] = useState(false);
-    const [mousePoints, setMousePoints] = useState({x: 0, y: 0});
-    const {openModals} = useContext(BaseModalContext);
-    const [arquivoPrevId, setArquivoPrevId] = useState('');
     const [arquivoPrevName, setArquivoPrevName] = useState('');
     const [arquivoPrevUrl, setArquivoPrevUrl] = useState('');
     const [arquivoPrevTipo, setArquivoPrevTipo] = useState('');
     const [isModalPrevOpen, setIsModalPrevOpen] = useState(-1);
+    const [contextMenuType, setContextMenuType] = useState('');
 
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
@@ -67,15 +61,6 @@ function PastasGoogleDrive() {
         fetchArquivoInfo();
     }, [isModalPrevOpen]);
 
-    useEffect (() => {
-        const handleOutsideMenuClick = () => {
-            setShowHeaderContextMenu(false);
-            setShowDataContextMenu(false);
-        }
-        window.addEventListener('click', handleOutsideMenuClick);
-        return () => window.removeEventListener('click', handleOutsideMenuClick);
-    }, []);
-
     const handleClick = (folderId: string, fileName: string) => {
         setnavegationHistory(prev => [...prev, currentFolderId]);
         setfileHistory(prev => [...prev, fileName]);
@@ -96,6 +81,12 @@ function PastasGoogleDrive() {
         });
     }
 
+    const handlePreviewClick = (id: string, nome: string, index: number) => {
+        setPrevUrl(`http://localhost:8000/api/google_drive/serve_file_preview?arquivo_id=${id}`);
+        setArquivoPrevName(nome);
+        setIsModalPrevOpen(index);
+    }
+
     function resetPreview() {
         // Ajuste os estados conforme necessário
         setArquivoPrevUrl('');
@@ -104,78 +95,100 @@ function PastasGoogleDrive() {
         setIsModalPrevOpen(-1);
     }
 
-    const handlePreviewClick = (id: string, nome: string, index: number) => {
-        setPrevUrl(`http://localhost:8000/api/google_drive/serve_file_preview?arquivo_id=${id}`);
-        setArquivoPrevId(id);
-        setArquivoPrevName(nome);
-        setIsModalPrevOpen(index);
+    const handleTableRoWClick = (id: string, nome: string, index: number) => {
+        
     }
-    
+
     if (arquivosDrive.isLoading) {
         return <LoadingScreen />
     } else {
         return (
             <Content title="Arquivos">
-                <div className='d-flex gap-3 align-items-center mb-3'>
-                    {currentFolderId === initialFolderId ?
-                            <button
-                                type='button'
-                                className='btn btn-primary disabled'
-                                >
-                                <ArrowBigLeftDash />
-                            </button> 
-                        :
-                        <>         
-                            <button
-                                type='button'
-                                className='btn btn-primary'
-                                onClick={() => {handleBackClick()}}
-                                >
-                                <ArrowBigLeftDash />
-                            </button>
-                            <div className='d-flex align-items-center gap-2'>
-                                <MdFolder size={22}/>
-                                {fileHistory.map( (file, index) => (
-                                    <span>{file}{index !== fileHistory.length - 1 && ' > '}</span>
-                                ))}
-                            </div>    
-                        </>
-                    }
-                    <div className='d-flex gap-2' style={{alignItems: 'flex-end'}}>
-                        <BaseModalProvider>
-                            <BaseModalTrigger modalKey='arquivo_upload' variant='secondary'> <MdUpload size={22}/> Upload</BaseModalTrigger>
-                            <BaseModalRoot modalKey='arquivo_upload'>
-                                <BaseModalContent>
-                                    <BaseModalHeader>
-                                        <BaseModalTitle>Arquivos</BaseModalTitle>
-                                    </BaseModalHeader>
-                                    <BaseModalBody>
-                                        <p>Upload de arquivos</p>
-                                    </BaseModalBody>
-                                    <BaseModalFooter>
-                                        <BaseModalConfirmationButton>Upload</BaseModalConfirmationButton>
-                                    </BaseModalFooter>
-                                </BaseModalContent>
-                            </BaseModalRoot>
-                        </BaseModalProvider>
+                <BaseModalProvider>
+                <div className='row align-items-center'>
+                    <div className='d-flex gap-3 align-items-center mb-3'>
+                        {currentFolderId === initialFolderId ?
+                                <button
+                                    type='button'
+                                    className='btn btn-primary disabled'
+                                    >
+                                    <ArrowBigLeftDash />
+                                </button> 
+                            :
+                            <>         
+                                <button
+                                    type='button'
+                                    className='btn btn-primary'
+                                    onClick={() => {handleBackClick()}}
+                                    >
+                                    <ArrowBigLeftDash />
+                                </button>
+                                <div className='d-flex align-items-center gap-2'>
+                                    <MdFolder size={22}/>
+                                    {fileHistory.map( (file, index) => (
+                                        <span>{file}{index !== fileHistory.length - 1 && ' > '}</span>
+                                    ))}
+                                </div>    
+                            </>
+                        }
+                    </div>
+                    <div className='d-flex gap-2 align-items-end'>
+                        <BaseModalRoot modalKey='arquivo_upload'>
+                            <BaseModalContent>
+                                <BaseModalHeader>
+                                    <BaseModalTitle>Arquivos</BaseModalTitle>
+                                </BaseModalHeader>
+                                <BaseModalBody>
+                                    <p>Upload de arquivos</p>
+                                </BaseModalBody>
+                                <BaseModalFooter>
+                                    <BaseModalConfirmationButton>Upload</BaseModalConfirmationButton>
+                                </BaseModalFooter>
+                            </BaseModalContent>
+                        </BaseModalRoot>
+
+                        <BaseModalRoot modalKey='criar_pasta'>
+                            <BaseModalContent>
+                                <BaseModalHeader>
+                                    <BaseModalTitle>Nova Pasta</BaseModalTitle>
+                                </BaseModalHeader>
+                                <BaseModalBody>
+                                    <form className='d-flex flex-column gap-2 w-100 h-100 px-1 pb-1'>
+                                        <div className='d-flex flex-column w-100'>
+                                            <input type="text" className='form-control' placeholder='Nome da pasta' />
+                                        </div>
+                                    </form>
+                                </BaseModalBody>
+                                <BaseModalFooter>
+                                    <BaseModalConfirmationButton>Criar</BaseModalConfirmationButton>
+                                </BaseModalFooter>
+                            </BaseModalContent>
+                        </BaseModalRoot>
                     </div>  
                 </div>
-                {showHeaderContextMenu && 
-                    <ContextMenu top={mousePoints.y} left={mousePoints.x}>
-                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdUpload size={25}/> Upload</button>
-                        <hr className='my-2'/>
-                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdFolder size={25}/> Criar Pasta</button>
-                    </ContextMenu>
-                }
-                
-                {showDataContextMenu &&
-                    <ContextMenu top={mousePoints.y} left={mousePoints.x}>
-                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdUpload size={25}/> Upload</button>
-                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdDownload size={25}/> Download</button>
-                        <hr className='my-2'/>
-                        <button type='button' className={`btn ${styles.contextMenuButton}`}> <MdFolder size={25}/> Criar Pasta</button>
-                    </ContextMenu>
-                }
+                <ContextMenu>
+                    {contextMenuType === 'head' && 
+                        <div>
+                            <ContextMenuButton>
+                                <BaseModalTrigger modalKey='arquivo_upload' styles={{width: '100%', justifyContent: 'center', border: 'none'}}>
+                                    <MdUpload size={22}/> Upload
+                                </BaseModalTrigger>
+                            </ContextMenuButton>
+                            <hr className='m-1'/>
+                            <ContextMenuButton>
+                                <BaseModalTrigger modalKey='criar_pasta' styles={{width: '100%', justifyContent: 'center', border: 'none'}}>
+                                    <MdFolder size={22}/> Criar Pasta
+                                </BaseModalTrigger>
+                            </ContextMenuButton>
+                        </div>
+                    }
+                    {contextMenuType === 'row' &&
+                        <div>
+                            <ContextMenuButton><MdDownload size={22}/> Download</ContextMenuButton>
+                        </div>
+                    }  
+                </ContextMenu>
+                </BaseModalProvider>
 
                 {arquivosDrive.error && <AlertMessage message="Erro ao buscar arquivos!" />}
                 {arquivosDrive.data?.length === 0 && <AlertMessage message="Nenhum arquivo encontrado!" />}
@@ -190,17 +203,17 @@ function PastasGoogleDrive() {
                         />
 
                         <Table>
-                            <TableHead onContextMenu={(e) => {setShowHeaderContextMenu(true), setMousePoints({x: e.clientX, y: e.clientY}), e.preventDefault()}}>
+                            <TableHead onContextMenu={() => setContextMenuType('head')}>
                                 <TableRow>
                                     <TableHeader>Nome</TableHeader>
-                                    <TableHeader>Ações</TableHeader>
                                     <TableHeader>Última Modificação</TableHeader>
+                                    <TableHeader><BsThreeDotsVertical size={22}/></TableHeader>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {arquivosDrive.data?.map((arquivo, index) => (
                                     <TableRow key={arquivo.id}>
-                                        <TableData onContextMenu={(e) => {setShowDataContextMenu(true), setMousePoints({x: e.clientX, y: e.clientY}), e.preventDefault()}}>
+                                        <TableData onContextMenu={() => {setContextMenuType('row'); handleTableRoWClick(arquivo.id, arquivo.name, index)}}>
                                             {arquivo.mimeType === "application/vnd.google-apps.folder" && 
                                                 <button 
                                                 type="button" className='btn' onClick={() => handleClick(arquivo.id, arquivo.name)} style={{margin: 0, padding: 0, border: 'none'}}>
@@ -255,27 +268,20 @@ function PastasGoogleDrive() {
                                                 </div>
                                             }
                                         </TableData>
-                                        <TableData>
-                                            {arquivo.mimeType === "application/vnd.google-apps.folder" ? 
-                                            <div className='justify-content-center align-items-center'>
-                                                - 
-                                            </div>
-                                            : 
-                                            <div className='d-flex justify-content-center align-items-center gap-2'>
-                                                {(arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && 
-                                                  arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document") &&               
-                                                    <button type="button" className='btn btn-sm btn-warning p-1 d-flex justify-content-center align-items-center' 
-                                                            onClick={() => handlePreviewClick(arquivo.id, arquivo.name, index)}>
-                                                        <Search width={16} height={16}/>
-                                                    </button>
-                                                }
-                                                <button className='btn btn-sm p-1 d-flex justify-content-center align-items-center'>
-                                                    <Download width={16} height={16}/>
-                                                </button>
-                                            </div>
-                                        }
-                                        </TableData>
                                         <TableData>{formatDateTime(new Date(arquivo.modifiedTime))}</TableData>
+                                        <TableData>
+                                            {(arquivo.mimeType !== "application/vnd.google-apps.folder" &&
+                                              arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+                                              arquivo.mimeType !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                             ) &&
+                                                <div className='d-flex justify-content-center align-items-center gap-2'>        
+                                                        <button type="button" className='btn btn-sm btn-warning p-1 d-flex justify-content-center align-items-center' 
+                                                                onClick={() => handlePreviewClick(arquivo.id, arquivo.name, index)}>
+                                                            <Search width={16} height={16}/>
+                                                        </button>                                                    
+                                                </div>
+                                            }   
+                                        </TableData>
                                     </TableRow>
                                 ))}
                             </TableBody>

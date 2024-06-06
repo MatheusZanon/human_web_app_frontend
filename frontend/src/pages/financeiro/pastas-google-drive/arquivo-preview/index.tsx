@@ -6,6 +6,7 @@ import {
     BaseModalProvider,
     BaseModalRoot,
     BaseModalTitle,
+    BaseModalFooter,
 } from '@/components/baseModal';
 import LoadingScreen from '@/components/loading-screen';
 
@@ -36,7 +37,9 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ url, name, tipo, isOpen
             <BaseModalRoot defaultOpen={isModalOpen} modalKey='arquivo_preview' onClose={onDismiss}>
                 <BaseModalContent styles={{maxWidth:'1200px', width: '100%', height: '100%'}}>
                     <BaseModalHeader>
-                        <BaseModalTitle>{name}</BaseModalTitle>
+                        <BaseModalTitle>
+                            {name}
+                        </BaseModalTitle>
                     </BaseModalHeader>
                     <BaseModalBody>
                         {!url ? <LoadingScreen /> : 
@@ -57,6 +60,7 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ url, name, tipo, isOpen
                                 <p>Formato de arquivo não suportado para visualização.</p>
                         }
                     </BaseModalBody>
+                    <BaseModalFooter>{tipo !== 'application/pdf' && <button className="btn btn-secondary mt-2">Download</button>}</BaseModalFooter>
                 </BaseModalContent>
             </BaseModalRoot>
         </BaseModalProvider>

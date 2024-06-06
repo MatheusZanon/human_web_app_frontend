@@ -18,6 +18,7 @@ type TableHeaderProps = {
 interface TableRowProps {
     children: React.ReactNode;
     className?: string;
+    onContextMenu?: (e: React.MouseEvent) => void;
 };
 
 type TableDataProps = {
@@ -59,8 +60,8 @@ function TableBody({ children }: TableProps) {
     return <tbody className={`align-middle`}>{children}</tbody>;
 }
 
-function TableRow({ children, className: classNameProps }: TableRowProps) {
-    return <tr className={classNameProps}>{children}</tr>;
+function TableRow({ children, className: classNameProps, onContextMenu }: TableRowProps) {
+    return <tr className={classNameProps} onContextMenu={onContextMenu}>{children}</tr>;
 }
 
 function TableData({ children, colSpan, onContextMenu }: TableDataProps) {

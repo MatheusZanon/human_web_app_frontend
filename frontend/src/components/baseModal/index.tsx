@@ -167,6 +167,7 @@ type baseModalTriggerProps = {
     onMouseLeave?: () => void;
     variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'light' | 'dark' | 'ghost';
     size?: 'sm' | 'md' | 'lg';
+    styles?: React.CSSProperties;
 };
 
 const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({
@@ -177,6 +178,7 @@ const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({
     onMouseLeave: onMouseLeaveProps,
     variant = 'ghost',
     size = 'md',
+    styles: stylesProps,
 }) => {
     const { toggleOpen } = useContext(BaseModalContext);
 
@@ -194,6 +196,7 @@ const BaseModalTrigger: React.FC<baseModalTriggerProps> = ({
                 onMouseLeaveProps && onMouseLeaveProps();
             }}
             className={`${styles.modalTrigger} btn ${variant !== 'ghost' ? `btn-${variant}` : ''} btn-${size} d-flex align-items-center gap-1`}
+            style={stylesProps}
         >
             {children}
         </button>
