@@ -1,30 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, {Children, useEffect} from 'react';
+import { useContextMenu } from '@/contexts/ContextMenu/ContextMenuProvider';
 import styles from './contextMenu.module.scss';
 
-type ContextMenuProps = {
-    children: React.ReactNode;
-}
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({children}) => {
-    const [visible, setVisible] = useState(false);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+export const ContextMenu: React.FC<{ children: React.ReactNode}> = ({children}) => {
+    const {visible, position, hideContextMenu, type} = useContextMenu();
 
-    const handleContextMenu = (event: MouseEvent) => {
-        event.preventDefault();
-        setPosition({ x: event.clientX, y: event.clientY });
-        setVisible(true);
-    };
+    useEffect (() => {
+        const handleOutsideClick = (e: MouseEvent) => {
+            if (!e.target) return;
+            hideContextMenu();
+        };
 
-    const handleCloseMenu = () => {
-        setVisible(false);
-    };
-
-    useEffect(() => {
-        document.addEventListener('contextmenu', handleContextMenu);
-        document.addEventListener('click', handleCloseMenu);
+        window.addEventListener('click', handleOutsideClick);
         return () => {
-            document.removeEventListener('contextmenu', handleContextMenu);
-            document.removeEventListener('click', handleCloseMenu);
+            window.removeEventListener('click', handleOutsideClick);
         };
     }, []);
 
@@ -41,8 +31,8 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({children}) => {
 
     return (
         <div className={`card ${styles.contextMenu}`} style={{ top: top, left: left }} onContextMenu={(e) => e.preventDefault()}>
-            <div className={`card-body ${styles.contextMenuBody}`}>                
-                {children}
+            <div className={`card-body ${styles.contextMenuBody}`}>     
+                {children}         
             </div>
         </div>
     );
@@ -51,8 +41,13 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({children}) => {
 type ContextMenuButtonProps = {
     children: React.ReactNode,
     onClick?: () => void,
+    type: string | null
 }
 
-export const ContextMenuButton: React.FC<ContextMenuButtonProps> = ({ children, onClick }) => {
-    return <div className={`btn ${styles.contextMenuButton}`} onClick={onClick}>{children}</div>;
+export const ContextMenuButton: React.FC<ContextMenuButtonProps> = ({ children, onClick, type : typeButton }) => {
+    const {type} = useContextMenu();
+    if (type !== typeButton) return null;
+    return (
+        <div className={`btn ${styles.contextMenuButton}`} onClick={onClick}>{children}</div>
+    );
 }

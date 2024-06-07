@@ -447,7 +447,7 @@ function ClientesFinanceiro() {
                                                                 <BaseModalConfirmationButton
                                                                     onClick={() => handleDeactivate(cliente.id)}
                                                                 >
-                                                                    Excluir
+                                                                    Desativar
                                                                 </BaseModalConfirmationButton>
                                                                 <BaseModalCloseButton variant='ghost'>
                                                                     Cancelar

@@ -9,6 +9,7 @@ import {
     BaseModalFooter,
 } from '@/components/baseModal';
 import LoadingScreen from '@/components/loading-screen';
+import { MdDownload } from 'react-icons/md';
 
 type ArquivoPreviewProps = {
     url: string;
@@ -37,9 +38,10 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ url, name, tipo, isOpen
             <BaseModalRoot defaultOpen={isModalOpen} modalKey='arquivo_preview' onClose={onDismiss}>
                 <BaseModalContent styles={{maxWidth:'1200px', width: '100%', height: '100%'}}>
                     <BaseModalHeader>
-                        <BaseModalTitle>
-                            {name}
+                        <BaseModalTitle styles={{minWidth:'95%'}}>
+                           {name}
                         </BaseModalTitle>
+                        {tipo !== 'application/pdf' && <button className="btn btn-sm btn-secondary"><MdDownload size={20} /></button>}
                     </BaseModalHeader>
                     <BaseModalBody>
                         {!url ? <LoadingScreen /> : 
@@ -60,7 +62,6 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ url, name, tipo, isOpen
                                 <p>Formato de arquivo não suportado para visualização.</p>
                         }
                     </BaseModalBody>
-                    <BaseModalFooter>{tipo !== 'application/pdf' && <button className="btn btn-secondary mt-2">Download</button>}</BaseModalFooter>
                 </BaseModalContent>
             </BaseModalRoot>
         </BaseModalProvider>

@@ -338,11 +338,12 @@ const BaseModalConfirmationButton: React.FC<baseModalConfirmationButtonProps> = 
 
 type baseModalTitleProps = {
     children: React.ReactNode;
+    styles?: React.CSSProperties;
 };
 
-const BaseModalTitle: React.FC<baseModalTitleProps> = ({ children }) => {
+const BaseModalTitle: React.FC<baseModalTitleProps> = ({ children, styles : stylesTitle }) => {
     return (
-        <div className={`${styles.modalTitle} text-wrap mb-2`}>
+        <div className={`${styles.modalTitle} text-wrap mb-2`} style={stylesTitle}>
             <h3 className='d-flex gap-1 align-items-center'>{children}</h3>
         </div>
     );
