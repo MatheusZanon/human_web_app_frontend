@@ -124,6 +124,9 @@ function ClientesFinanceiro() {
     };
 
     const onSubmit = (data: CriarClienteType) => {
+        data.telefone_celular = data.telefone_celular.replace(/\D/g, '');
+        data.cnpj = data.cnpj.replace(/\D/g, '');
+        data.cpf = data.cpf.replace(/\D/g, '');
         createCliente(data);
 
         if (isCreatingCliente) {
