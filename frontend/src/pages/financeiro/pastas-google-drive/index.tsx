@@ -212,7 +212,7 @@ function PastasGoogleDrive() {
                 {arquivosDrive.data?.length === 0 && 
                     <div className='d-flex flex-column align-items-center'>
                         <AlertMessage message="Nenhum arquivo encontrado!" />
-                        <BaseModalTrigger variant='secondary' modalKey='arquivo_upload'>
+                        <BaseModalTrigger variant='secondary' modalKey='arquivo_upload' onClick={() => {setIsModalUploadOpen(true)}}>
                             <MdUpload size={22} /> Upload
                         </BaseModalTrigger>
                     </div>
