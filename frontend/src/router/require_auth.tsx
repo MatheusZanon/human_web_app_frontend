@@ -30,7 +30,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
     useEffect(() => {
         const verifyToken = async () => {
             try {
-                const response = await api.get('session/verify/', { withCredentials: true });
+                const response = await api.get('session/verify/');
                 if (response.status == 200) {
                     setIsAuthenticated(true);
                 }

@@ -6,12 +6,13 @@ import {
     BaseModalProvider,
     BaseModalRoot,
     BaseModalTitle,
-    BaseModalFooter,
 } from '@/components/baseModal';
 import LoadingScreen from '@/components/loading-screen';
 import { MdDownload } from 'react-icons/md';
+import AlertMessage from '@/components/alert-message';
 
 type ArquivoPreviewProps = {
+    id: string;
     url: string;
     name: string;
     tipo: string;
@@ -19,9 +20,8 @@ type ArquivoPreviewProps = {
     onDismiss: () => void;
 };
 
-const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ url, name, tipo, isOpen, onDismiss }) => {
+const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ id, url, name, tipo, isOpen, onDismiss }) => {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-
     useEffect(() => {
         if (isOpen !== -1) {
             setIsModalOpen(true);
@@ -29,6 +29,16 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ url, name, tipo, isOpen
             setIsModalOpen(false);
         }
     }, [isOpen]);
+
+    const handleDownloadClick = (id: string, nome: string) => {
+        const url = `http://localhost:8000/api/google_drive/download_file?arquivo_id=${id}`;
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nome;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     if (isOpen === -1) {
         return null;
@@ -41,7 +51,7 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ url, name, tipo, isOpen
                         <BaseModalTitle styles={{minWidth:'95%'}}>
                            {name}
                         </BaseModalTitle>
-                        {tipo !== 'application/pdf' && <button className="btn btn-sm btn-secondary"><MdDownload size={20} /></button>}
+                        {tipo !== 'application/pdf' && <button className="btn btn-sm btn-secondary" onClick={ () => handleDownloadClick(id, name)}><MdDownload size={20} /></button>}
                     </BaseModalHeader>
                     <BaseModalBody>
                         {!url ? <LoadingScreen /> : 
@@ -49,7 +59,7 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ url, name, tipo, isOpen
                                 <iframe src={`${url}#navpanes=0`} width="100%" height="600px" style={{ border: 'none' }}></iframe>
                             : tipo === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || 
                             tipo === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 
-                                <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=${url}`} width="100%" height="500" />
+                                <AlertMessage message="Formato de arquivo não suportado para visualização." />
                             : tipo === 'text/plain' ? 
                                 <iframe src={url} width="100%" height="500" />
                             : tipo === 'image/png' || tipo === 'image/jpeg' ? 

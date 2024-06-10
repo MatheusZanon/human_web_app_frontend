@@ -1,30 +1,22 @@
 import api from '@/utils/axios';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useGetArquivos } from "@/api/http/google_drive";
 import { useAuthenticatedUser } from "@/contexts/AuthenticatedUser/AuthenticatedUserProvider";
 import { Content } from "@/components/layout/content";
 import AlertMessage from '@/components/alert-message';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
-import { ArrowBigLeftDash, Search, Download } from 'lucide-react';
-import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload, MdDownload, MdDelete } from 'react-icons/md';
-import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt, BsThreeDotsVertical } from 'react-icons/bs';
+import ArquivoPreview from '@/components/google-drive/google-drive-preview';
+import ArquivoUpload from '@/components/google-drive/google-drive-upload';
+import CriarPasta from '@/components/google-drive/google-drive-criar-pasta';
+import {ContextMenu, ContextMenuButton} from '@/components/context-menu';
+import { useContextMenu } from '@/contexts/ContextMenu/ContextMenuProvider';
+import { ArrowBigLeftDash, Search } from 'lucide-react';
+import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload, MdDownload } from 'react-icons/md';
+import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 import { formatDateTime } from '@/libs';
-import {
-    BaseModalBody,
-    BaseModalConfirmationButton,
-    BaseModalContent,
-    BaseModalFooter,
-    BaseModalHeader,
-    BaseModalProvider,
-    BaseModalRoot,
-    BaseModalTitle,
-    BaseModalTrigger,
-} from '@/components/baseModal';
-import ArquivoPreview from './arquivo-preview';
-import {ContextMenu, ContextMenuButton} from '@/components/context-menu';
-import { ContextMenuProvider, useContextMenu } from '@/contexts/ContextMenu/ContextMenuProvider';
+import {BaseModalProvider,BaseModalTrigger} from '@/components/baseModal';
 
 function PastasGoogleDrive() {
     const { hasRole } = useAuthenticatedUser();
@@ -35,17 +27,20 @@ function PastasGoogleDrive() {
     const [navegationHistory, setnavegationHistory] = useState<string[]>([]);
     const [fileHistory, setfileHistory] = useState<string[]>([]);
     const [prevUrl, setPrevUrl] = useState<string>('');
+    const [arquivoParentId, setArquivoParentId] = useState('');
     const [arquivoPrevId, setArquivoPrevId] = useState('');
     const [arquivoPrevName, setArquivoPrevName] = useState('');
     const [arquivoPrevUrl, setArquivoPrevUrl] = useState('');
     const [arquivoPrevTipo, setArquivoPrevTipo] = useState('');
     const [arquivoPrevIndex, setArquivoPrevIndex] = useState(-1);
     const [isModalPrevOpen, setIsModalPrevOpen] = useState(-1);
+    const [isModalUploadOpen, setIsModalUploadOpen] = useState(false);
     const {type, showContextMenu} = useContextMenu();
 
 
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
+        setArquivoParentId(currentFolderId);
     }, [currentFolderId]);
     
     useEffect(() => {
@@ -106,6 +101,20 @@ function PastasGoogleDrive() {
         setArquivoPrevIndex(index);
     }
 
+    const handleDownloadClick = (id: string, nome: string) => {
+        const url = `http://localhost:8000/api/google_drive/download_file?arquivo_id=${id}`;
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nome;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    const closeUploadModal = () => {
+        setIsModalUploadOpen(false);
+    }
+
     if (arquivosDrive.isLoading) {
         return <LoadingScreen />
     } else {
@@ -140,41 +149,11 @@ function PastasGoogleDrive() {
                         }
                     </div>
                     <div className='d-flex gap-2 align-items-end'>
-                        <BaseModalRoot modalKey='arquivo_upload'>
-                            <BaseModalContent>
-                                <BaseModalHeader>
-                                    <BaseModalTitle>Arquivos</BaseModalTitle>
-                                </BaseModalHeader>
-                                <BaseModalBody>
-                                    <p>Upload de arquivos</p>
-                                </BaseModalBody>
-                                <BaseModalFooter>
-                                    <BaseModalConfirmationButton>Upload</BaseModalConfirmationButton>
-                                </BaseModalFooter>
-                            </BaseModalContent>
-                        </BaseModalRoot>
-
-                        <BaseModalRoot modalKey='criar_pasta'>
-                            <BaseModalContent>
-                                <BaseModalHeader>
-                                    <BaseModalTitle>Nova Pasta</BaseModalTitle>
-                                </BaseModalHeader>
-                                <BaseModalBody>
-                                    <form className='d-flex flex-column gap-2 w-100 h-100 px-1 pb-1'>
-                                        <div className='d-flex flex-column w-100'>
-                                            <input type="text" className='form-control' placeholder='Nome da pasta' />
-                                        </div>
-                                    </form>
-                                </BaseModalBody>
-                                <BaseModalFooter>
-                                    <BaseModalConfirmationButton>Criar</BaseModalConfirmationButton>
-                                </BaseModalFooter>
-                            </BaseModalContent>
-                        </BaseModalRoot>
-
                         <ContextMenu>
-                            <ContextMenuButton type={'head'}>
-                                <BaseModalTrigger modalKey='arquivo_upload' styles={{ width: '100%', border: 'none', justifyContent: 'center' }}>
+                            <ContextMenuButton type={'head'} onClick={() => {setIsModalUploadOpen(true)}}>
+                                <BaseModalTrigger modalKey='arquivo_upload' 
+                                    styles={{ width: '100%', border: 'none', justifyContent: 'center' }}
+                                >
                                     <MdUpload size={22} /> Upload
                                 </BaseModalTrigger>
                             </ContextMenuButton >
@@ -184,29 +163,49 @@ function PastasGoogleDrive() {
                                 </BaseModalTrigger>
                             </ContextMenuButton>
                             {arquivoPrevTipo === 'application/vnd.google-apps.folder' && 
-                            <>
-                                <ContextMenuButton type={'row'}>
-                                    <BaseModalTrigger modalKey='arquivo_upload' styles={{ width: '100%', border: 'none', justifyContent: 'center' }}>
-                                        <MdUpload size={22} /> Upload
-                                    </BaseModalTrigger>
-                                </ContextMenuButton >
-                                <ContextMenuButton type={'row'}>
-                                    <BaseModalTrigger modalKey='criar_pasta' styles={{ width: '100%', border: 'none', justifyContent: 'center' }}>
-                                        <MdFolder size={22} /> Criar Pasta
-                                    </BaseModalTrigger>
-                                </ContextMenuButton>
-                            </>
+                                <>
+                                    <ContextMenuButton type={'row'} onClick={() => {setIsModalUploadOpen(true)}}>
+                                        <BaseModalTrigger modalKey='arquivo_upload' 
+                                            styles={{ width: '100%', border: 'none', justifyContent: 'center' }}            
+                                        >
+                                            <MdUpload size={22} /> Upload
+                                        </BaseModalTrigger>
+                                    </ContextMenuButton >
+                                    <ContextMenuButton type={'row'}>
+                                        <BaseModalTrigger modalKey='criar_pasta' 
+                                            styles={{ width: '100%', border: 'none', justifyContent: 'center' }}
+                                        >
+                                            <MdFolder size={22} /> Criar Pasta
+                                        </BaseModalTrigger>
+                                    </ContextMenuButton>
+                                </>
                             }
                             {arquivoPrevTipo !== 'application/vnd.google-apps.folder' && 
                                 <>
                                     <ContextMenuButton type={'row'} onClick={() => {handlePreviewClick(arquivoPrevId, arquivoPrevName, arquivoPrevIndex)}}>
                                         <Search size={20} /> Visualizar
                                     </ContextMenuButton>
-                                    <ContextMenuButton type={'row'}><MdDownload size={22} /> Download</ContextMenuButton>
+                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId, arquivoPrevName)}}><MdDownload size={22} /> Download</ContextMenuButton>
                                 </>
                             }
                         </ContextMenu>
                     </div>  
+                    <ArquivoUpload 
+                        parents={arquivoParentId} 
+                        isOpen={isModalUploadOpen}
+                        onClose={closeUploadModal}
+                    />
+
+                    <ArquivoPreview 
+                        id={arquivoPrevId}
+                        url={arquivoPrevUrl} 
+                        name={arquivoPrevName} 
+                        tipo={arquivoPrevTipo} 
+                        isOpen={isModalPrevOpen} 
+                        onDismiss={resetPreview}
+                    />
+
+                    <CriarPasta />
                 </div>
 
                 {arquivosDrive.error && <AlertMessage message="Erro ao buscar arquivos!" />}
@@ -218,93 +217,83 @@ function PastasGoogleDrive() {
                         </BaseModalTrigger>
                     </div>
                 }
+                </BaseModalProvider>                
 
-                </BaseModalProvider>
                 {arquivosDrive.data && arquivosDrive.data.length > 0 && !arquivosDrive.error && (
-                    <> 
-                        <ArquivoPreview 
-                            url={arquivoPrevUrl} 
-                            name={arquivoPrevName} 
-                            tipo={arquivoPrevTipo} 
-                            isOpen={isModalPrevOpen} 
-                            onDismiss={resetPreview}
-                            />
-
-                        <Table>
-                            <TableHead onContextMenu={(e) => {showContextMenu(e, 'head'), type=='head'}}>
-                                <TableRow>
-                                    <TableHeader>Nome</TableHeader>
-                                    <TableHeader>Última Modificação</TableHeader>
+                    <Table>
+                        <TableHead onContextMenu={(e) => {showContextMenu(e, 'head'), type=='head'}}>
+                            <TableRow>
+                                <TableHeader>Nome</TableHeader>
+                                <TableHeader>Última Modificação</TableHeader>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {arquivosDrive.data?.map((arquivo, index) => (
+                                <TableRow key={arquivo.id} onContextMenu={(e) => {
+                                        showContextMenu(e, 'row'); type=='row'; 
+                                        handleTableRoWClick(arquivo.id, arquivo.name, arquivo.mimeType, index);
+                                    }}
+                                >
+                                    <TableData>
+                                        {arquivo.mimeType === "application/vnd.google-apps.folder" && 
+                                            <button 
+                                            type="button" className='btn' onClick={() => handleClick(arquivo.id, arquivo.name)} style={{margin: 0, padding: 0, border: 'none'}}>
+                                                <div className='d-flex align-items-center gap-2'>
+                                                    <MdFolder size={22}/> {arquivo.name}
+                                                </div>
+                                            </button>
+                                        }
+                                        {arquivo.mimeType === "application/x-msdownload" && 
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <MdArchive color="#626D0A" size={22}/> {arquivo.name}
+                                            </div>
+                                        } 
+                                        {arquivo.mimeType === "application/x-zip-compressed" && 
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <BsFileEarmarkZip color="#88770D" size={22}/> {arquivo.name}
+                                            </div>
+                                        } 
+                                        {(arquivo.mimeType === "image/png" || arquivo.mimeType === "image/jpeg" || arquivo.mimeType === "image/gif") && 
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <MdImage color='#EF3232' size={22}/> {arquivo.name}
+                                            </div>
+                                        }
+                                        {(arquivo.mimeType === "video/mp4" || arquivo.mimeType === "image/jpeg") && 
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <MdVideoLibrary color='#EF3232' size={22}/> {arquivo.name}
+                                            </div>
+                                        }
+                                        {arquivo.mimeType === "application/vnd.google-apps.document" && 
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <MdEditDocument color="#0D3FB0" size={22}/> {arquivo.name}
+                                            </div>
+                                        }
+                                        {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" && 
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <BsFiletypeDoc color="#2370D1" size={22}/> {arquivo.name} 
+                                            </div>
+                                        }
+                                        {arquivo.mimeType === "application/pdf" &&
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <MdPictureAsPdf color='#FF0000' size={22}/> {arquivo.name}
+                                            </div>
+                                        } 
+                                        {arquivo.mimeType === "text/plain" && 
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <BsFiletypeTxt size={22}/> {arquivo.name}
+                                            </div>
+                                        }
+                                        {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && 
+                                            <div className='d-flex align-items-center gap-2'>
+                                                <FaFileExcel color='#106C05' size={22}/> {arquivo.name}
+                                            </div>
+                                        }
+                                    </TableData>
+                                    <TableData>{formatDateTime(new Date(arquivo.modifiedTime))}</TableData>
                                 </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {arquivosDrive.data?.map((arquivo, index) => (
-                                    <TableRow key={arquivo.id} onContextMenu={(e) => {
-                                            showContextMenu(e, 'row'); type=='row'; 
-                                            handleTableRoWClick(arquivo.id, arquivo.name, arquivo.mimeType, index);
-                                        }}
-                                    >
-                                        <TableData>
-                                            {arquivo.mimeType === "application/vnd.google-apps.folder" && 
-                                                <button 
-                                                type="button" className='btn' onClick={() => handleClick(arquivo.id, arquivo.name)} style={{margin: 0, padding: 0, border: 'none'}}>
-                                                    <div className='d-flex align-items-center gap-2'>
-                                                        <MdFolder size={22}/> {arquivo.name}
-                                                    </div>
-                                                </button>
-                                            }
-                                            {arquivo.mimeType === "application/x-msdownload" && 
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <MdArchive color="#626D0A" size={22}/> {arquivo.name}
-                                                </div>
-                                            } 
-                                            {arquivo.mimeType === "application/x-zip-compressed" && 
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <BsFileEarmarkZip color="#88770D" size={22}/> {arquivo.name}
-                                                </div>
-                                            } 
-                                            {(arquivo.mimeType === "image/png" || arquivo.mimeType === "image/jpeg" || arquivo.mimeType === "image/gif") && 
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <MdImage color='#EF3232' size={22}/> {arquivo.name}
-                                                </div>
-                                            }
-                                            {(arquivo.mimeType === "video/mp4" || arquivo.mimeType === "image/jpeg") && 
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <MdVideoLibrary color='#EF3232' size={22}/> {arquivo.name}
-                                                </div>
-                                            }
-                                            {arquivo.mimeType === "application/vnd.google-apps.document" && 
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <MdEditDocument color="#0D3FB0" size={22}/> {arquivo.name}
-                                                </div>
-                                            }
-                                            {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" && 
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <BsFiletypeDoc color="#2370D1" size={22}/> {arquivo.name} 
-                                                </div>
-                                            }
-                                            {arquivo.mimeType === "application/pdf" &&
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <MdPictureAsPdf color='#FF0000' size={22}/> {arquivo.name}
-                                                </div>
-                                            } 
-                                            {arquivo.mimeType === "text/plain" && 
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <BsFiletypeTxt size={22}/> {arquivo.name}
-                                                </div>
-                                            }
-                                            {arquivo.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && 
-                                                <div className='d-flex align-items-center gap-2'>
-                                                    <FaFileExcel color='#106C05' size={22}/> {arquivo.name}
-                                                </div>
-                                            }
-                                        </TableData>
-                                        <TableData>{formatDateTime(new Date(arquivo.modifiedTime))}</TableData>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </>
+                            ))}
+                        </TableBody>
+                    </Table>
                 )}
             </Content>  
         )
