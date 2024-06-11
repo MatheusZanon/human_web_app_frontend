@@ -15,9 +15,10 @@ type ArquivoUploadProps = {
     parents: string;
     isOpen: boolean;
     onClose: () => void;
+    onUploadComplete: () => void;
 }
 
-const ArquivoUpload = ( { parents, isOpen, onClose }: ArquivoUploadProps) => { 
+const ArquivoUpload = ( { parents, isOpen, onClose, onUploadComplete }: ArquivoUploadProps) => { 
     const [progress, setProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
 
@@ -41,6 +42,7 @@ const ArquivoUpload = ( { parents, isOpen, onClose }: ArquivoUploadProps) => {
                 setTimeout(() => {
                     setIsUploading(false);
                     setProgress(0);
+                    onUploadComplete();
                     onClose();
                 }, 200);
             } else {
@@ -66,7 +68,7 @@ const ArquivoUpload = ( { parents, isOpen, onClose }: ArquivoUploadProps) => {
                 </BaseModalHeader>
                 <BaseModalBody>
                     <div {...getRootProps()} className={`${styles.dropzone} mb-2`}>
-                        <input {...getInputProps()} />
+                        <input {...getInputProps()} disabled={isUploading} />
                         { !isDragActive && <p>Arraste os arquivos para esta caixa, ou clique para seleciona-los</p>}
                     </div>
                     { isUploading && 

@@ -1,7 +1,8 @@
 import api from '@/utils/axios';
+import { generateUUID } from '@/libs';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useGetArquivos, useGetArquivoDownload } from "@/api/http/google_drive";
+import { useGetArquivos } from "@/api/http/google_drive";
 import { useAuthenticatedUser } from "@/contexts/AuthenticatedUser/AuthenticatedUserProvider";
 import { Content } from "@/components/layout/content";
 import AlertMessage from '@/components/alert-message';
@@ -38,12 +39,12 @@ function PastasGoogleDrive() {
     const [arquivoPrevIndex, setArquivoPrevIndex] = useState(-1);
     const [isModalPrevOpen, setIsModalPrevOpen] = useState(-1);
     const [isModalUploadOpen, setIsModalUploadOpen] = useState(false);
-    const { mutate: downloadMutate, isSuccess, isError } = useGetArquivoDownload();
+    const [uuid, setUuid] = useState('');
 
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
         setArquivoParentId(currentFolderId);
-    }, [currentFolderId]);
+    }, [currentFolderId, isModalUploadOpen]);
     
     useEffect(() => {
         const fetchArquivoInfo = async () => {
@@ -107,8 +108,29 @@ function PastasGoogleDrive() {
         setIsModalUploadOpen(false);
     }
 
-    const handleDownloadClick = (id: string, nome: string) => {
-        downloadMutate({id, nome});
+    const refreshFilesList = () => {
+        arquivosDrive.refetch();
+    }
+
+    const handleDownloadClick = async (id: string) => {
+        try {
+            const response = await api.get(`google_drive/download_arquivo?id=${id}`, {
+                responseType: 'blob',
+            })
+            const blob = new Blob([response.data], { type: response.headers['content-type'] });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+
+            const fileName = `${generateUUID()}`;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.log(error);
+            toast(`Erro ao baixar o arquivo: ${error}`, {type: "error", position: "bottom-right"});
+        }
     }
 
     if (arquivosDrive.isLoading) {
@@ -174,7 +196,7 @@ function PastasGoogleDrive() {
                                             <MdFolder size={22} /> Criar Pasta
                                         </BaseModalTrigger>
                                     </ContextMenuButton>
-                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId, arquivoPrevName)}}>
+                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId)}}>
                                         <IoMdCloudDownload size={22} /> Download
                                     </ContextMenuButton>
                                     {hasRole('ADMIN') && 
@@ -189,7 +211,7 @@ function PastasGoogleDrive() {
                                     <ContextMenuButton type={'row'} onClick={() => {handlePreviewClick(arquivoPrevId, arquivoPrevName, arquivoPrevIndex)}}>
                                         <Search size={20} /> Visualizar
                                     </ContextMenuButton>
-                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId, arquivoPrevName)}}>
+                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId)}}>
                                         <IoMdCloudDownload size={22} /> Download
                                     </ContextMenuButton>
                                     {hasRole('ADMIN') && 
@@ -205,6 +227,7 @@ function PastasGoogleDrive() {
                         parents={arquivoParentId} 
                         isOpen={isModalUploadOpen}
                         onClose={closeUploadModal}
+                        onUploadComplete={refreshFilesList}
                     />
 
                     <ArquivoPreview 

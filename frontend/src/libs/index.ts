@@ -52,7 +52,7 @@ export function fromNow(date: Date) {
 }
 
 export function fromNowShort(date: Date) {
-    return dayjs(date).fromNow({ trim: true });
+    return dayjs(date).fromNow(true);
 }
 
 export function fromNowDays(date: Date) {
@@ -202,6 +202,24 @@ export function capitalize(value: string | null | undefined): string | null | un
     const capitalizedValue = capitalizedWords.join(' ');
 
     return capitalizedValue;
+}
+
+export function generateUUID() {
+    // Cria um array de 16 bytes
+    const array = new Uint8Array(16);
+    window.crypto.getRandomValues(array);
+
+    // Modifica os bytes para corresponder à especificação UUID v4
+    array[6] = (array[6] & 0x0f) | 0x40;  // Define a versão para 4
+    array[8] = (array[8] & 0x3f) | 0x80;  // Define o variante para RFC 4122
+
+    // Converte os bytes para uma string UUID
+    const uuid = Array.from(array).map((byte, index) => {
+        const hex = byte.toString(16).padStart(2, '0');
+        return (index === 4 || index === 6 || index === 8 || index === 10) ? '-' + hex : hex;
+    }).join('');
+
+    return uuid;
 }
 
 /**
