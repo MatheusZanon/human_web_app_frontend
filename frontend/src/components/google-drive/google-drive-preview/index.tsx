@@ -30,16 +30,6 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ id, url, name, tipo, is
         }
     }, [isOpen]);
 
-    const handleDownloadClick = (id: string, nome: string) => {
-        const url = `http://localhost:8000/api/google_drive/download_file?arquivo_id=${id}`;
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = nome;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
     if (isOpen === -1) {
         return null;
     }
@@ -51,7 +41,7 @@ const ArquivoPreview: React.FC<ArquivoPreviewProps> = ({ id, url, name, tipo, is
                         <BaseModalTitle styles={{minWidth:'95%'}}>
                            {name}
                         </BaseModalTitle>
-                        {tipo !== 'application/pdf' && <button className="btn btn-sm btn-secondary" onClick={ () => handleDownloadClick(id, name)}><MdDownload size={20} /></button>}
+                        {tipo !== 'application/pdf' && <button className="btn btn-sm btn-secondary"><MdDownload size={20} /></button>}
                     </BaseModalHeader>
                     <BaseModalBody>
                         {!url ? <LoadingScreen /> : 

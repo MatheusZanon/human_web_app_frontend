@@ -43,7 +43,6 @@ const ArquivoUpload = ( { parents, isOpen, onClose }: ArquivoUploadProps) => {
                     setProgress(0);
                     onClose();
                 }, 200);
-                console.log('Files uploaded successfully:', response.data);
             } else {
                 toast("Ocorreu um erro ao realizar o upload de arquivos!", { type: 'error', position: 'bottom-right', autoClose: 1000 });
             }
@@ -51,7 +50,6 @@ const ArquivoUpload = ( { parents, isOpen, onClose }: ArquivoUploadProps) => {
             toast("Ocorreu um erro ao realizar o upload de arquivos!", { type: 'error', position: 'bottom-right', autoClose: 1000 });
             setIsUploading(false);
             setProgress(0);
-            console.error('Error uploading files:', error);
         }
       };
     

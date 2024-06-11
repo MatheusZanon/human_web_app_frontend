@@ -1,6 +1,7 @@
 import api from '@/utils/axios';
 import { useState, useEffect } from 'react';
-import { useGetArquivos } from "@/api/http/google_drive";
+import { toast } from 'react-toastify';
+import { useGetArquivos, useGetArquivoDownload } from "@/api/http/google_drive";
 import { useAuthenticatedUser } from "@/contexts/AuthenticatedUser/AuthenticatedUserProvider";
 import { Content } from "@/components/layout/content";
 import AlertMessage from '@/components/alert-message';
@@ -12,11 +13,12 @@ import CriarPasta from '@/components/google-drive/google-drive-criar-pasta';
 import {ContextMenu, ContextMenuButton} from '@/components/context-menu';
 import { useContextMenu } from '@/contexts/ContextMenu/ContextMenuProvider';
 import { ArrowBigLeftDash, Search } from 'lucide-react';
-import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload, MdDownload } from 'react-icons/md';
+import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload, MdDelete } from 'react-icons/md';
+import { IoMdCloudDownload } from "react-icons/io";
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 import { formatDateTime } from '@/libs';
-import {BaseModalProvider,BaseModalTrigger} from '@/components/baseModal';
+import {BaseModalProvider, BaseModalTrigger} from '@/components/baseModal';
 
 function PastasGoogleDrive() {
     const { hasRole } = useAuthenticatedUser();
@@ -27,6 +29,7 @@ function PastasGoogleDrive() {
     const [navegationHistory, setnavegationHistory] = useState<string[]>([]);
     const [fileHistory, setfileHistory] = useState<string[]>([]);
     const [prevUrl, setPrevUrl] = useState<string>('');
+    const {type, showContextMenu} = useContextMenu();
     const [arquivoParentId, setArquivoParentId] = useState('');
     const [arquivoPrevId, setArquivoPrevId] = useState('');
     const [arquivoPrevName, setArquivoPrevName] = useState('');
@@ -35,8 +38,7 @@ function PastasGoogleDrive() {
     const [arquivoPrevIndex, setArquivoPrevIndex] = useState(-1);
     const [isModalPrevOpen, setIsModalPrevOpen] = useState(-1);
     const [isModalUploadOpen, setIsModalUploadOpen] = useState(false);
-    const {type, showContextMenu} = useContextMenu();
-
+    const { mutate: downloadMutate, isSuccess, isError } = useGetArquivoDownload();
 
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
@@ -101,18 +103,12 @@ function PastasGoogleDrive() {
         setArquivoPrevIndex(index);
     }
 
-    const handleDownloadClick = (id: string, nome: string) => {
-        const url = `http://localhost:8000/api/google_drive/download_file?arquivo_id=${id}`;
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = nome;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
     const closeUploadModal = () => {
         setIsModalUploadOpen(false);
+    }
+
+    const handleDownloadClick = (id: string, nome: string) => {
+        downloadMutate({id, nome});
     }
 
     if (arquivosDrive.isLoading) {
@@ -178,6 +174,14 @@ function PastasGoogleDrive() {
                                             <MdFolder size={22} /> Criar Pasta
                                         </BaseModalTrigger>
                                     </ContextMenuButton>
+                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId, arquivoPrevName)}}>
+                                        <IoMdCloudDownload size={22} /> Download
+                                    </ContextMenuButton>
+                                    {hasRole('ADMIN') && 
+                                        <ContextMenuButton type={'row'}>
+                                            <MdDelete size={22} /> Excluir
+                                        </ContextMenuButton>
+                                    }
                                 </>
                             }
                             {arquivoPrevTipo !== 'application/vnd.google-apps.folder' && 
@@ -185,7 +189,14 @@ function PastasGoogleDrive() {
                                     <ContextMenuButton type={'row'} onClick={() => {handlePreviewClick(arquivoPrevId, arquivoPrevName, arquivoPrevIndex)}}>
                                         <Search size={20} /> Visualizar
                                     </ContextMenuButton>
-                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId, arquivoPrevName)}}><MdDownload size={22} /> Download</ContextMenuButton>
+                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId, arquivoPrevName)}}>
+                                        <IoMdCloudDownload size={22} /> Download
+                                    </ContextMenuButton>
+                                    {hasRole('ADMIN') && 
+                                        <ContextMenuButton type={'row'}>
+                                            <MdDelete size={22} /> Excluir
+                                        </ContextMenuButton>
+                                    }
                                 </>
                             }
                         </ContextMenu>
