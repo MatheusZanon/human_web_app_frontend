@@ -99,6 +99,12 @@ const UpdateClienteModal: React.FC = () => {
         const cleanedPhone = phone.replace(/\D/g, '');
         const currentPhone = cliente?.telefone_celular?.replace(/\D/g, '');
         const phoneToSave = cleanedPhone !== currentPhone ? cleanedPhone : null;
+        const cleanedCnpj = cnpj.replace(/\D/g, '');
+        const currentCnpj = cliente?.cnpj?.replace(/\D/g, '');
+        const cnpjToSave = cleanedCnpj !== currentCnpj ? cleanedCnpj : null;
+        const cleanedCpf = cpf.replace(/\D/g, '');
+        const currentCpf = cliente?.cpf?.replace(/\D/g, '');
+        const cpfToSave = cleanedCpf !== currentCpf ? cleanedCpf : null;
         const updatedValues: Partial<UpdateClienteType> = {};
 
         if (cliente?.email !== email) {
@@ -109,12 +115,12 @@ const UpdateClienteModal: React.FC = () => {
             updatedValues.phone = phoneToSave;
         }
 
-        if (cliente?.cnpj !== cnpj) {
-            updatedValues.cnpj = cnpj;
+        if (cnpjToSave) {
+            updatedValues.cnpj = cnpjToSave;
         }
 
-        if (cliente?.cpf !== cpf) {
-            updatedValues.cpf = cpf;
+        if (cpfToSave) {
+            updatedValues.cpf = cpfToSave;
         }
 
         if (cliente?.nome_razao_social !== nome_razao_social) {

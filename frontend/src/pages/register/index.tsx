@@ -56,12 +56,13 @@ function Register() {
     function onSubmit(data: RegisterData) {
         const parsedData = schema.safeParse(data);
         if (parsedData.success) {
+            const cleanedPhone = parsedData.data.telefone.replace(/\D/g, '');
             api.post('user/', {
                 username: parsedData.data.username,
                 first_name: parsedData.data.firstname,
                 last_name: parsedData.data.lastname,
                 email: parsedData.data.email,
-                telefone_celular: parsedData.data.telefone,
+                telefone_celular: cleanedPhone,
                 password: parsedData.data.password,
             })
                 .then((response) => {
@@ -115,7 +116,14 @@ function Register() {
                         <label htmlFor='telefone' className='form-label'>
                             Telefone:
                         </label>
-                        <input type='text' id='telefone' className='form-control' {...register('telefone')} onChange={handlePhoneChange} placeholder='(00) 00000-0000'/>
+                        <input
+                            type='text'
+                            id='telefone'
+                            className='form-control'
+                            {...register('telefone')}
+                            onChange={handlePhoneChange}
+                            placeholder='(00) 00000-0000'
+                        />
                         {errors.telefone && <p className='text-danger'>{errors.telefone.message}</p>}
                     </div>
                 </div>

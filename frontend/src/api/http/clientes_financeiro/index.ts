@@ -8,11 +8,19 @@ import { CriarClienteType } from '@/utils/types/financeiro/criar_cliente';
 import { postCliente } from './postCliente';
 import { putDeactivateCliente } from './putDesactivateCliente';
 import { putActivateCliente } from './putActivateCliente';
+import { getClientesFolhaPonto } from './getClientesFolhaPonto';
 
 export function useGetClientes(url: string) {
     return useQuery({
         queryKey: ['clientes', url],
         queryFn: () => getClientes(url),
+    });
+}
+
+export function useGetClientesFolhaPonto(url: string) {
+    return useQuery({
+        queryKey: ['clientes_folha_ponto', url],
+        queryFn: () => getClientesFolhaPonto(url),
     });
 }
 
@@ -26,7 +34,8 @@ export function useGetClienteById({ clienteId }: { clienteId: number }) {
 export function useUpdateCliente() {
     return useMutation({
         mutationKey: ['update-user'],
-        mutationFn: ({ clienteId, data }: { clienteId: number; data: Partial<Cliente> }) => patchCliente({ clienteId, data }),
+        mutationFn: ({ clienteId, data }: { clienteId: number; data: Partial<Cliente> }) =>
+            patchCliente({ clienteId, data }),
         onSuccess: ({ id }) => {
             queryClient.invalidateQueries({ queryKey: [`cliente`, id] });
             const cliente = queryClient.getQueryData<Cliente>(['cliente']);
@@ -52,6 +61,7 @@ export function useDeactivateCliente() {
         mutationFn: (clienteId: number) => putDeactivateCliente({ clienteId }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['clientes'] });
+            queryClient.invalidateQueries({ queryKey: ['clientes_folha_ponto'] });
         },
     });
 }
@@ -62,6 +72,7 @@ export function useActivateCliente() {
         mutationFn: (clienteId: number) => putActivateCliente({ clienteId }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['clientes'] });
+            queryClient.invalidateQueries({ queryKey: ['clientes_folha_ponto'] });
         },
     });
 }
