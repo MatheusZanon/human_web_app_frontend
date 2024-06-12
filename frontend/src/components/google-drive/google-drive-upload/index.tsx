@@ -45,10 +45,8 @@ const ArquivoUpload = ( { parents, isOpen, onDismiss, onUploadComplete }: Arquiv
                     onUploadComplete();
                     onDismiss();
                 }, 200);
-            } else {
-                toast("Ocorreu um erro ao realizar o upload de arquivos!", { type: 'error', position: 'bottom-right', autoClose: 1000 });
             }
-        } catch (error) {
+        } catch (error: any) {
             toast("Ocorreu um erro ao realizar o upload de arquivos!", { type: 'error', position: 'bottom-right', autoClose: 1000 });
             setIsUploading(false);
             setProgress(0);
@@ -58,7 +56,7 @@ const ArquivoUpload = ( { parents, isOpen, onDismiss, onUploadComplete }: Arquiv
       const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
     
       if (!isOpen) return null;
-      
+
       return (
         <BaseModalRoot defaultOpen={isOpen} modalKey='arquivo_upload' onClose={onDismiss}>
             <BaseModalContent>

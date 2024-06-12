@@ -32,8 +32,12 @@ const CriarPasta: React.FC<CriarPastaProps> = ({parents, isOpen, onDismiss}) => 
                 toast('Pasta criada com sucesso!', {type: "success", position: "bottom-right"});
                 setValue('folder_name', '');
             }
-        } catch(error) {
-            toast('Erro ao criar pasta: ' + error, {type: "error", position: "bottom-right"});
+        } catch(error: any) {
+            if (error.response?.status === 400) {
+                toast('Erro ao criar pasta, ela já existe!', {type: "error", position: "bottom-right"});
+            } else {
+                toast('Erro ao criar pasta: ' + error, {type: "error", position: "bottom-right"});
+            }
         }
       };
 
