@@ -153,6 +153,12 @@ function Sidebar() {
                                 to='rh/funcionarios'
                                 open={open}
                             />
+                            <SubMenuItem
+                                icon={<Dot className={open ? 'me-2' : ''} />}
+                                title={'Folha de Ponto'}
+                                to='rh/folha-de-ponto'
+                                open={open}
+                            />
                         </SubMenu>
                     </li>
                 )}

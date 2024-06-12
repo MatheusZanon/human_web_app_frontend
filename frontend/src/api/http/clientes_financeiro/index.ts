@@ -8,11 +8,19 @@ import { CriarClienteType } from '@/utils/types/criar_cliente';
 import { postCliente } from './postCliente';
 import { putDeactivateCliente } from './putDesactivateCliente';
 import { putActivateCliente } from './putActivateCliente';
+import { getClientesFolhaPonto } from './getClientesFolhaPonto';
 
 export function useGetClientes(url: string) {
     return useQuery({
         queryKey: ['clientes', url],
         queryFn: () => getClientes(url),
+    });
+}
+
+export function useGetClientesFolhaPonto(url: string) {
+    return useQuery({
+        queryKey: ['clientes_folha_ponto', url],
+        queryFn: () => getClientesFolhaPonto(url),
     });
 }
 

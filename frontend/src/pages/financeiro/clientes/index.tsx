@@ -30,6 +30,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CriarClienteType } from '@/utils/types/criar_cliente';
 import { toast } from 'react-toastify';
 import AlertMessage from '@/components/alert-message';
+import { Cliente } from '@/utils/types/cliente';
 
 const newClienteFormSchema = z
     .object({
@@ -69,6 +70,8 @@ const newClienteFormSchema = z
     );
 
 function ClientesFinanceiro() {
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [sortBy, setSortBy] = useState<keyof Cliente>('id');
     const [url, setUrl] = useState<string>('clientes_financeiro/?limit=12&offset=0');
     const clientes = useGetClientes(url);
     const clienteResults = useMemo(() => {
@@ -225,6 +228,21 @@ function ClientesFinanceiro() {
             });
         }
     };
+
+    const handleSort = (columnKey: keyof Cliente) => {
+        if (sortBy === columnKey) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(columnKey as keyof Cliente);
+            setSortDirection('asc');
+        }
+    };
+
+    const sortedData = [...(clienteResults || [])].sort((a, b) => {
+        if (a[sortBy] < b[sortBy]) return sortDirection === 'asc' ? -1 : 1;
+        if (a[sortBy] > b[sortBy]) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+    });
 
     return (
         <>
@@ -394,19 +412,35 @@ function ClientesFinanceiro() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableHeader>ID</TableHeader>
-                            <TableHeader>Razão Social</TableHeader>
+                            <TableHeader
+                                columnKey='nome_razao_social'
+                                sortable
+                                sortDirection={sortBy === 'nome_razao_social' ? sortDirection : undefined}
+                                onSort={() => {
+                                    handleSort('nome_razao_social');
+                                }}
+                            >
+                                Razão Social
+                            </TableHeader>
                             <TableHeader>CNPJ</TableHeader>
                             <TableHeader>CPF</TableHeader>
-                            <TableHeader>Região</TableHeader>
+                            <TableHeader
+                                columnKey='regiao'
+                                sortable
+                                sortDirection={sortBy === 'regiao' ? sortDirection : undefined}
+                                onSort={() => {
+                                    handleSort('regiao');
+                                }}
+                            >
+                                Região
+                            </TableHeader>
                             <TableHeader>Ações</TableHeader>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {clienteResults.length > 0 &&
-                            clienteResults.map((cliente) => (
+                        {sortedData.length > 0 &&
+                            sortedData.map((cliente) => (
                                 <TableRow key={cliente.id} className={cliente.is_active ? '' : 'table-danger'}>
-                                    <TableData>{cliente.id}</TableData>
                                     <TableData>{cliente.nome_razao_social}</TableData>
                                     {cliente.cnpj ? (
                                         <TableData>{formatCnpj(cliente.cnpj)}</TableData>

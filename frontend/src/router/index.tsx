@@ -43,6 +43,7 @@ import PastasGoogleDrive from '@/pages/financeiro/pastas-google-drive';
 import Dashboard from '@/pages/dashboard';
 import { ProfileCardProvider } from '@/components/profile-card/profile-card-provider';
 import { ClienteProfileCardProvider } from '@/components/update-cliente-modal/cliente-profile-card-provider';
+import ClientesFinanceiroRH from '@/pages/rh/clientes';
 
 type route = {
     path: string;
@@ -105,6 +106,10 @@ const allRoutes: route[] = [
                 <FuncionarioProfile />
             </ProfileCardProvider>
         ),
+    },
+    {
+        path: 'rh/folha-de-ponto',
+        element: <ClientesFinanceiroRH />,
     },
 ];
 
