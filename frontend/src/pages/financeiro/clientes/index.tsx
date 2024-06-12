@@ -30,7 +30,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CriarClienteType } from '@/utils/types/financeiro/criar_cliente';
 import { toast } from 'react-toastify';
 import AlertMessage from '@/components/alert-message';
-import { Cliente } from '@/utils/types/cliente';
+import { Cliente } from '@/utils/types/financeiro/cliente';
 
 const newClienteFormSchema = z
     .object({

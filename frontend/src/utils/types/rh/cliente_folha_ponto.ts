@@ -1,4 +1,4 @@
-import { Cliente } from "./cliente";
+import { Cliente } from "../financeiro/cliente";
 
 export type ClienteFolhaPonto = {
     id: number;
