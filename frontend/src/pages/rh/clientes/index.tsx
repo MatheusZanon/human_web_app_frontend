@@ -1,17 +1,27 @@
 import { useGetClientesFolhaPonto } from '@/api/http/clientes_financeiro';
+import {
+    BaseModalBody,
+    BaseModalContent,
+    BaseModalHeader,
+    BaseModalRoot,
+    BaseModalTitle,
+    BaseModalTrigger,
+} from '@/components/baseModal';
 import { Content } from '@/components/layout/content';
 import { Table, TableBody, TableData, TableFooter, TableHead, TableHeader, TableRow } from '@/components/table';
-import { formatCellphone, formatCnpj, formatCpf } from '@/libs';
+import { formatCnpj, formatCpf } from '@/libs';
 import { Cliente } from '@/utils/types/cliente';
+import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ClientesFinanceiroRH() {
     const [sortDirection, setSortDirection] = useState('asc');
-    const [sortBy, setSortBy] = useState<keyof Cliente>('id');
+    const [sortBy, setSortBy] = useState<keyof Cliente>('nome_razao_social');
     const [url, setUrl] = useState<string>('clientes_financeiro/folha_ponto?limit=12&offset=0');
-    const { data: clientes, isSuccess: isGetClientesSuccess } = useGetClientesFolhaPonto(url);
+    const { data: clientesFolhaPonto, isSuccess: isGetClientesFolhaPontoSuccess } = useGetClientesFolhaPonto(url);
     const offset = Number(url.split('offset=')[1] || 0);
-    const page = offset >= Number(clientes?.count || 0) ? -1 : offset / 12 + 1;
+    const page = Math.ceil(offset >= Number(clientesFolhaPonto?.count || 0) ? -1 : offset / 12 + 1);
+    const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
 
     const handleSort = (columnKey: keyof Cliente) => {
         if (sortBy === columnKey) {
@@ -22,13 +32,38 @@ export default function ClientesFinanceiroRH() {
         }
     };
 
-    const sortedData = [...(clientes?.results || [])].sort((a, b) => {
+    const clientes = isGetClientesFolhaPontoSuccess
+        ? clientesFolhaPonto.results.map((cliente) => {
+              return cliente.cliente;
+          })
+        : [];
+
+    const sortedData = [...clientes].sort((a, b) => {
         if (a[sortBy] < b[sortBy]) return sortDirection === 'asc' ? -1 : 1;
         if (a[sortBy] > b[sortBy]) return sortDirection === 'asc' ? 1 : -1;
         return 0;
     });
+
     return (
         <Content title='Folha de Ponto'>
+            {isGetClientesFolhaPontoSuccess && (
+                <div className='d-flex gap-2'>
+                    <button
+                        className='btn btn-primary'
+                        onClick={() => setUrl(clientesFolhaPonto.previous ?? '')}
+                        disabled={!clientesFolhaPonto.previous}
+                    >
+                        <ArrowBigLeftDash />
+                    </button>
+                    <button
+                        className='btn btn-primary'
+                        onClick={() => setUrl(clientesFolhaPonto.next ?? '')}
+                        disabled={!clientesFolhaPonto.next}
+                    >
+                        <ArrowBigRightDash />
+                    </button>
+                </div>
+            )}
             <Table>
                 <TableHead>
                     <TableRow>
@@ -45,14 +80,14 @@ export default function ClientesFinanceiroRH() {
                         <TableHeader>CNPJ</TableHeader>
                         <TableHeader>CPF</TableHeader>
                         <TableHeader
-                            columnKey='telefone_celular'
+                            columnKey='email'
                             sortable
-                            sortDirection={sortBy === 'telefone_celular' ? sortDirection : undefined}
+                            sortDirection={sortBy === 'email' ? sortDirection : undefined}
                             onSort={() => {
-                                handleSort('telefone_celular');
+                                handleSort('email');
                             }}
                         >
-                            Telefone
+                            Email
                         </TableHeader>
                         <TableHeader
                             columnKey='regiao'
@@ -67,16 +102,19 @@ export default function ClientesFinanceiroRH() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {isGetClientesSuccess &&
-                        clientes.results.length > 0 &&
+                    {sortedData &&
+                        sortedData.length > 0 &&
                         sortedData.map((cliente) => (
                             <TableRow key={cliente.id}>
-                                <TableData>{cliente.nome_razao_social}</TableData>
+                                <TableData>
+                                    {cliente.nome_razao_social}
+                                    <BaseModalTrigger modalKey='edit' onClick={() => setSelectedCliente(cliente)}>
+                                        Editar
+                                    </BaseModalTrigger>
+                                </TableData>
                                 <TableData>{cliente.cnpj && formatCnpj(cliente.cnpj)}</TableData>
                                 <TableData>{cliente.cpf && formatCpf(cliente.cpf)}</TableData>
-                                <TableData>
-                                    {cliente.telefone_celular && formatCellphone(cliente.telefone_celular)}
-                                </TableData>
+                                <TableData>{cliente.email}</TableData>
                                 <TableData>{cliente.regiao}</TableData>
                             </TableRow>
                         ))}
@@ -84,31 +122,21 @@ export default function ClientesFinanceiroRH() {
                 <TableFooter>
                     <TableRow>
                         <TableData colSpan={4}>
-                            {clientes && `Página ${page} de ${Math.ceil(clientes.count / 12)}`}
-                        </TableData>
-                        <TableData>
-                            {isGetClientesSuccess && (
-                                <div className='d-flex gap-2'>
-                                    <button
-                                        className='btn btn-sm btn-outline-secondary'
-                                        onClick={() => setUrl(clientes.previous ?? '')}
-                                        disabled={!clientes.previous}
-                                    >
-                                        Anterior
-                                    </button>
-                                    <button
-                                        className='btn btn-sm btn-outline-secondary'
-                                        onClick={() => setUrl(clientes.next ?? '')}
-                                        disabled={!clientes.next}
-                                    >
-                                        Próximo
-                                    </button>
-                                </div>
-                            )}
+                            {clientesFolhaPonto &&
+                                `Página ${page} de ${Math.ceil(clientesFolhaPonto?.count / 12 || 1)}`}
                         </TableData>
                     </TableRow>
                 </TableFooter>
             </Table>
+
+            <BaseModalRoot modalKey='edit'>
+                <BaseModalContent>
+                    <BaseModalHeader>
+                        <BaseModalTitle>Editar registro de folha {selectedCliente?.nome_razao_social}</BaseModalTitle>
+                    </BaseModalHeader>
+                    <BaseModalBody>Teste</BaseModalBody>
+                </BaseModalContent>
+            </BaseModalRoot>
         </Content>
     );
 }

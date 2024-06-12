@@ -1,8 +1,8 @@
 import { api } from '@/utils/axios';
-import { Cliente } from '@/utils/types/cliente';
+import { ClienteFolhaPonto } from '@/utils/types/cliente_folha_ponto';
 import PaginatedResponse from '@/utils/types/paginated_response';
 
 export async function getClientesFolhaPonto(url:string) {
-    const response = await api.get<PaginatedResponse<Cliente>>(url);
+    const response = await api.get<PaginatedResponse<ClienteFolhaPonto>>(url);
     return response.data;
 }

@@ -34,7 +34,8 @@ export function useGetClienteById({ clienteId }: { clienteId: number }) {
 export function useUpdateCliente() {
     return useMutation({
         mutationKey: ['update-user'],
-        mutationFn: ({ clienteId, data }: { clienteId: number; data: Partial<Cliente> }) => patchCliente({ clienteId, data }),
+        mutationFn: ({ clienteId, data }: { clienteId: number; data: Partial<Cliente> }) =>
+            patchCliente({ clienteId, data }),
         onSuccess: ({ id }) => {
             queryClient.invalidateQueries({ queryKey: [`cliente`, id] });
             const cliente = queryClient.getQueryData<Cliente>(['cliente']);
@@ -60,6 +61,7 @@ export function useDeactivateCliente() {
         mutationFn: (clienteId: number) => putDeactivateCliente({ clienteId }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['clientes'] });
+            queryClient.invalidateQueries({ queryKey: ['clientes_folha_ponto'] });
         },
     });
 }
@@ -70,6 +72,7 @@ export function useActivateCliente() {
         mutationFn: (clienteId: number) => putActivateCliente({ clienteId }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['clientes'] });
+            queryClient.invalidateQueries({ queryKey: ['clientes_folha_ponto'] });
         },
     });
 }
