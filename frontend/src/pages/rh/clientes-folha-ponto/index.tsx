@@ -10,11 +10,11 @@ import {
 import { Content } from '@/components/layout/content';
 import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '@/components/table';
 import { formatCnpj, formatCpf } from '@/libs';
-import { Cliente } from '@/utils/types/cliente';
+import { Cliente } from '@/utils/types/financeiro/cliente';
 import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useState } from 'react';
 
-export default function ClientesFinanceiroRH() {
+export default function ClientesFolhaPontoRH() {
     const [sortDirection, setSortDirection] = useState('asc');
     const [sortBy, setSortBy] = useState<keyof Cliente>('nome_razao_social');
     const [url, setUrl] = useState<string>('clientes_financeiro/folha_ponto?limit=12&offset=0');
