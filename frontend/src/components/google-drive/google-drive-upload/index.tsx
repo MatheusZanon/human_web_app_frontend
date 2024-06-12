@@ -14,11 +14,11 @@ import { toast } from 'react-toastify';
 type ArquivoUploadProps = {
     parents: string;
     isOpen: boolean;
-    onClose: () => void;
+    onDismiss: () => void;
     onUploadComplete: () => void;
 }
 
-const ArquivoUpload = ( { parents, isOpen, onClose, onUploadComplete }: ArquivoUploadProps) => { 
+const ArquivoUpload = ( { parents, isOpen, onDismiss, onUploadComplete }: ArquivoUploadProps) => { 
     const [progress, setProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
 
@@ -43,7 +43,7 @@ const ArquivoUpload = ( { parents, isOpen, onClose, onUploadComplete }: ArquivoU
                     setIsUploading(false);
                     setProgress(0);
                     onUploadComplete();
-                    onClose();
+                    onDismiss();
                 }, 200);
             } else {
                 toast("Ocorreu um erro ao realizar o upload de arquivos!", { type: 'error', position: 'bottom-right', autoClose: 1000 });
@@ -57,11 +57,10 @@ const ArquivoUpload = ( { parents, isOpen, onClose, onUploadComplete }: ArquivoU
     
       const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
     
-      if (!isOpen) {
-        return null;
-      }
+      if (!isOpen) return null;
+      
       return (
-        <BaseModalRoot defaultOpen={isOpen} modalKey='arquivo_upload' onClose={onClose}>
+        <BaseModalRoot defaultOpen={isOpen} modalKey='arquivo_upload' onClose={onDismiss}>
             <BaseModalContent>
                 <BaseModalHeader>
                     <BaseModalTitle>Upload de Arquivos</BaseModalTitle>

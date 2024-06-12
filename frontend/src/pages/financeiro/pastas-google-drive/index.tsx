@@ -39,6 +39,7 @@ function PastasGoogleDrive() {
     const [arquivoPrevIndex, setArquivoPrevIndex] = useState(-1);
     const [isModalPrevOpen, setIsModalPrevOpen] = useState(-1);
     const [isModalUploadOpen, setIsModalUploadOpen] = useState(false);
+    const [isModalCriarPastaOpen, setIsModalCriarPastaOpen] = useState(false);
     const [uuid, setUuid] = useState('');
 
     useEffect(() => {
@@ -133,6 +134,11 @@ function PastasGoogleDrive() {
         }
     }
 
+    const closeCriarPastaModal = () => {
+        setIsModalCriarPastaOpen(false);
+        refreshFilesList();
+    }
+
     if (arquivosDrive.isLoading) {
         return <LoadingScreen />
     } else {
@@ -175,7 +181,7 @@ function PastasGoogleDrive() {
                                     <MdUpload size={22} /> Upload
                                 </BaseModalTrigger>
                             </ContextMenuButton >
-                            <ContextMenuButton type={'head'}>
+                            <ContextMenuButton type={'head'} onClick={() => {setIsModalCriarPastaOpen(true)}}>
                                 <BaseModalTrigger modalKey='criar_pasta' styles={{ width: '100%', border: 'none', justifyContent: 'center' }}>
                                     <MdFolder size={22} /> Criar Pasta
                                 </BaseModalTrigger>
@@ -189,7 +195,7 @@ function PastasGoogleDrive() {
                                             <MdUpload size={22} /> Upload
                                         </BaseModalTrigger>
                                     </ContextMenuButton >
-                                    <ContextMenuButton type={'row'}>
+                                    <ContextMenuButton type={'row'} onClick={() => {setIsModalCriarPastaOpen(true)}}>
                                         <BaseModalTrigger modalKey='criar_pasta' 
                                             styles={{ width: '100%', border: 'none', justifyContent: 'center' }}
                                         >
@@ -226,7 +232,7 @@ function PastasGoogleDrive() {
                     <ArquivoUpload 
                         parents={arquivoParentId} 
                         isOpen={isModalUploadOpen}
-                        onClose={closeUploadModal}
+                        onDismiss={closeUploadModal}
                         onUploadComplete={refreshFilesList}
                     />
 
@@ -239,7 +245,11 @@ function PastasGoogleDrive() {
                         onDismiss={resetPreview}
                     />
 
-                    <CriarPasta />
+                    <CriarPasta 
+                        isOpen={isModalCriarPastaOpen}
+                        parents={currentFolderId}
+                        onDismiss={closeCriarPastaModal}
+                    />
                 </div>
 
                 {arquivosDrive.error && <AlertMessage message="Erro ao buscar arquivos!" />}
