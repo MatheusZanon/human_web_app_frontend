@@ -1,14 +1,14 @@
 import { useGetClientesFolhaPonto } from '@/api/http/clientes_financeiro';
+import AlertMessage from '@/components/alert-message';
 import {
     BaseModalBody,
     BaseModalContent,
     BaseModalHeader,
     BaseModalRoot,
     BaseModalTitle,
-    BaseModalTrigger,
 } from '@/components/baseModal';
 import { Content } from '@/components/layout/content';
-import { Table, TableBody, TableData, TableFooter, TableHead, TableHeader, TableRow } from '@/components/table';
+import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '@/components/table';
 import { formatCnpj, formatCpf } from '@/libs';
 import { Cliente } from '@/utils/types/cliente';
 import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
@@ -19,8 +19,6 @@ export default function ClientesFinanceiroRH() {
     const [sortBy, setSortBy] = useState<keyof Cliente>('nome_razao_social');
     const [url, setUrl] = useState<string>('clientes_financeiro/folha_ponto?limit=12&offset=0');
     const { data: clientesFolhaPonto, isSuccess: isGetClientesFolhaPontoSuccess } = useGetClientesFolhaPonto(url);
-    const offset = Number(url.split('offset=')[1] || 0);
-    const page = Math.ceil(offset >= Number(clientesFolhaPonto?.count || 0) ? -1 : offset / 12 + 1);
     const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
 
     const handleSort = (columnKey: keyof Cliente) => {
@@ -106,12 +104,7 @@ export default function ClientesFinanceiroRH() {
                         sortedData.length > 0 &&
                         sortedData.map((cliente) => (
                             <TableRow key={cliente.id}>
-                                <TableData>
-                                    {cliente.nome_razao_social}
-                                    <BaseModalTrigger modalKey='edit' onClick={() => setSelectedCliente(cliente)}>
-                                        Editar
-                                    </BaseModalTrigger>
-                                </TableData>
+                                <TableData>{cliente.nome_razao_social}</TableData>
                                 <TableData>{cliente.cnpj && formatCnpj(cliente.cnpj)}</TableData>
                                 <TableData>{cliente.cpf && formatCpf(cliente.cpf)}</TableData>
                                 <TableData>{cliente.email}</TableData>
@@ -119,15 +112,9 @@ export default function ClientesFinanceiroRH() {
                             </TableRow>
                         ))}
                 </TableBody>
-                <TableFooter>
-                    <TableRow>
-                        <TableData colSpan={4}>
-                            {clientesFolhaPonto &&
-                                `Página ${page} de ${Math.ceil(clientesFolhaPonto?.count / 12 || 1)}`}
-                        </TableData>
-                    </TableRow>
-                </TableFooter>
             </Table>
+
+            {sortedData && sortedData.length < 1 && <AlertMessage message='Nenhum registro encontrado' />}
 
             <BaseModalRoot modalKey='edit'>
                 <BaseModalContent>
