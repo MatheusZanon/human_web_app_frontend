@@ -71,7 +71,7 @@ const newClienteFormSchema = z
 
 function ClientesFinanceiro() {
     const [sortDirection, setSortDirection] = useState('asc');
-    const [sortBy, setSortBy] = useState<keyof Cliente>('id');
+    const [sortBy, setSortBy] = useState<keyof Cliente>('nome_razao_social');
     const [url, setUrl] = useState<string>('clientes_financeiro/?limit=12&offset=0');
     const clientes = useGetClientes(url);
     const clienteResults = useMemo(() => {
