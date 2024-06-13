@@ -41,7 +41,7 @@ function FuncionarioProfile() {
                                     <div className='d-flex gap-4'>
                                         <div className='d-flex'>
                                             <p className='m-0 pe-2 fw-bold'>CPF:</p>
-                                            <span className='fw-normal'>{formatCpf(`${user?.cpf}`)}</span>
+                                            <span className='fw-normal'>{user?.cpf ? formatCpf(`${user?.cpf}`) : 'Não informado.'}</span>
                                         </div>
                                         <div className='d-flex'>
                                             <p className='m-0 pe-2 fw-bold'>RG:</p>

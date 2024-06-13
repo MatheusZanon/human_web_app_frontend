@@ -112,31 +112,45 @@ function Sidebar() {
                 <li className='nav-item'>
                     <NavItem icon={<Bot className={open ? 'me-2' : ''} />} title={open ? 'Robôs' : ''} to='robos' />
                 </li>
-                {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO') || hasRole('TI')) && (
+                {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO') || hasRole('RH_GERENCIA') || hasRole('TI')) && (
                     <li className='nav-item'>
                         <SubMenu
                             sbmIcon={<DollarSign className={open ? 'me-2' : ''} />}
                             sbmTitle='Finanças'
                             parentOpen={open}
                         >
-                            <SubMenuItem
-                                icon={<Dot className={'me-2'} />}
-                                title={'Clientes'}
-                                to='financeiro/clientes'
-                                open={open}
-                            />
-                            <SubMenuItem
-                                icon={<Dot className={'me-2'} />}
-                                title={'Relatorios'}
-                                to='financeiro/relatorios'
-                                open={open}
-                            />
-                            <SubMenuItem
-                                icon={<Dot className={'me-2'} />}
-                                title={'Arquivos Drive'}
-                                to='financeiro/drive'
-                                open={open}
-                            />
+                            {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO') || hasRole('TI')) && (
+                                <SubMenuItem
+                                    icon={<Dot className={'me-2'} />}
+                                    title={'Clientes'}
+                                    to='financeiro/clientes'
+                                    open={open}
+                                />
+                            )}
+                            {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO') || hasRole('TI')) && (
+                                <SubMenuItem
+                                    icon={<Dot className={'me-2'} />}
+                                    title={'Relatorios'}
+                                    to='financeiro/relatorios'
+                                    open={open}
+                                />
+                            )}
+                            {(hasRole('ADMIN') || hasRole('FINANCEIRO_OPERACAO') || hasRole('TI')) && (
+                                <SubMenuItem
+                                        icon={<Dot className={'me-2'} />}
+                                        title={'Arquivos Drive'}
+                                        to='financeiro/drive'
+                                        open={open}
+                                />
+                            )}
+                            {hasRole('RH_GERENCIA') && (    
+                                <SubMenuItem
+                                    icon={<Dot className={'me-2'} />}
+                                    title={'Arquivos Drive'}
+                                    to='financeiro/drive'
+                                    open={open}
+                                />
+                            )}
                         </SubMenu>
                     </li>
                 )}

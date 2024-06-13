@@ -327,7 +327,7 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                                         ))}
                                                                     </div>
                                                                     <label className='form-label d-flex justify-content-between'>
-                                                                        <span className='flex-grow-1'>Carregar Extratos</span>
+                                                                        <span className='flex-grow-1'>Carregar Extratos a Refazer</span>
                                                                     </label>
                                                                     <UploadDropzone 
                                                                         url={`google_drive/upload_extrato_robo/?mes=${mes}&ano=${ano}`}
