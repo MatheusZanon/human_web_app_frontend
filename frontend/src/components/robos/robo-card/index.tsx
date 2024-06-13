@@ -44,6 +44,8 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
 
     const { data: clientesFinanceiro, isSuccess: isGetClientesFinanceiroSuccess } = useGetClientesFinanceiro();
 
+    const initialFolderId = import.meta.env.VITE_FOLDER_ID;
+
     const createSchemaFromResponse = (response: typeof roboParametros) => {
         const schemaObject: Record<string, z.ZodType> = {};
 
@@ -291,8 +293,11 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                                             </div>
                                                                         ))}
                                                                     </div>
+                                                                    <label className='form-label d-flex justify-content-between'>
+                                                                        <span className='flex-grow-1'>Carregar Extratos</span>
+                                                                    </label>
                                                                     <UploadDropzone 
-                                                                        url={'google_drive/upload_arquivo/'}
+                                                                        url={`google_drive/upload_extrato_robo/?folder_id=${initialFolderId}`}
                                                                         parents={'colocar o id do parent'}
                                                                         onUploadComplete={() => console.log('arquivo enviado')}
                                                                     />
