@@ -9,17 +9,25 @@ import AlertMessage from '@/components/alert-message';
 import LoadingScreen from "@/components/loading-screen";
 import {Table, TableBody, TableData, TableHeader, TableRow, TableHead} from "@/components/table";
 import ArquivoPreview from '@/components/google-drive/google-drive-preview';
-import ArquivoUpload from '@/components/google-drive/google-drive-upload';
 import CriarPasta from '@/components/google-drive/google-drive-criar-pasta';
 import {ContextMenu, ContextMenuButton} from '@/components/context-menu';
 import { useContextMenu } from '@/contexts/ContextMenu/ContextMenuProvider';
 import { ArrowBigLeftDash, Search } from 'lucide-react';
-import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload, MdDelete } from 'react-icons/md';
+import { MdArchive, MdFolder, MdImage, MdPictureAsPdf, MdEditDocument, MdVideoLibrary, MdUpload } from 'react-icons/md';
 import { IoMdCloudDownload } from "react-icons/io";
 import { BsFiletypeDoc, BsFileEarmarkZip, BsFiletypeTxt } from 'react-icons/bs';
 import { FaFileExcel} from 'react-icons/fa';
 import { formatDateTime } from '@/libs';
-import {BaseModalProvider, BaseModalTrigger} from '@/components/baseModal';
+import {    
+    BaseModalProvider,
+    BaseModalTrigger,
+    BaseModalBody,
+    BaseModalContent,
+    BaseModalHeader,
+    BaseModalRoot,
+    BaseModalTitle,
+} from '@/components/baseModal';
+import UploadDropzone from '@/components/upload-dropzone';
 
 function PastasGoogleDrive() {
     const { hasRole } = useAuthenticatedUser();
@@ -31,7 +39,6 @@ function PastasGoogleDrive() {
     const [fileHistory, setfileHistory] = useState<string[]>([]);
     const [prevUrl, setPrevUrl] = useState<string>('');
     const {type, showContextMenu} = useContextMenu();
-    const [arquivoParentId, setArquivoParentId] = useState('');
     const [arquivoPrevId, setArquivoPrevId] = useState('');
     const [arquivoPrevName, setArquivoPrevName] = useState('');
     const [arquivoPrevUrl, setArquivoPrevUrl] = useState('');
@@ -40,11 +47,9 @@ function PastasGoogleDrive() {
     const [isModalPrevOpen, setIsModalPrevOpen] = useState(-1);
     const [isModalUploadOpen, setIsModalUploadOpen] = useState(false);
     const [isModalCriarPastaOpen, setIsModalCriarPastaOpen] = useState(false);
-    const [uuid, setUuid] = useState('');
 
     useEffect(() => {
         setUrl(`google_drive/listar_arquivos?folder_id=${currentFolderId}`);
-        setArquivoParentId(currentFolderId);
     }, [currentFolderId, isModalUploadOpen]);
     
     useEffect(() => {
@@ -103,10 +108,11 @@ function PastasGoogleDrive() {
         setArquivoPrevName(nome);
         setArquivoPrevTipo(mimeType);
         setArquivoPrevIndex(index);
-    }
+    }    
 
-    const closeUploadModal = () => {
+    const handleUploadComplete = () => {
         setIsModalUploadOpen(false);
+        refreshFilesList();
     }
 
     const refreshFilesList = () => {
@@ -134,133 +140,119 @@ function PastasGoogleDrive() {
         }
     }
 
-    const closeCriarPastaModal = () => {
-        setIsModalCriarPastaOpen(false);
-        refreshFilesList();
-    }
-
     if (arquivosDrive.isLoading) {
         return <LoadingScreen />
     } else {
         return (
             <Content title="Arquivos">
                 <BaseModalProvider>
-                <div className='row align-items-center'>
-                    <div className='d-flex gap-3 align-items-center mb-3'>
-                        {currentFolderId === initialFolderId ?
-                                <button
-                                type='button'
-                                className='btn btn-primary disabled'
-                                >
-                                    <ArrowBigLeftDash />
-                                </button> 
-                            :
-                            <>         
-                                <button
+                    <div className='row align-items-center'>
+                        <div className='d-flex gap-3 align-items-center mb-3'>
+                            {currentFolderId === initialFolderId ?
+                                    <button
                                     type='button'
-                                    className='btn btn-primary'
-                                    onClick={() => {handleBackClick()}}
+                                    className='btn btn-primary disabled'
                                     >
-                                    <ArrowBigLeftDash />
-                                </button>
-                                <div className='d-flex align-items-center gap-2'>
-                                    <MdFolder size={22}/>
-                                    {fileHistory.map( (file, index) => (
-                                        <span>{file}{index !== fileHistory.length - 1 && ' > '}</span>
-                                    ))}
-                                </div>    
-                            </>
-                        }
-                    </div>
-                    <div className='d-flex gap-2 align-items-end'>
-                        <ContextMenu>
-                            <ContextMenuButton type={'head'} onClick={() => {setIsModalUploadOpen(true)}}>
-                                <BaseModalTrigger modalKey='arquivo_upload' 
-                                    styles={{ width: '100%', border: 'none', justifyContent: 'center' }}
-                                >
+                                        <ArrowBigLeftDash />
+                                    </button> 
+                                :
+                                <>         
+                                    <button
+                                        type='button'
+                                        className='btn btn-primary'
+                                        onClick={() => {handleBackClick()}}
+                                        >
+                                        <ArrowBigLeftDash />
+                                    </button>
+                                    <div className='d-flex align-items-center gap-2'>
+                                        <MdFolder size={22}/>
+                                        {fileHistory.map( (file, index) => (
+                                            <span>{file}{index !== fileHistory.length - 1 && ' > '}</span>
+                                        ))}
+                                    </div>    
+                                </>
+                            }
+                        </div>
+                        <div className='d-flex gap-2 align-items-end'>
+                            <ContextMenu>
+                                <ContextMenuButton type={'head'} onClick={() => {setIsModalUploadOpen(true)}}>
                                     <MdUpload size={22} /> Upload
-                                </BaseModalTrigger>
-                            </ContextMenuButton >
-                            <ContextMenuButton type={'head'} onClick={() => {setIsModalCriarPastaOpen(true)}}>
-                                <BaseModalTrigger modalKey='criar_pasta' styles={{ width: '100%', border: 'none', justifyContent: 'center' }}>
-                                    <MdFolder size={22} /> Criar Pasta
-                                </BaseModalTrigger>
-                            </ContextMenuButton>
-                            {arquivoPrevTipo === 'application/vnd.google-apps.folder' && 
-                                <>
-                                    <ContextMenuButton type={'row'} onClick={() => {setIsModalUploadOpen(true)}}>
-                                        <BaseModalTrigger modalKey='arquivo_upload' 
-                                            styles={{ width: '100%', border: 'none', justifyContent: 'center' }}            
-                                        >
+                                </ContextMenuButton >
+                                <ContextMenuButton type={'head'} onClick={() => {setIsModalCriarPastaOpen(true)}}>
+                                    <BaseModalTrigger modalKey='criar_pasta' styles={{ width: '100%', border: 'none', justifyContent: 'center' }}>
+                                        <MdFolder size={22} /> Criar Pasta
+                                    </BaseModalTrigger>
+                                </ContextMenuButton>
+                                {arquivoPrevTipo === 'application/vnd.google-apps.folder' && 
+                                    <>
+                                        <ContextMenuButton type={'row'} onClick={() => {setIsModalUploadOpen(true)}}>
                                             <MdUpload size={22} /> Upload
-                                        </BaseModalTrigger>
-                                    </ContextMenuButton >
-                                    <ContextMenuButton type={'row'} onClick={() => {setIsModalCriarPastaOpen(true)}}>
-                                        <BaseModalTrigger modalKey='criar_pasta' 
-                                            styles={{ width: '100%', border: 'none', justifyContent: 'center' }}
-                                        >
-                                            <MdFolder size={22} /> Criar Pasta
-                                        </BaseModalTrigger>
-                                    </ContextMenuButton>
-                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId)}}>
-                                        <IoMdCloudDownload size={22} /> Download
-                                    </ContextMenuButton>
-                                    {hasRole('ADMIN') && 
-                                        <ContextMenuButton type={'row'}>
-                                            <MdDelete size={22} /> Excluir
+                                        </ContextMenuButton >
+                                        <ContextMenuButton type={'row'} onClick={() => {setIsModalCriarPastaOpen(true)}}>
+                                            <BaseModalTrigger modalKey='criar_pasta' 
+                                                styles={{ width: '100%', border: 'none', justifyContent: 'center' }}
+                                            >
+                                                <MdFolder size={22} /> Criar Pasta
+                                            </BaseModalTrigger>
                                         </ContextMenuButton>
-                                    }
-                                </>
-                            }
-                            {arquivoPrevTipo !== 'application/vnd.google-apps.folder' && 
-                                <>
-                                    <ContextMenuButton type={'row'} onClick={() => {handlePreviewClick(arquivoPrevId, arquivoPrevName, arquivoPrevIndex)}}>
-                                        <Search size={20} /> Visualizar
-                                    </ContextMenuButton>
-                                    <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId)}}>
-                                        <IoMdCloudDownload size={22} /> Download
-                                    </ContextMenuButton>
-                                    {hasRole('ADMIN') && 
-                                        <ContextMenuButton type={'row'}>
-                                            <MdDelete size={22} /> Excluir
+                                        <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId)}}>
+                                            <IoMdCloudDownload size={22} /> Download
                                         </ContextMenuButton>
-                                    }
-                                </>
-                            }
-                        </ContextMenu>
-                    </div>  
-                    <ArquivoUpload 
-                        parents={arquivoParentId} 
-                        isOpen={isModalUploadOpen}
-                        onDismiss={closeUploadModal}
-                        onUploadComplete={refreshFilesList}
-                    />
+                                    </>
+                                }
+                                {arquivoPrevTipo !== 'application/vnd.google-apps.folder' && 
+                                    <>
+                                        <ContextMenuButton type={'row'} onClick={() => {handlePreviewClick(arquivoPrevId, arquivoPrevName, arquivoPrevIndex)}}>
+                                            <Search size={20} /> Visualizar
+                                        </ContextMenuButton>
+                                        <ContextMenuButton type={'row'} onClick={() => {handleDownloadClick(arquivoPrevId)}}>
+                                            <IoMdCloudDownload size={22} /> Download
+                                        </ContextMenuButton>
+                                    </>
+                                }
+                            </ContextMenu>
+                        </div>  
+                        <BaseModalRoot defaultOpen={isModalUploadOpen} modalKey='arquivo_upload' onClose={() => {setIsModalUploadOpen(false)}}>
+                            <BaseModalContent>
+                                <BaseModalHeader>
+                                    <BaseModalTitle>Upload de Arquivos</BaseModalTitle>
+                                </BaseModalHeader>
+                                <BaseModalBody>
+                                    <UploadDropzone 
+                                        url={'google_drive/upload_arquivo/'}
+                                        parents={currentFolderId}
+                                        onUploadComplete={handleUploadComplete}
+                                    />
+                                </BaseModalBody>
+                            </BaseModalContent>
+                        </BaseModalRoot>
 
-                    <ArquivoPreview 
-                        id={arquivoPrevId}
-                        url={arquivoPrevUrl} 
-                        name={arquivoPrevName} 
-                        tipo={arquivoPrevTipo} 
-                        isOpen={isModalPrevOpen} 
-                        onDismiss={resetPreview}
-                    />
+                        <ArquivoPreview 
+                            id={arquivoPrevId}
+                            url={arquivoPrevUrl} 
+                            name={arquivoPrevName} 
+                            tipo={arquivoPrevTipo} 
+                            isOpen={isModalPrevOpen} 
+                            onDismiss={resetPreview}
+                        />
 
-                    <CriarPasta 
-                        isOpen={isModalCriarPastaOpen}
-                        parents={currentFolderId}
-                        onDismiss={closeCriarPastaModal}
-                    />
-                </div>
-
-                {arquivosDrive.error && <AlertMessage message="Erro ao buscar arquivos!" />}
-                {arquivosDrive.data?.length === 0 && 
-                    <div className='d-flex flex-column align-items-center'>
-                        <AlertMessage message="Nenhum arquivo encontrado!" />
-                        <BaseModalTrigger variant='secondary' modalKey='arquivo_upload' onClick={() => {setIsModalUploadOpen(true)}}>
-                            <MdUpload size={22} /> Upload
-                        </BaseModalTrigger>
+                        <CriarPasta 
+                            isOpen={isModalCriarPastaOpen}
+                            parents={currentFolderId}
+                            onDismiss={() => setIsModalCriarPastaOpen(false)}
+                            onFolderCreated={refreshFilesList}
+                        />
                     </div>
-                }
+
+                    {arquivosDrive.error && <AlertMessage message="Erro ao buscar arquivos!" />}
+                    {arquivosDrive.data?.length === 0 && 
+                        <div className='d-flex flex-column align-items-center'>
+                            <AlertMessage message="Nenhum arquivo encontrado!" />
+                            <BaseModalTrigger variant='secondary' modalKey='arquivo_upload' onClick={() => {setIsModalUploadOpen(true)}}>
+                                <MdUpload size={22} /> Upload
+                            </BaseModalTrigger>
+                        </div>
+                    }
                 </BaseModalProvider>                
 
                 {arquivosDrive.data && arquivosDrive.data.length > 0 && !arquivosDrive.error && (

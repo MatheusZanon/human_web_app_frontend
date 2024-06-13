@@ -7,6 +7,7 @@ import { UpdateClienteModal } from '@/components/update-cliente-modal';
 import { useClienteProfileCard } from '@/components/update-cliente-modal/cliente-profile-card-provider';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
+import styles from './clientes-financeiro-profile.module.scss';
 
 function ClienteFinanceiroProfile() {
     const { clienteId } = useParams();
@@ -56,7 +57,7 @@ function ClienteFinanceiroProfile() {
                                 </div>
                             </div>
                             <div className='col-lg-12 mb-3'>
-                                <div className='card overflow-hidden shadow'>
+                                <div className={`card overflow-hidden shadow ${styles.contatos_card}`}>
                                     <div className='card-header'>
                                         <h3 className='card-title m-0'>Contatos</h3>
                                     </div>
@@ -64,7 +65,7 @@ function ClienteFinanceiroProfile() {
                                         <ul className='list-group list-group-flush'>
                                             <li className='list-group-item d-flex flex-wrap px-0 justify-content-between'>
                                                 <strong>Email:</strong>
-                                                <span className='mb-0'>{cliente?.email}</span>
+                                                <span className={`mb-0 ${styles.email}`}>{cliente?.email}</span>
                                             </li>
                                             <li className='list-group-item d-flex flex-wrap px-0 justify-content-between'>
                                                 <strong>Telefone:</strong>

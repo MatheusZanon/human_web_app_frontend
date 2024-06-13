@@ -16,9 +16,10 @@ type CriarPastaProps = {
     parents: string;
     isOpen: boolean;
     onDismiss: () => void;
+    onFolderCreated: () => void;
 }
 
-const CriarPasta: React.FC<CriarPastaProps> = ({parents, isOpen, onDismiss}) => {
+const CriarPasta: React.FC<CriarPastaProps> = ({parents, isOpen, onDismiss, onFolderCreated}) => {
     const {register, handleSubmit, setValue} = useForm();
 
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -32,6 +33,8 @@ const CriarPasta: React.FC<CriarPastaProps> = ({parents, isOpen, onDismiss}) => 
                 toast('Pasta criada com sucesso!', {type: "success", position: "bottom-right"});
                 setValue('folder_name', '');
             }
+
+            onFolderCreated();
         } catch(error: any) {
             if (error.response?.status === 400) {
                 toast('Erro ao criar pasta, ela já existe!', {type: "error", position: "bottom-right"});

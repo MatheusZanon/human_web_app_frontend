@@ -21,6 +21,7 @@ import financeiroLogo from '/financeiro.svg';
 import relatorioLogo from '/relatorio.svg';
 import { useNavigate } from 'react-router-dom';
 import { useGetClientesFinanceiro } from '@/api/http/dashboard';
+import UploadDropzone from '@/components/upload-dropzone';
 
 type RoboCardProps = {
     children?: React.ReactNode;
@@ -265,30 +266,37 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                         {watch('rotina') &&
                                                             watch('rotina') === '5. Refazer Processo' &&
                                                             isGetClientesFinanceiroSuccess && (
-                                                                <div
-                                                                    className='d-flex flex-column gap-1 overflow-y-auto'
+                                                                <>
+                                                                    <div
+                                                                    className='d-flex flex-column gap-1 overflow-y-auto mb-4'
                                                                     style={{ maxHeight: '200px' }}
-                                                                >
-                                                                    {clientesFinanceiro.map((cliente) => (
-                                                                        <div key={cliente.id}>
-                                                                            <div className='form-check'>
-                                                                                <input
-                                                                                    className='form-check-input'
-                                                                                    type='checkbox'
-                                                                                    id={`cliente_${cliente.id}`}
-                                                                                    value={cliente.id}
-                                                                                    {...register('clientes')}
-                                                                                />
-                                                                                <label
-                                                                                    className='form-check-label'
-                                                                                    htmlFor={`cliente_${cliente.id}`}
-                                                                                >
-                                                                                    {cliente.nome_razao_social}
-                                                                                </label>
+                                                                    >
+                                                                        {clientesFinanceiro.map((cliente) => (
+                                                                            <div key={cliente.id}>
+                                                                                <div className='form-check'>
+                                                                                    <input
+                                                                                        className='form-check-input'
+                                                                                        type='checkbox'
+                                                                                        id={`cliente_${cliente.id}`}
+                                                                                        value={cliente.id}
+                                                                                        {...register('clientes')}
+                                                                                    />
+                                                                                    <label
+                                                                                        className='form-check-label'
+                                                                                        htmlFor={`cliente_${cliente.id}`}
+                                                                                    >
+                                                                                        {cliente.nome_razao_social}
+                                                                                    </label>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
+                                                                        ))}
+                                                                    </div>
+                                                                    <UploadDropzone 
+                                                                        url={'google_drive/upload_arquivo/'}
+                                                                        parents={'colocar o id do parent'}
+                                                                        onUploadComplete={() => console.log('arquivo enviado')}
+                                                                    />
+                                                                </>
                                                             )}
                                                     </div>
                                                 )}
