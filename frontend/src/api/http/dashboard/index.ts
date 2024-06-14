@@ -26,10 +26,10 @@ export function useGetTaxaAdministracao(url: string) {
     });
 }
 
-export function useGetClientesFinanceiro() {
+export function useGetClientesFinanceiro(is_active: boolean | null = null, folha_ponto: boolean | null = null) {
     return useQuery({
         queryKey: ['clientes_financeiro'],
-        queryFn: () => getClientesFinanceiro(),
+        queryFn: () => getClientesFinanceiro({ is_active, folha_ponto }),
     });
 }
 
