@@ -24,6 +24,7 @@ import { useMemo, useState } from 'react';
 import { RoboParametros } from '@/utils/types/robos/robo_parametros';
 import RoboRotina from '@/utils/types/robos/robo_rotinas';
 import { useGetClientesFinanceiro } from '@/api/http/dashboard';
+import UploadDropzone from '@/components/upload-dropzone';
 
 function RoboDetalhes() {
     const { roboId } = useParams();
@@ -48,6 +49,17 @@ function RoboDetalhes() {
     const { data: roboRotinas, isSuccess: isRoboRotinasSuccess } = useGetRoboRotinasById({
         roboId: roboId ? roboId : '',
     });
+
+    const initialFolderId = import.meta.env.VITE_FOLDER_ID;
+    const [mes, setMes] = useState('');
+    const [ano, setAno] = useState('');
+
+    const configuraMes = (data: string) => {
+        setMes(data)
+    }
+    const configuraAno = (data: string) => {
+        setAno(data)
+    }
 
     const { mutate: executarRobo, isPending: isPendingExecutarRobo } = useExecutarRobo({
         roboId: roboId ? roboId : '',
@@ -206,7 +218,27 @@ function RoboDetalhes() {
                                                                     type='number'
                                                                     id={`parametro_${parametro.id}`}
                                                                     defaultValue={parametro.valor}
-                                                                    {...register(parametro.parametro_info.nome)}
+                                                                    {...register(parametro.parametro_info.nome,
+                                                                        {
+                                                                            setValueAs: (value) => (
+                                                                                parseInt(value),
+                                                                                roboDetalhes?.nome === 'Organiza Extrato' && parametro.parametro_info.nome === 'mes' &&
+                                                                                    configuraMes(value),
+                                                                                
+                                                                                roboDetalhes?.nome === 'Organiza Extrato' && parametro.parametro_info.nome === 'ano' &&
+                                                                                    configuraAno(value)    
+                                                                            ),
+                                                                            onChange: (e) => {
+                                                                                {roboDetalhes?.nome === 'Organiza Extrato' && parametro.parametro_info.nome === 'mes' &&
+                                                                                    configuraMes(e.target.value)
+                                                                                }
+                        
+                                                                                {roboDetalhes?.nome === 'Organiza Extrato' && parametro.parametro_info.nome === 'ano' &&
+                                                                                    configuraAno(e.target.value)
+                                                                                }  
+                                                                            }
+                                                                        }
+                                                                    )}
                                                                     className={`form-control`}
                                                                 />
                                                             )}
@@ -305,30 +337,40 @@ function RoboDetalhes() {
                                                         {watch('rotina') &&
                                                             watch('rotina') === '5. Refazer Processo' &&
                                                             isGetClientesFinanceiroSuccess && (
-                                                                <div
-                                                                    className='d-flex flex-column gap-1 overflow-y-auto'
-                                                                    style={{ maxHeight: '200px' }}
-                                                                >
-                                                                    {clientesFinanceiro.map((cliente) => (
-                                                                        <div key={cliente.id}>
-                                                                            <div className='form-check'>
-                                                                                <input
-                                                                                    className='form-check-input'
-                                                                                    type='checkbox'
-                                                                                    id={`cliente_${cliente.id}`}
-                                                                                    value={cliente.id}
-                                                                                    {...register('clientes')}
-                                                                                />
-                                                                                <label
-                                                                                    className='form-check-label'
-                                                                                    htmlFor={`cliente_${cliente.id}`}
-                                                                                >
-                                                                                    {cliente.nome_razao_social}
-                                                                                </label>
+                                                                <>
+                                                                    <div
+                                                                        className='d-flex flex-column gap-1 overflow-y-auto mb-4'
+                                                                        style={{ maxHeight: '200px' }}
+                                                                    >
+                                                                        {clientesFinanceiro.map((cliente) => (
+                                                                            <div key={cliente.id}>
+                                                                                <div className='form-check'>
+                                                                                    <input
+                                                                                        className='form-check-input'
+                                                                                        type='checkbox'
+                                                                                        id={`cliente_${cliente.id}`}
+                                                                                        value={cliente.id}
+                                                                                        {...register('clientes')}
+                                                                                    />
+                                                                                    <label
+                                                                                        className='form-check-label'
+                                                                                        htmlFor={`cliente_${cliente.id}`}
+                                                                                    >
+                                                                                        {cliente.nome_razao_social}
+                                                                                    </label>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
+                                                                        ))}
+                                                                    </div>
+                                                                    <label className='form-label d-flex justify-content-between'>
+                                                                    <span className='flex-grow-1'>Carregar Extratos a Refazer</span>
+                                                                    </label>
+                                                                    <UploadDropzone 
+                                                                        url={`google_drive/upload_extrato_robo/?mes=${mes}&ano=${ano}`}
+                                                                        parents={initialFolderId}
+                                                                        onUploadComplete={() => {}}
+                                                                    />
+                                                                </>
                                                             )}
                                                     </>
                                                 )}

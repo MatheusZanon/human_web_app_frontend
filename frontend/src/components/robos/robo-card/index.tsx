@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { fromNowDays } from '@/libs';
 import styles from './robo-card.module.scss';
 import { Search } from 'lucide-react';
@@ -22,7 +23,6 @@ import relatorioLogo from '/relatorio.svg';
 import { useNavigate } from 'react-router-dom';
 import { useGetClientesFinanceiro } from '@/api/http/dashboard';
 import UploadDropzone from '@/components/upload-dropzone';
-import { useState } from 'react';
 
 type RoboCardProps = {
     children?: React.ReactNode;
