@@ -403,7 +403,7 @@ export default function ClientesFolhaPontoRH() {
                     </BaseModalBody>
                     <BaseModalFooter>
                         <BaseModalConfirmationButton onClick={handleSubmitUpdate(onSubmitUpdate)}>
-                            Remover
+                            Atualizar
                         </BaseModalConfirmationButton>
                     </BaseModalFooter>
                 </BaseModalContent>
