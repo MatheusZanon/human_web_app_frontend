@@ -54,9 +54,9 @@ function AuthenticatedUserProvider({ children }: { children: React.ReactNode }) 
     useEffect(() => {
         if (authUser.isSuccess && authUser.data) {
             authUser.data.profile_header =
-                'https://images.unsplash.com/photo-1715942163364-5aa9e6d66bb4?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+                'https://wallpaperbat.com/img/68967-gray-abstract-wallpaper-top-free-gray-abstract-background.jpg';
             authUser.data.profile_picture =
-                'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4LTeW-9aId8iIYQmkFaRfKVYjpiqIG2Fo0FYKePCGKzYGonRLvaHQD1g_PyA4OwZeNq0&usqp=CAU';
             defineUser(authUser.data);
         }
     }, [authUser, defineUser]);

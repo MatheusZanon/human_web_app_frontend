@@ -81,9 +81,21 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
     const RoboParametrosSchema = createSchemaFromResponse(roboParametros);
     type RoboParametrosType = z.infer<typeof RoboParametrosSchema>;
 
+    const initialFolderId = import.meta.env.VITE_FOLDER_ID;
+    const [mes, setMes] = useState('');
+    const [ano, setAno] = useState('');
+
+    const configuraMes = (data: string) => {
+        setMes(data)
+    }
+    const configuraAno = (data: string) => {
+        setAno(data)
+    }
+
     const {
         register,
         getValues,
+        setValue,
         formState: { errors },
         watch,
     } = useForm<RoboParametrosType>({
@@ -96,22 +108,13 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
         delayError: 500,
         defaultValues: roboParametros
             ? Object.fromEntries(
-                  roboParametros.map((parametro) => [parametro?.parametro_info?.nome ?? '', parametro?.valor ?? '']),
+                  roboParametros.map((parametro) => [
+                    parametro?.parametro_info?.nome ?? '', parametro?.valor ?? ''
+                ]),
               )
             : {},
         resolver: zodResolver(RoboParametrosSchema),
     });
-
-    const initialFolderId = import.meta.env.VITE_FOLDER_ID;
-    const [mes, setMes] = useState('');
-    const [ano, setAno] = useState('');
-
-    const configuraMes = (data: string) => {
-        setMes(data)
-    }
-    const configuraAno = (data: string) => {
-        setAno(data)
-    }
 
     const { mutate: executarRobo, isPending: isExecuting } = useExecutarRobo({
         roboId: id,
@@ -213,27 +216,16 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                                         type='number'
                                                                         id={`parametro_${parametro.id}`}
                                                                         defaultValue={parametro.valor}
-                                                                        {...register(parametro.parametro_info.nome,
-                                                                            {
-                                                                                setValueAs: (value) => (
-                                                                                    parseInt(value),
-                                                                                    title === 'Organiza Extrato' && parametro.parametro_info.nome === 'mes' &&
-                                                                                        configuraMes(value),
-                                                                                    
-                                                                                    title === 'Organiza Extrato' && parametro.parametro_info.nome === 'ano' &&
-                                                                                        configuraAno(value)    
-                                                                                ),
-                                                                                onChange: (e) => {
-                                                                                    {title === 'Organiza Extrato' && parametro.parametro_info.nome === 'mes' &&
-                                                                                        configuraMes(e.target.value)
-                                                                                    }
-                            
-                                                                                    {title === 'Organiza Extrato' && parametro.parametro_info.nome === 'ano' &&
-                                                                                        configuraAno(e.target.value)
-                                                                                    }  
-                                                                                }
-                                                                            }
+                                                                        {...register(
+                                                                            parametro.parametro_info.nome
                                                                         )}
+                                                                        onChange={(e) => {
+                                                                            setValue(parametro.parametro_info.nome, e.target.value),
+                                                                            title === 'Organiza Extrato' && parametro.parametro_info.nome === 'mes' &&
+                                                                                configuraMes(e.target.value)
+                                                                            title === 'Organiza Extrato' && parametro.parametro_info.nome === 'ano' &&
+                                                                                configuraAno(e.target.value)
+                                                                        }}
                                                                         className={`form-control`}
                                                                     />
                                                                 )}
