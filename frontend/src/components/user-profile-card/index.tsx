@@ -1,11 +1,11 @@
 import { Pen } from 'lucide-react';
 import styles from './userProfileCard.module.scss';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
-import { useUserProfileCard } from './profile-card-provider';
+import { useProfileCard } from '@/components/profile-card/profile-card-provider';
 
 function UserProfileCard() {
     const { hasRole } = useAuthenticatedUser();
-    const { user, handleEditMode } = useUserProfileCard();
+    const { user, handleEditMode } = useProfileCard();
     return (
         <div className='d-flex flex-column'>
             <div className='position-relative rounded overflow-hidden'>

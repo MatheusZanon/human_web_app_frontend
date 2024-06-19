@@ -21,6 +21,7 @@ interface ModalProps {
 }
 
 const ValesSSTModal: React.FC<ModalProps> = ({ vale, onUpdate }) => {
+    // @ts-expect-error setNome não é utilizado no momento
     const [nome, setNome] = useState<string>(vale.nome_razao_social);
     const [valeTransporte, setValeTransporte] = useState<number>(vale.vale_transporte);
     const [assinaturaEletronica, setAssinaturaEletronica] = useState<number>(vale.assinat_eletronica);

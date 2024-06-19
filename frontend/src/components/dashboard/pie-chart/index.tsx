@@ -29,7 +29,6 @@ function PieChartCard<T>({ data, dataKey, labelBy, title }: PieChartProps<T>) {
         innerRadius,
         outerRadius,
         percent,
-        index,
     }: {
         cx: number;
         cy: number;

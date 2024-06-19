@@ -25,12 +25,14 @@ function ProvisaoDireitoTrabalhista() {
 
     if (provisoes3487 && provisoes0926) {
         provisoes = mergeJsonArrays(provisoes0926, provisoes3487, 'mes');
+        // @ts-expect-error O tipo se mantem e adiciona o valor2 em chaves repetidas porem não manteve a tipagem correta no merge do json FIXME
         provisoes = replaceKeys(provisoes, ['valor', 'valor2'], ['09.26%', '34.87%']);
     }
 
     return (
         <LineChartCard
             data={provisoes.length > 0 ? provisoes : undefined}
+            // @ts-expect-error O tipo se mantem
             dataKeyX={provisoes ? 'mes' : undefined}
             title='Provisão Direito Trabalhista'
             syncId='1'

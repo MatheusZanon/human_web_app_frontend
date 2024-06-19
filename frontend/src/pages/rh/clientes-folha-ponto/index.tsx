@@ -20,7 +20,7 @@ import { Content } from '@/components/layout/content';
 import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '@/components/table';
 import { DotNestedKeys } from '@/utils/types/dot_nested_object';
 import { UpdateSchemaType, updateSchema } from '@/utils/types/rh/atualizar_cliente_folha_ponto';
-import { ClienteFolhaPonto } from '@/utils/types/rh/cliente_folha_ponto';
+import { type ClienteFolhaPonto } from '@/utils/types/rh/cliente_folha_ponto';
 import { AddSchemaType, addSchema } from '@/utils/types/rh/criar_cliente_folha_ponto';
 import { RemoveSchemaType, removeSchema } from '@/utils/types/rh/remover_cliente_folha_ponto';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -173,8 +173,8 @@ export default function ClientesFolhaPontoRH() {
                 const key = keys.shift()!;
                 // Atribui o valor da chave ao objeto
                 if (key) {
-                    a = a[key];
-                    b = b[key];
+                    a = a[key as keyof typeof ClientesFolhaPontoRH];
+                    b = b[key as keyof typeof ClientesFolhaPontoRH];
                 }
             }
 
@@ -184,8 +184,8 @@ export default function ClientesFolhaPontoRH() {
             return 0;
         }
 
-        if (a[sortBy] < b[sortBy]) return sortDirection === 'asc' ? -1 : 1;
-        if (a[sortBy] > b[sortBy]) return sortDirection === 'asc' ? 1 : -1;
+        if (a[sortBy as keyof ClienteFolhaPonto] < b[sortBy as keyof ClienteFolhaPonto]) return sortDirection === 'asc' ? -1 : 1;
+        if (a[sortBy as keyof ClienteFolhaPonto] > b[sortBy as keyof ClienteFolhaPonto]) return sortDirection === 'asc' ? 1 : -1;
         return 0;
     }) as ClienteFolhaPonto[];
 

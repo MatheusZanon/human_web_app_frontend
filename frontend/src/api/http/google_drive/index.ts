@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
 import { getArquivos } from "./getArquivos";
 import { getArquivoById } from "./getArquivoById";

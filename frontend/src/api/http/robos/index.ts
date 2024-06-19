@@ -9,7 +9,7 @@ import { postExecutarRobo, type RoboParametrosType } from './postExecutarRobo';
 import { getRoboRotinasById } from './getRoboRotinasById';
 import { CriarRoboType } from '@/utils/types/robos/criar_robo';
 import { postParametros } from './postParametros';
-import { CriarParametroType } from '@/utils/types/criar_parametro';
+import { CriarParametroType } from '@/utils/types/robos/criar_parametro';
 import { CriarRotinaType } from '@/utils/types/robos/criar_rotina';
 import { postRotinas } from './postRotinas';
 import { deleteParametros } from './deleteParametros';

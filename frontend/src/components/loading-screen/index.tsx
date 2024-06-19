@@ -1,6 +1,3 @@
-import React from 'react';
-import style from './loading-screen.module.scss';
-
 function LoadingScreen() {
     return (
         <div className='d-flex justify-content-center align-items-center h-100 w-100'>

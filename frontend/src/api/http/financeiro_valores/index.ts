@@ -83,7 +83,7 @@ export function usePutReembolso() {
 export function useDeleteReembolso() {
     return useMutation({
         mutationKey: ['reembolsos'],
-        mutationFn: ({ id }: Pick<FinanceiroReembolsos, 'id'>) => deleteReembolso(id),
+        mutationFn: ({ id }: Pick<FinanceiroReembolsos, 'id'>) => deleteReembolso({ id }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['reembolsos'] });
         },

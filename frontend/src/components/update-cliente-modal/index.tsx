@@ -1,5 +1,4 @@
 import { cnpjFormatter, cpfFormatter, formatCellphone, formatCnpj, formatCpf, phoneFormatter } from '@/libs';
-import styles from './update-cliente-modal.module.scss';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
