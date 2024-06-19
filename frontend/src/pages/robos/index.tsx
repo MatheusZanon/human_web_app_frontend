@@ -9,8 +9,8 @@ import { useState } from 'react';
 
 function Robos() {
     const [categoria, setCategoria] = useState('');
-    const robos = useRobos(categoria);
     const { data: categorias, isLoading: isCategoriasLoading, isSuccess: isCategoriasSuccess } = useGetCategorias();
+    const robos = useRobos(categoria);
 
     const { hasRole } = useAuthenticatedUser();
 
@@ -52,6 +52,7 @@ function Robos() {
                         <div>Não existe nenhum robô para ser executado.</div>
                     )}
                     {robos.isSuccess &&
+                        robos.data.length > 0 &&
                         robos.data.map((robo) => (
                             <RoboCard
                                 key={robo.id}
