@@ -224,11 +224,7 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                                     <input
                                                                         type='number'
                                                                         id={`parametro_${parametro.id}`}
-                                                                        {...register(parametro.parametro_info.nome, {
-                                                                            value: getValues(
-                                                                                parametro.parametro_info.nome,
-                                                                            ),
-                                                                        })}
+                                                                        {...register(parametro.parametro_info.nome)}
                                                                         onChange={(e) => {
                                                                             setValue(
                                                                                 parametro.parametro_info.nome,

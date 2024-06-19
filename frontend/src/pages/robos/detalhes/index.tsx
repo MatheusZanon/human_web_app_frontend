@@ -28,7 +28,7 @@ import UploadDropzone from '@/components/upload-dropzone';
 
 function RoboDetalhes() {
     const { roboId } = useParams();
-    const { register, getValues, watch } = useForm<RoboParametrosType>();
+    const { register, getValues, setValue, watch } = useForm<RoboParametrosType>();
 
     const {
         data: roboParametros,
@@ -55,11 +55,27 @@ function RoboDetalhes() {
     const [ano, setAno] = useState('');
 
     const configuraMes = (data: string) => {
-        setMes(data)
-    }
+        setMes(data);
+    };
     const configuraAno = (data: string) => {
-        setAno(data)
-    }
+        setAno(data);
+    };
+
+    useMemo(() => {
+        if (roboParametros) {
+            roboParametros.map((parametro) => {
+                setValue(parametro.parametro_info.nome, parametro?.valor);
+                if (roboDetalhes?.nome === 'Organiza Extrato') {
+                    if (parametro.parametro_info.nome === 'mes') {
+                        configuraMes(parametro?.valor);
+                    }
+                    if (parametro.parametro_info.nome === 'ano') {
+                        configuraAno(parametro?.valor);
+                    }
+                }
+            });
+        }
+    }, [roboParametros, setValue, roboDetalhes]);
 
     const { mutate: executarRobo, isPending: isPendingExecutarRobo } = useExecutarRobo({
         roboId: roboId ? roboId : '',
@@ -217,28 +233,20 @@ function RoboDetalhes() {
                                                                 <input
                                                                     type='number'
                                                                     id={`parametro_${parametro.id}`}
-                                                                    defaultValue={parametro.valor}
-                                                                    {...register(parametro.parametro_info.nome,
-                                                                        {
-                                                                            setValueAs: (value) => (
-                                                                                parseInt(value),
-                                                                                roboDetalhes?.nome === 'Organiza Extrato' && parametro.parametro_info.nome === 'mes' &&
-                                                                                    configuraMes(value),
-                                                                                
-                                                                                roboDetalhes?.nome === 'Organiza Extrato' && parametro.parametro_info.nome === 'ano' &&
-                                                                                    configuraAno(value)    
-                                                                            ),
-                                                                            onChange: (e) => {
-                                                                                {roboDetalhes?.nome === 'Organiza Extrato' && parametro.parametro_info.nome === 'mes' &&
-                                                                                    configuraMes(e.target.value)
-                                                                                }
-                        
-                                                                                {roboDetalhes?.nome === 'Organiza Extrato' && parametro.parametro_info.nome === 'ano' &&
-                                                                                    configuraAno(e.target.value)
-                                                                                }  
-                                                                            }
-                                                                        }
-                                                                    )}
+                                                                    {...register(parametro.parametro_info.nome)}
+                                                                    onChange={(e) => {
+                                                                        setValue(
+                                                                            parametro.parametro_info.nome,
+                                                                            e.target.value,
+                                                                        ),
+                                                                            roboDetalhes?.nome === 'Organiza Extrato' &&
+                                                                                parametro.parametro_info.nome ===
+                                                                                    'mes' &&
+                                                                                configuraMes(e.target.value);
+                                                                        roboDetalhes?.nome === 'Organiza Extrato' &&
+                                                                            parametro.parametro_info.nome === 'ano' &&
+                                                                            configuraAno(e.target.value);
+                                                                    }}
                                                                     className={`form-control`}
                                                                 />
                                                             )}
@@ -363,9 +371,11 @@ function RoboDetalhes() {
                                                                         ))}
                                                                     </div>
                                                                     <label className='form-label d-flex justify-content-between'>
-                                                                    <span className='flex-grow-1'>Carregar Extratos a Refazer</span>
+                                                                        <span className='flex-grow-1'>
+                                                                            Carregar Extratos a Refazer
+                                                                        </span>
                                                                     </label>
-                                                                    <UploadDropzone 
+                                                                    <UploadDropzone
                                                                         url={`google_drive/upload_extrato_robo/?mes=${mes}&ano=${ano}`}
                                                                         parents={initialFolderId}
                                                                         onUploadComplete={() => {}}
