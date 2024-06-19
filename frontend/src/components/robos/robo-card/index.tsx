@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { fromNowDays } from '@/libs';
 import styles from './robo-card.module.scss';
 import { Search } from 'lucide-react';
@@ -52,7 +52,7 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
         for (const key in response) {
             // eslint-disable-next-line no-prototype-builtins
             if (response.hasOwnProperty(key)) {
-                const parametroInfo = response[key].parametro_info;
+                const parametroInfo = response[key as keyof typeof roboParametros].parametro_info;
                 const tipo = parametroInfo.tipo;
 
                 // Definir o tipo do Zod com base no tipo do parâmetro
@@ -86,11 +86,11 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
     const [ano, setAno] = useState('');
 
     const configuraMes = (data: string) => {
-        setMes(data)
-    }
+        setMes(data);
+    };
     const configuraAno = (data: string) => {
-        setAno(data)
-    }
+        setAno(data);
+    };
 
     const {
         register,
@@ -106,13 +106,6 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
         shouldFocusError: true,
         shouldUseNativeValidation: false,
         delayError: 500,
-        defaultValues: roboParametros
-            ? Object.fromEntries(
-                  roboParametros.map((parametro) => [
-                    parametro?.parametro_info?.nome ?? '', parametro?.valor ?? ''
-                ]),
-              )
-            : {},
         resolver: zodResolver(RoboParametrosSchema),
     });
 
@@ -123,6 +116,22 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
     const onSubmit = (data: RoboParametrosType) => {
         executarRobo(data);
     };
+
+    useMemo(() => {
+        if (roboParametros) {
+            roboParametros.map((parametro) => {
+                setValue(parametro.parametro_info.nome, parametro?.valor);
+                if (title === 'Organiza Extrato') {
+                    if (parametro.parametro_info.nome === 'mes') {
+                        configuraMes(parametro?.valor);
+                    }
+                    if (parametro.parametro_info.nome === 'ano') {
+                        configuraAno(parametro?.valor);
+                    }
+                }
+            });
+        }
+    }, [roboParametros, setValue, title]);
 
     const navigate = useNavigate();
     return (
@@ -149,7 +158,7 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                     <h5 className='card-title d-flex justify-content-between align-items-center'>
                         {title}
                         <a onClick={() => navigate('/main/' + details_link)}>
-                            <Search width={20} height={20} color='#588fe8' type='button'/>
+                            <Search width={20} height={20} color='#588fe8' type='button' />
                         </a>
                     </h5>
                     <p className='card-text'>{text}</p>
@@ -215,16 +224,24 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                                     <input
                                                                         type='number'
                                                                         id={`parametro_${parametro.id}`}
-                                                                        defaultValue={parametro.valor}
-                                                                        {...register(
-                                                                            parametro.parametro_info.nome
-                                                                        )}
+                                                                        {...register(parametro.parametro_info.nome, {
+                                                                            value: getValues(
+                                                                                parametro.parametro_info.nome,
+                                                                            ),
+                                                                        })}
                                                                         onChange={(e) => {
-                                                                            setValue(parametro.parametro_info.nome, e.target.value),
-                                                                            title === 'Organiza Extrato' && parametro.parametro_info.nome === 'mes' &&
-                                                                                configuraMes(e.target.value)
-                                                                            title === 'Organiza Extrato' && parametro.parametro_info.nome === 'ano' &&
-                                                                                configuraAno(e.target.value)
+                                                                            setValue(
+                                                                                parametro.parametro_info.nome,
+                                                                                e.target.value,
+                                                                            ),
+                                                                                title === 'Organiza Extrato' &&
+                                                                                    parametro.parametro_info.nome ===
+                                                                                        'mes' &&
+                                                                                    configuraMes(e.target.value);
+                                                                            title === 'Organiza Extrato' &&
+                                                                                parametro.parametro_info.nome ===
+                                                                                    'ano' &&
+                                                                                configuraAno(e.target.value);
                                                                         }}
                                                                         className={`form-control`}
                                                                     />
@@ -255,8 +272,7 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                                         type='text'
                                                                         id={`parametro_${parametro.id}`}
                                                                         defaultValue={parametro.valor}
-                                                                        {...register(
-                                                                            parametro.parametro_info.nome)}
+                                                                        {...register(parametro.parametro_info.nome)}
                                                                         className={`form-control`}
                                                                     />
                                                                 )}
@@ -295,8 +311,8 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                             isGetClientesFinanceiroSuccess && (
                                                                 <>
                                                                     <div
-                                                                    className='d-flex flex-column gap-1 overflow-y-auto mb-4'
-                                                                    style={{ maxHeight: '200px' }}
+                                                                        className='d-flex flex-column gap-1 overflow-y-auto mb-4'
+                                                                        style={{ maxHeight: '200px' }}
                                                                     >
                                                                         {clientesFinanceiro.map((cliente) => (
                                                                             <div key={cliente.id}>
@@ -319,9 +335,11 @@ function RoboCard({ id, title, text, categoria, details_link, executions, last_e
                                                                         ))}
                                                                     </div>
                                                                     <label className='form-label d-flex justify-content-between'>
-                                                                        <span className='flex-grow-1'>Carregar Extratos a Refazer</span>
+                                                                        <span className='flex-grow-1'>
+                                                                            Carregar Extratos a Refazer
+                                                                        </span>
                                                                     </label>
-                                                                    <UploadDropzone 
+                                                                    <UploadDropzone
                                                                         url={`google_drive/upload_extrato_robo/?mes=${mes}&ano=${ano}`}
                                                                         parents={initialFolderId}
                                                                         onUploadComplete={() => {}}
