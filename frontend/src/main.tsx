@@ -5,9 +5,20 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from './utils/queryClient';
 import '@/assets/scss/styles.scss';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
+const envMode = import.meta.env.MODE;
+
+if (envMode === 'development') {
+    ReactDOM.createRoot(document.getElementById('root')!).render(
+        <React.StrictMode>
+            <AllProviders />
+            <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-right' client={queryClient} />
+        </React.StrictMode>,
+    );
+}
+
+if (envMode === 'production') {
+    ReactDOM.createRoot(document.getElementById('root')!).render(
         <AllProviders />
-        <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-right' client={queryClient} />
-    </React.StrictMode>,
-);
+    );
+}
+

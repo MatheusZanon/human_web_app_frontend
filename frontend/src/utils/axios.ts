@@ -1,9 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const api = axios.create({
-  baseURL: 'http://localhost:8000/api/',
-  //baseURL: 'http://192.168.2.146:8000/api/',
-  withCredentials: true
+    baseURL: API_BASE_URL,
+    withCredentials: true,
 });
 
 api.interceptors.response.use(
@@ -20,11 +21,18 @@ api.interceptors.response.use(
                     // Se a renovação falhar, não tente novamente e lance um erro
                     return Promise.reject('Token de refresh expirado - usuário precisa relogar');
                 }
-            } catch (renewError: any) {
-                if (renewError.response && (renewError.response.status === 401 || renewError.response.status === 404)) {
-                    // A renovação falhou e não pode ser recuperada, rejeite explicitamente com uma mensagem
-                    return Promise.reject('Token de refresh expirado - usuário precisa relogar');
+            } catch (renewError) {
+                if (renewError instanceof AxiosError) {
+                    if (
+                        renewError.response &&
+                        (renewError.response.status === 401 || renewError.response.status === 404)
+                    ) {
+                        // A renovação falhou e não pode ser recuperada, rejeite explicitamente com uma mensagem
+                        return Promise.reject('Token de refresh expirado - usuário precisa relogar');
+                    }
                 }
+
+                return Promise.reject(renewError);
             }
         }
         return Promise.reject(error);

@@ -79,7 +79,7 @@ function PastasGoogleDrive() {
         setnavegationHistory((prev) => {
             const newHistory = [...prev];
             const previousFolderId = newHistory.pop(); // Remove e obtém o último ID do histórico
-            setCurrentFolderId(previousFolderId);
+            setCurrentFolderId(previousFolderId!);
             return newHistory;
         });
         setfileHistory((prev) => {
