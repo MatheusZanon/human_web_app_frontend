@@ -20,7 +20,7 @@ function Footer() {
                     <div className='d-flex align-items-center gap-1'>
                         <span>Copyright &copy; {new Date().getFullYear()}</span>
                         <a href='#' target='_blank' rel='noreferrer' className='me-3'>
-                            <img src='/coderinsights-logo.svg' alt='Coder Insights' />
+                            <img src='/designlogo3.svg' alt='Coder Insights' />
                         </a>
                     </div>
                 </div>
