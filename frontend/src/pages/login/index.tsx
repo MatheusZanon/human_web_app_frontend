@@ -39,37 +39,45 @@ function Login() {
             api.post('check_user', {
                 username: parsedData.data.username,
                 password: parsedData.data.password,
-            }).then(() => {
-                api.post('token/', {
-                    username: parsedData.data.username,
-                    password: parsedData.data.password,
-                }, {withCredentials: true}).then(response => {
-                        if (response.status == 200) {
-                            toast("Login efetuado com sucesso!");
-                            setTimeout(() => {
-                                navigate('/main');
-                            }, 1500);  
-                        }  
-                }).catch(error => {
-                    console.log('Error: ', error);
-                });
-            }).catch((error) => {
-                switch(error.response.status) {
-                    case 403:
-                        toast("Credenciais inválidas!");
-                        break;
-                    case 406:
-                        toast("Conta inativa!");
-                        break
-                    case 404:
-                        toast("Conta não encontrada no sistema!");
-                        break;
-                    default:
-                        toast("Ocorreu um erro inesperado, entre em contato com o administrador do sistema");
-                }
             })
+                .then(() => {
+                    api.post(
+                        'token/',
+                        {
+                            username: parsedData.data.username,
+                            password: parsedData.data.password,
+                        },
+                        { withCredentials: true },
+                    )
+                        .then((response) => {
+                            if (response.status == 200) {
+                                toast('Login efetuado com sucesso!');
+                                setTimeout(() => {
+                                    navigate('/main');
+                                }, 1500);
+                            }
+                        })
+                        .catch((error) => {
+                            console.log('Error: ', error);
+                        });
+                })
+                .catch((error) => {
+                    switch (error.response.status) {
+                        case 403:
+                            toast('Credenciais inválidas!');
+                            break;
+                        case 406:
+                            toast('Conta inativa!');
+                            break;
+                        case 404:
+                            toast('Conta não encontrada no sistema!');
+                            break;
+                        default:
+                            toast('Ocorreu um erro inesperado, entre em contato com o administrador do sistema');
+                    }
+                });
         }
-    };
+    }
 
     return (
         <div className='w-50 p-3 d-flex flex-column align-items-center shadow rounded'>
@@ -92,13 +100,20 @@ function Login() {
                 <button type='submit' className='btn btn-primary mt-2'>
                     Login
                 </button>
-                <div className='row mt-2'>
+                <div className='row mt-2 gap-1'>
+                    <span className='text-muted'>
+                        Esqueceu sua senha?{' '}
+                        <Link to='/forgot-password' className='text-decoration-none text-primary'>
+                            Clique aqui
+                        </Link>
+                        .
+                    </span>
                     <span className='text-muted'>
                         Ainda não possui uma conta?{' '}
                         <Link to='/register' className='text-decoration-none text-primary'>
                             Clique aqui
                         </Link>{' '}
-                        para requisitar o seu cadastro
+                        para requisitar o seu cadastro.
                     </span>
                 </div>
             </form>
