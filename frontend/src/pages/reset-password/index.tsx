@@ -1,14 +1,19 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const ResetPasswordSchema = z.object({
-    newPassword: z.string().min(6, 'É necessário pelo menos 6 caracteres'),
-    confirmNewPassword: z.string().min(6, 'É necessário pelo menos 6 caracteres'),
-});
+const ResetPasswordSchema = z
+    .object({
+        newPassword: z.string().min(6, 'É necessário pelo menos 6 caracteres'),
+        confirmNewPassword: z.string().min(6, 'É necessário pelo menos 6 caracteres'),
+    })
+    .refine((data) => data.newPassword === data.confirmNewPassword, {
+        message: 'As senhas não conferem',
+        path: ['confirmNewPassword'],
+    });
 
 type ResetPasswordData = z.infer<typeof ResetPasswordSchema>;
 
@@ -54,7 +59,12 @@ function ResetPassword() {
                     <label htmlFor='confirmNewPassword' className='form-label'>
                         Confirm New password:<span className='text-danger'>*</span>
                     </label>
-                    <input type='text' id='confirmNewPassword' className='form-control' {...register('confirmNewPassword')} />
+                    <input
+                        type='text'
+                        id='confirmNewPassword'
+                        className='form-control'
+                        {...register('confirmNewPassword')}
+                    />
                     {errors.confirmNewPassword && <p className='text-danger'>{errors.confirmNewPassword.message}</p>}
                 </div>
                 <button type='submit' className='btn btn-primary mt-2'>
