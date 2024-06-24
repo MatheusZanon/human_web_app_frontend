@@ -12,6 +12,14 @@ import { putDeactivateUser } from './putDesactivateUser';
 import { User } from '@/utils/types/user/user';
 import { patchUser } from './patchUser';
 import { putSituacao } from './putSituação';
+import { postForgotPassword } from './postForgotPassword';
+
+export function usePostForgotPassword() {
+    return useMutation({
+        mutationKey: ['user'],
+        mutationFn: ({ email }: { email: string }) => postForgotPassword(email),
+    });
+}
 
 export function useGetUser() {
     return useQuery({

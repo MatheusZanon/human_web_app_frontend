@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { usePostForgotPassword } from '@/api/http/user';
 
 const ForgotPasswordSchema = z.object({
     email: z.string().email('Email inválido'),
@@ -12,7 +13,13 @@ const ForgotPasswordSchema = z.object({
 type ForgotPasswordData = z.infer<typeof ForgotPasswordSchema>;
 
 function ForgotPassword() {
-    const navigate = useNavigate();
+    const {
+        mutate: forgotPasswordMutation,
+        isSuccess: isForgotPasswordSuccess,
+        isPending: isForgotPasswordPending,
+        isError: isForgotPasswordError,
+        error: forgotPasswordError,
+    } = usePostForgotPassword();
 
     const {
         register,
@@ -35,10 +42,38 @@ function ForgotPassword() {
     function onSubmit(data: ForgotPasswordData) {
         const parsedData = ForgotPasswordSchema.safeParse(data);
 
-        console.log(parsedData);
-        toast.success('Email enviado com sucesso!');
+        if (!parsedData.success) {
+            console.log(`Error: ${parsedData.error}`);
+            return;
+        }
 
-        navigate('/');
+        forgotPasswordMutation(parsedData.data);
+
+        if (isForgotPasswordPending) {
+            console.log('Enviando email...');
+            toast.info('Enviando email...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (isForgotPasswordError) {
+            console.log(`Error: ${forgotPasswordError}`);
+            toast.error(`Erro: ${forgotPasswordError}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (isForgotPasswordSuccess) {
+            console.log('Email enviado com sucesso!');
+            toast.success('Email enviado com sucesso!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
     }
 
     return (
@@ -55,7 +90,7 @@ function ForgotPassword() {
                     </div>
                 </div>
                 <button type='submit' className='btn btn-primary mt-2'>
-                    Trocar sua senha
+                    Enviar
                 </button>
                 <div className='row mt-2'>
                     <span className='text-muted'>
