@@ -67,8 +67,8 @@ function Sidebar() {
             }}
         >
             <div className={`d-flex align-items-center gap-2 ${styles.brandWrapper}`} style={{ padding: '1rem 0' }}>
-                <div className='w-100 d-flex justify-content-center align-items-center' style={{ maxWidth: '56px' }}>
-                    <img className={'img-fluid'} src='/human-logo.svg' alt='Logo Human' />
+                <div className='w-100 d-flex justify-content-center align-items-center' style={{ maxWidth: '30px' }}>
+                    <img className={'img-fluid'} src='/human-logo-symbol.svg' alt='Logo Human' />
                 </div>
                 <motion.span
                     className={`${styles.brandTitle}`}
