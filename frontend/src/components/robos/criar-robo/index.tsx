@@ -135,4 +135,4 @@ function CriarRoboCard() {
     );
 }
 
-export { CriarRoboCard };
+export { CriarRoboCard, criarRoboSchema };
