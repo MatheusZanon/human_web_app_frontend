@@ -80,7 +80,12 @@ function ClientesFinanceiro() {
     const [filtro, setFiltro] = useState<string>('');
     const navigate = useNavigate();
     const inputRef = useRef<HTMLInputElement>(null);
-    const { mutate: createCliente, isPending: isCreatingCliente, error: createClienteError } = usePostCliente();
+    const {
+        mutate: createCliente,
+        isPending: isCreatingCliente,
+        error: createClienteError,
+        isSuccess: isClienteCreated,
+    } = usePostCliente();
     const { hasRole } = useAuthenticatedUser();
     const {
         mutate: deactivateCliente,
@@ -131,29 +136,36 @@ function ClientesFinanceiro() {
         data.cnpj = data.cnpj.replace(/\D/g, '');
         data.cpf = data.cpf.replace(/\D/g, '');
         createCliente(data);
-
-        if (isCreatingCliente) {
-            toast.loading('Por favor, aguarde...');
-        }
-
-        if (!isCreatingCliente) {
-            toast.dismiss();
-        }
-
-        if (!isCreatingCliente && !createClienteError) {
-            toast.success('Cliente criado com sucesso!', {
-                autoClose: 3000,
-                position: 'bottom-right',
-            });
-        }
-
-        if (!isCreatingCliente && createClienteError) {
-            toast.error(`Erro ao atualizar dados! ${createClienteError?.response?.data}`, {
-                autoClose: 3000,
-                position: 'bottom-right',
-            });
-        }
     };
+
+    useEffect(() => {
+        if (isCreatingCliente) {
+            toast.info('Criando cliente...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    }, [isCreatingCliente]);
+
+    useEffect(() => {
+        if (isClienteCreated) {
+            toast.dismiss();
+            toast.success('Cliente criado com sucesso!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    }, [isClienteCreated]);
+
+    useEffect(() => {
+        if (createClienteError) {
+            toast.dismiss();
+            toast.error('Erro ao criar cliente!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    }, [createClienteError]);
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -181,53 +193,69 @@ function ClientesFinanceiro() {
 
     const handleDeactivate = (id: number) => {
         deactivateCliente(id);
+    };
 
-        if (isDeactivatingCliente && !deactivateClienteError) {
+    useEffect(() => {
+        if (isDeactivatingCliente) {
             toast.info('Desativando cliente...', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
+    }, [isDeactivatingCliente]);
 
-        if (deactivateClienteError) {
-            toast.error(`Ocorreu um erro ao desativar o cliente: ${deactivateClienteError.response?.data}`, {
-                position: 'bottom-right',
-                autoClose: 3000,
-            });
-        }
-
+    useEffect(() => {
         if (isClienteDeactivated) {
+            toast.dismiss();
             toast.success('Cliente desativado!', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
-    };
+    }, [isClienteDeactivated]);
+
+    useEffect(() => {
+        if (deactivateClienteError) {
+            toast.dismiss();
+            toast.error(`Erro ao desativar cliente! ${deactivateClienteError}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    }, [deactivateClienteError]);
 
     const handleActivate = (id: number) => {
         activateCliente(id);
+    };
 
-        if (isActivatingCliente && !activateClienteError) {
+    useEffect(() => {
+        if (isActivatingCliente) {
             toast.info('Ativando cliente...', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
+    }, [isActivatingCliente]);
 
-        if (activateClienteError) {
-            toast.error(`Ocorreu um erro ao ativar o cliente: ${activateClienteError.response?.data}`, {
-                position: 'bottom-right',
-                autoClose: 3000,
-            });
-        }
-
+    useEffect(() => {
         if (isClienteActivated) {
+            toast.dismiss();
             toast.success('Cliente ativado!', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
-    };
+    }, [isClienteActivated]);
+
+    useEffect(() => {
+        if (activateClienteError) {
+            toast.dismiss();
+            toast.error(`Erro ao ativar cliente!`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    }, [activateClienteError]);
 
     const handleSort = (columnKey: keyof Cliente) => {
         if (sortBy === columnKey) {

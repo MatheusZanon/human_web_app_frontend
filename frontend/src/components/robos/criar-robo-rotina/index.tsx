@@ -15,6 +15,7 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '@/components/baseModal';
+import { useEffect } from 'react';
 
 function CriarRoboRotinaModal({ roboId }: { roboId: string }) {
     const { register, handleSubmit } = useForm<CriarRotinaType>({
@@ -32,20 +33,26 @@ function CriarRoboRotinaModal({ roboId }: { roboId: string }) {
 
     const onSubmit = (data: CriarRotinaType) => {
         criarRotina(data);
+    };
+
+    useEffect(() => {
         if (isSuccess) {
             toast.success('Rotina criada com sucesso!', {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
+    }, [isSuccess]);
 
+    useEffect(() => {
         if (isError) {
             toast.error(`Erro ao criar rotina! ${error?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
-    };
+    }, [isError, error]);
+
     return (
         <BaseModalProvider>
             <BaseModalTrigger variant='secondary' modalKey='criar-robo-rotina'>Criar Rotina</BaseModalTrigger>

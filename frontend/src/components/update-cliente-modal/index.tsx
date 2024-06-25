@@ -18,6 +18,7 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '../baseModal';
+import { useEffect } from 'react';
 
 const UpdateClienteModal: React.FC = () => {
     const { cliente } = useClienteProfileCard();
@@ -92,7 +93,12 @@ const UpdateClienteModal: React.FC = () => {
         setValue('cpf', formattedCPF);
     };
 
-    const { mutate: updateCliente, isPending: isUpdateClientePending, error: UpdateClienteError } = useUpdateCliente();
+    const {
+        mutate: updateCliente,
+        isPending: isUpdateClientePending,
+        error: UpdateClienteError,
+        isSuccess: isUpdateClienteSuccess,
+    } = useUpdateCliente();
 
     const onSubmit = ({ cnpj, cpf, email, nome_razao_social, nome_fantasia, phone, regiao }: UpdateClienteType) => {
         const cleanedPhone = phone.replace(/\D/g, '');
@@ -135,29 +141,36 @@ const UpdateClienteModal: React.FC = () => {
         }
 
         updateCliente({ clienteId: cliente!.id, data: updatedValues });
-
-        if (isUpdateClientePending) {
-            toast.loading('Por favor, aguarde...');
-        }
-
-        if (!isUpdateClientePending) {
-            toast.dismiss();
-        }
-
-        if (!isUpdateClientePending && !UpdateClienteError) {
-            toast.success('Dados atualizados com sucesso!', {
-                autoClose: 3000,
-                position: 'bottom-right',
-            });
-        }
-
-        if (!isUpdateClientePending && UpdateClienteError) {
-            toast.error(`Erro ao atualizar dados! ${UpdateClienteError?.response?.data}`, {
-                autoClose: 3000,
-                position: 'bottom-right',
-            });
-        }
     };
+
+    useEffect(() => {
+        if (isUpdateClientePending) {
+            toast.info('Atualizando dados do cliente...', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    }, [isUpdateClientePending]);
+
+    useEffect(() => {
+        if (isUpdateClienteSuccess) {
+            toast.dismiss();
+            toast.success('Dados do cliente atualizados com sucesso!', {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    }, [isUpdateClienteSuccess]);
+
+    useEffect(() => {
+        if (UpdateClienteError) {
+            toast.dismiss();
+            toast.error(`Erro ao atualizar dados do cliente! ${UpdateClienteError}`, {
+                position: 'bottom-right',
+                autoClose: 3000,
+            });
+        }
+    }, [UpdateClienteError]);
 
     return (
         <BaseModalProvider>
@@ -275,7 +288,9 @@ const UpdateClienteModal: React.FC = () => {
                         </form>
                     </BaseModalBody>
                     <BaseModalFooter>
-                        <BaseModalConfirmationButton onClick={handleSubmit(onSubmit)} disabled={isUpdateClientePending}>Salvar</BaseModalConfirmationButton>
+                        <BaseModalConfirmationButton onClick={handleSubmit(onSubmit)} disabled={isUpdateClientePending}>
+                            Salvar
+                        </BaseModalConfirmationButton>
                         <BaseModalCloseButton>Cancelar</BaseModalCloseButton>
                     </BaseModalFooter>
                 </BaseModalContent>

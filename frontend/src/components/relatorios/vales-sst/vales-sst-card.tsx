@@ -18,32 +18,46 @@ function CardValesSST({ ...props }) {
     const valesSST = useGetValesSST(url);
     const valesSSTResults =
         valesSST.isSuccess && valesSST.data && 'results' in valesSST.data ? valesSST.data.results : [];
-    const { mutate: updateValeSST, isPending: isUpdatePending, error: updateError } = usePutValesSST();
+    const {
+        mutate: updateValeSST,
+        isPending: isUpdatePending,
+        error: updateError,
+        isSuccess: isUpdateSuccess,
+    } = usePutValesSST();
 
     const updateVale = async (vale: FinanceiroValesSST) => {
         updateValeSST(vale);
-
-        if (updateError) {
-            toast.error(`Ocorreu um erro ao atualizar o vale: ${updateError.message}`, {
-                position: 'bottom-right',
-                autoClose: 3000,
-            });
-        }
-
-        if (isUpdatePending) {
-            toast.info('Atualizando vale...', {
-                position: 'bottom-right',
-                autoClose: 3000,
-            });
-        }
-
-        if (!isUpdatePending && !updateError) {
-            toast.success('Vale atualizado!', {
-                position: 'bottom-right',
-                autoClose: 3000,
-            });
-        }
     };
+
+    useEffect(() => {
+        if (isUpdatePending) {
+            toast.info('Atualizando vale', {
+                position: 'bottom-right',
+                autoClose: 5000,
+            });
+            return;
+        }
+    }, [isUpdatePending]);
+
+    useEffect(() => {
+        if (updateError) {
+            toast.dismiss();
+            toast.error('Erro ao atualizar vale', {
+                position: 'bottom-right',
+                autoClose: 5000,
+            });
+        }
+    }, [updateError]);
+
+    useEffect(() => {
+        if (isUpdateSuccess) {
+            toast.dismiss();
+            toast.success('Vale atualizado com sucesso', {
+                position: 'bottom-right',
+                autoClose: 5000,
+            });
+        }
+    }, [isUpdateSuccess]);
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {

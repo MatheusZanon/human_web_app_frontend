@@ -15,6 +15,7 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '@/components/baseModal';
+import { useEffect } from 'react';
 
 function CriarRoboParametroModal({ roboId }: { roboId: string }) {
     const { register, handleSubmit } = useForm<CriarParametroType>({
@@ -33,24 +34,31 @@ function CriarRoboParametroModal({ roboId }: { roboId: string }) {
 
     const onSubmit = (data: CriarParametroType) => {
         criarParametro(data);
+    };
+
+    useEffect(() => {
         if (isSuccess) {
             toast.success('Parâmetro criado com sucesso!', {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
+    }, [isSuccess]);
 
+    useEffect(() => {
         if (isError) {
             toast.error(`Erro ao criar parâmetro! ${error?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
-    };
+    }, [isError, error]);
 
     return (
         <BaseModalProvider>
-            <BaseModalTrigger variant='primary' modalKey='criar-robo-parametro'>Criar Parâmetro</BaseModalTrigger>
+            <BaseModalTrigger variant='primary' modalKey='criar-robo-parametro'>
+                Criar Parâmetro
+            </BaseModalTrigger>
             <BaseModalRoot modalKey='criar-robo-parametro'>
                 <BaseModalContent>
                     <BaseModalHeader>

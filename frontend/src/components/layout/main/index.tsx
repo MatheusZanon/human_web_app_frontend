@@ -3,8 +3,6 @@ import styles from './main.module.scss';
 import { useContext } from 'react';
 import { SidebarContext } from '../aside';
 import { motion, useMotionValue } from 'framer-motion';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function Main() {
   const { open } = useContext(SidebarContext);
@@ -22,7 +20,6 @@ function Main() {
       >
         <Outlet />
       </motion.main>
-      <ToastContainer />
     </>
   );
 }

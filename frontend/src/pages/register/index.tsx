@@ -67,7 +67,10 @@ function Register() {
             })
                 .then((response) => {
                     if (response.status == 201) {
-                        toast('Solicitação de Cadastro efetuada com sucesso!');
+                        toast('Solicitação de Cadastro efetuada com sucesso!', {
+                            autoClose: 3000,
+                            position: 'bottom-right',
+                        });
                         setTimeout(() => {
                             navigate('/');
                         }, 500);
