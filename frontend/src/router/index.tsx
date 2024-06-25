@@ -45,6 +45,8 @@ import { ProfileCardProvider } from '@/components/profile-card/profile-card-prov
 import { ClienteProfileCardProvider } from '@/components/update-cliente-modal/cliente-profile-card-provider';
 import ClientesFolhaPontoRH from '@/pages/rh/clientes-folha-ponto';
 import { BaseModalProvider } from '@/components/baseModal';
+import ForgotPassword from '@/pages/forgot-password';
+import ResetPassword from '@/pages/reset-password';
 
 type route = {
     path: string;
@@ -132,6 +134,22 @@ const router = createBrowserRouter([
         element: (
             <BlankLayout>
                 <Register />
+            </BlankLayout>
+        ),
+    },
+    {
+        path: '/forgot-password',
+        element: (
+            <BlankLayout>
+                <ForgotPassword />
+            </BlankLayout>
+        ),
+    },
+    {
+        path: 'reset-password',
+        element: (
+            <BlankLayout>
+                <ResetPassword />
             </BlankLayout>
         ),
     },

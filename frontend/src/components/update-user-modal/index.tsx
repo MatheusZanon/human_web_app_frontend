@@ -25,7 +25,7 @@ const UpdateUserModal: React.FC = () => {
 
     const updateUserSchema = z.object({
         username: z.string().min(1, 'Este campo é obrigatório'),
-        email: z.string().min(1, 'Este campo é obrigatório'),
+        email: z.string().email('Formato de email inválido').min(1, 'Este campo é obrigatório'),
         first_name: z.string().min(1, 'Este campo é obrigatório'),
         last_name: z.string().min(1, 'Este campo é obrigatório'),
         phone: z
