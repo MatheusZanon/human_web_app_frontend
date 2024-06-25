@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { usePostResetPassword } from '@/api/http/user';
 
 const ResetPasswordSchema = z
     .object({
@@ -19,6 +20,13 @@ type ResetPasswordData = z.infer<typeof ResetPasswordSchema>;
 
 function ResetPassword() {
     const navigate = useNavigate();
+    const {
+        mutate: resetPasswordMutation,
+        isPending: isResetPasswordPending,
+        isSuccess: isResetPasswordSuccess,
+        isError: isResetPasswordError,
+        error: resetPasswordError,
+    } = usePostResetPassword();
 
     const {
         register,
@@ -39,9 +47,43 @@ function ResetPassword() {
         resolver: zodResolver(ResetPasswordSchema),
     });
 
+    const [searchParams] = useSearchParams();
     function onSubmit(data: ResetPasswordData) {
         const parsedData = ResetPasswordSchema.safeParse(data);
-        console.log(parsedData);
+
+        if (!parsedData.success) {
+            return;
+        }
+
+        const token = searchParams.get('token');
+
+        resetPasswordMutation({ new_password: parsedData.data.newPassword, token: token as string });
+    }
+    if (isResetPasswordPending) {
+        toast.info('Enviando email...', {
+            position: 'bottom-right',
+            autoClose: 5000,
+        });
+        return;
+    }
+
+    if (isResetPasswordError) {
+        toast.error(`${resetPasswordError?.response?.data as string}`, {
+            position: 'bottom-right',
+            autoClose: 7000,
+        });
+        return;
+    }
+
+    if (isResetPasswordSuccess) {
+        toast.success('Senha alterada com sucesso', {
+            position: 'bottom-right',
+            autoClose: 7000,
+        });
+
+        setTimeout(() => {
+            navigate('/');
+        }, 7000);
     }
 
     return (
@@ -50,17 +92,17 @@ function ResetPassword() {
             <form onSubmit={handleSubmit(onSubmit)} className='w-100'>
                 <div>
                     <label htmlFor='newPassword' className='form-label'>
-                        New password:<span className='text-danger'>*</span>
+                        Nova Senha:<span className='text-danger'>*</span>
                     </label>
-                    <input type='text' id='newPassword' className='form-control' {...register('newPassword')} />
+                    <input type='password' id='newPassword' className='form-control' {...register('newPassword')} />
                     {errors.newPassword && <p className='text-danger'>{errors.newPassword.message}</p>}
                 </div>
                 <div>
                     <label htmlFor='confirmNewPassword' className='form-label'>
-                        Confirm New password:<span className='text-danger'>*</span>
+                        Confirme a nova senha:<span className='text-danger'>*</span>
                     </label>
                     <input
-                        type='text'
+                        type='password'
                         id='confirmNewPassword'
                         className='form-control'
                         {...register('confirmNewPassword')}

@@ -13,11 +13,19 @@ import { User } from '@/utils/types/user/user';
 import { patchUser } from './patchUser';
 import { putSituacao } from './putSituação';
 import { postForgotPassword } from './postForgotPassword';
+import { postResetPassword } from './postResetPassword';
 
 export function usePostForgotPassword() {
     return useMutation({
         mutationKey: ['user'],
         mutationFn: ({ email }: { email: string }) => postForgotPassword(email),
+    });
+}
+
+export function usePostResetPassword() {
+    return useMutation({
+        mutationKey: ['user'],
+        mutationFn: ({ new_password, token }: { new_password: string, token: string }) => postResetPassword(new_password, token),
     });
 }
 

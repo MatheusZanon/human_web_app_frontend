@@ -43,37 +43,33 @@ function ForgotPassword() {
         const parsedData = ForgotPasswordSchema.safeParse(data);
 
         if (!parsedData.success) {
-            console.log(`Error: ${parsedData.error}`);
             return;
         }
 
         forgotPasswordMutation(parsedData.data);
+    }
 
-        if (isForgotPasswordPending) {
-            console.log('Enviando email...');
-            toast.info('Enviando email...', {
-                position: 'bottom-right',
-                autoClose: 3000,
-            });
-            return;
-        }
+    if (isForgotPasswordPending) {
+        toast.info('Enviando email...', {
+            position: 'bottom-right',
+            autoClose: 5000,
+        });
+        return;
+    }
 
-        if (isForgotPasswordError) {
-            console.log(`Error: ${forgotPasswordError}`);
-            toast.error(`Erro: ${forgotPasswordError}`, {
-                position: 'bottom-right',
-                autoClose: 3000,
-            });
-            return;
-        }
+    if (isForgotPasswordError) {
+        toast.error(`Erro: ${forgotPasswordError?.response?.data}`, {
+            position: 'bottom-right',
+            autoClose: 7000,
+        });
+        return;
+    }
 
-        if (isForgotPasswordSuccess) {
-            console.log('Email enviado com sucesso!');
-            toast.success('Email enviado com sucesso!', {
-                position: 'bottom-right',
-                autoClose: 3000,
-            });
-        }
+    if (isForgotPasswordSuccess) {
+        toast.success('O link para redefinir sua senha foi enviado para o email informado!', {
+            position: 'bottom-right',
+            autoClose: 7000,
+        });
     }
 
     return (
