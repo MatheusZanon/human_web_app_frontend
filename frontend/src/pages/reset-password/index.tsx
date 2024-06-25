@@ -2,9 +2,10 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { usePostResetPassword } from '@/api/http/user';
+import { useEffect } from 'react';
 
 const ResetPasswordSchema = z
     .object({
@@ -59,32 +60,41 @@ function ResetPassword() {
 
         resetPasswordMutation({ new_password: parsedData.data.newPassword, token: token as string });
     }
-    if (isResetPasswordPending) {
-        toast.info('Enviando email...', {
-            position: 'bottom-right',
-            autoClose: 5000,
-        });
-        return;
-    }
 
-    if (isResetPasswordError) {
-        toast.error(`${resetPasswordError?.response?.data as string}`, {
-            position: 'bottom-right',
-            autoClose: 7000,
-        });
-        return;
-    }
+    useEffect(() => {
+        if (isResetPasswordPending) {
+            toast.info('Enviando email...', {
+                position: 'bottom-right',
+                autoClose: 5000,
+            });
+            return;
+        }
+    }, [isResetPasswordPending]);
 
-    if (isResetPasswordSuccess) {
-        toast.success('Senha alterada com sucesso', {
-            position: 'bottom-right',
-            autoClose: 7000,
-        });
+    useEffect(() => {
+        if (isResetPasswordError) {
+            toast.dismiss();
+            toast.error(`${resetPasswordError?.response?.data as string}`, {
+                position: 'bottom-right',
+                autoClose: 7000,
+            });
+            return;
+        }
+    }, [isResetPasswordError, resetPasswordError]);
 
-        setTimeout(() => {
-            navigate('/');
-        }, 7000);
-    }
+    useEffect(() => {
+        if (isResetPasswordSuccess) {
+            toast.dismiss();
+            toast.success('Senha alterada com sucesso', {
+                position: 'bottom-right',
+                autoClose: 7000,
+            });
+
+            setTimeout(() => {
+                navigate('/');
+            }, 500);
+        }
+    }, [isResetPasswordSuccess, navigate]);
 
     return (
         <div className='w-50 p-3 d-flex flex-column align-items-center shadow rounded'>
@@ -113,7 +123,6 @@ function ResetPassword() {
                     Trocar sua senha
                 </button>
             </form>
-            <ToastContainer />
         </div>
     );
 }

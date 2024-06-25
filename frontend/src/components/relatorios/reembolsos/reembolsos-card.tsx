@@ -75,29 +75,37 @@ function CardReembolsos({ ...props }) {
     } = usePostReembolso();
     const onSubmit = (data: CriarReembolsoType) => {
         postReembolso(data);
+    };
 
-        if (isPostReembolsoPending && !postReembolsoError) {
+    useEffect(() => {
+        if (isPostReembolsoPending) {
             toast.info('Criando reembolso...', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
+    }, [isPostReembolsoPending]);
 
+    useEffect(() => {
         if (postReembolsoError) {
+            toast.dismiss();
             toast.error(`Ocorreu um erro ao criar o reembolso: ${postReembolsoError.response?.data}`, {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
+    }, [postReembolsoError]);
 
+    useEffect(() => {
         if (isPostReembolsoSuccess) {
+            toast.dismiss();
             toast.success('Reembolso criado!', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
             setSelected('');
         }
-    };
+    }, [isPostReembolsoSuccess, setSelected]);
 
     const {
         register: atualizarReembolsoRegister,
@@ -115,63 +123,85 @@ function CardReembolsos({ ...props }) {
         resolver: zodResolver(atualizarReembolsoSchema),
     });
 
-    const { mutate: putReembolso, isPending: isPutReembolsoPending, error: putReembolsoError } = usePutReembolso();
+    const {
+        mutate: putReembolso,
+        isPending: isPutReembolsoPending,
+        error: putReembolsoError,
+        isSuccess: isPutReembolsoSuccess,
+    } = usePutReembolso();
 
     const atualizarReembolsoOnSubmit = (data: AtualizarReembolsoType) => {
         putReembolso(data);
+    };
 
-        if (isPutReembolsoPending && !putReembolsoError) {
+    useEffect(() => {
+        if (isPutReembolsoPending) {
             toast.info('Atualizando reembolso...', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
+    }, [isPutReembolsoPending]);
 
+    useEffect(() => {
         if (putReembolsoError) {
+            toast.dismiss();
             toast.error(`Ocorreu um erro ao atualizar o reembolso: ${putReembolsoError.response?.data}`, {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
+    }, [putReembolsoError]);
 
-        if (!isPutReembolsoPending && !putReembolsoError) {
+    useEffect(() => {
+        if (isPutReembolsoSuccess) {
+            toast.dismiss();
             toast.success('Reembolso atualizado!', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
-    };
+    }, [isPutReembolsoSuccess]);
 
     const {
         mutate: deleteReembolso,
         isPending: isDeleteReembolsoPending,
+        isSuccess: isDeleteReembolsoSuccess,
         error: deleteReembolsoError,
     } = useDeleteReembolso();
 
     const excluirReembolsoHandleSubmit = (reembolsoId: number) => {
         deleteReembolso({ id: reembolsoId });
+    };
 
-        if (isDeleteReembolsoPending && !deleteReembolsoError) {
+    useEffect(() => {
+        if (isDeleteReembolsoPending) {
             toast.info('Excluindo reembolso...', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
+    }, [isDeleteReembolsoPending]);
 
+    useEffect(() => {
         if (deleteReembolsoError) {
+            toast.dismiss();
             toast.error(`Ocorreu um erro ao excluir o reembolso: ${deleteReembolsoError.response?.data}`, {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
+    }, [deleteReembolsoError]);
 
-        if (!isDeleteReembolsoPending && !deleteReembolsoError) {
+    useEffect(() => {
+        if (isDeleteReembolsoSuccess) {
+            toast.dismiss();
             toast.success('Reembolso excluído!', {
                 position: 'bottom-right',
                 autoClose: 3000,
             });
         }
-    };
+    }, [isDeleteReembolsoSuccess]);
 
     return (
         <div className={`card ${styles.card} shadow`}>
@@ -381,7 +411,6 @@ function CardReembolsos({ ...props }) {
                                                                         className='form-control'
                                                                         placeholder='Descrição'
                                                                         {...atualizarReembolsoRegister('descricao')}
-                                                                        defaultValue={reembolso.descricao}
                                                                     />
                                                                     {atualizarReembolsoErrors.descricao && (
                                                                         <span className='text-danger'>
@@ -398,7 +427,6 @@ function CardReembolsos({ ...props }) {
                                                                         className='form-control'
                                                                         placeholder='Valor'
                                                                         {...atualizarReembolsoRegister('valor')}
-                                                                        defaultValue={reembolso.valor}
                                                                     />
                                                                     {atualizarReembolsoErrors.valor && (
                                                                         <span className='text-danger'>
@@ -415,7 +443,6 @@ function CardReembolsos({ ...props }) {
                                                                         className='form-control'
                                                                         placeholder='Mes'
                                                                         {...atualizarReembolsoRegister('mes')}
-                                                                        defaultValue={reembolso.mes}
                                                                     />
                                                                     {atualizarReembolsoErrors.mes && (
                                                                         <span className='text-danger'>
@@ -432,7 +459,6 @@ function CardReembolsos({ ...props }) {
                                                                         className='form-control'
                                                                         placeholder='Ano'
                                                                         {...atualizarReembolsoRegister('ano')}
-                                                                        defaultValue={reembolso.ano}
                                                                     />
                                                                     {atualizarReembolsoErrors.ano && (
                                                                         <span className='text-danger'>
@@ -457,7 +483,11 @@ function CardReembolsos({ ...props }) {
                                                 </BaseModalRoot>
                                             </BaseModalProvider>
                                             <BaseModalProvider>
-                                                <BaseModalTrigger variant='danger' size='sm' modalKey={`excluir-reembolso-${reembolso.id}`}>
+                                                <BaseModalTrigger
+                                                    variant='danger'
+                                                    size='sm'
+                                                    modalKey={`excluir-reembolso-${reembolso.id}`}
+                                                >
                                                     <Trash2 size={16} />
                                                 </BaseModalTrigger>
                                                 <BaseModalRoot modalKey={`excluir-reembolso-${reembolso.id}`}>

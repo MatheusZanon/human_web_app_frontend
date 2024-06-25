@@ -22,9 +22,11 @@ function ClienteFinanceiroProfile() {
         }
     }, [cliente, setCliente]);
 
-    if (clienteError) {
-        toast.error(clienteError.message);
-    }
+    useEffect(() => {
+        if (clienteError) {
+            toast.error(clienteError?.message);
+        }
+    }, [clienteError]);
 
     return (
         <>

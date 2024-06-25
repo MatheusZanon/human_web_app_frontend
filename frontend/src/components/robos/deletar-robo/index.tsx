@@ -16,6 +16,7 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '@/components/baseModal';
+import { useEffect } from 'react';
 
 const deletarRoboSchema = z.object({
     id: z.string().min(1, 'Selecione um robô'),
@@ -43,17 +44,26 @@ function DeletarRoboCard({ robos }: { robos: Robo[] }) {
     function onSubmit(data: id) {
         const id = parseInt(data.id);
         deleteRobo(id);
-        if (isSuccess) {
-            robos.map((robo) => {
-                if (robo.id === id) {
-                    toast.success(`Robo ${robo.nome} deletado com sucesso`, {
-                        autoClose: 3000,
-                        position: 'bottom-right',
-                    });
-                }
+    }
+
+    useEffect(() => {
+        if (isPending) {
+            toast.info('Excluindo Robo...', {
+                autoClose: 3000,
+                position: 'bottom-right',
             });
         }
-    }
+    }, [isPending]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.dismiss();
+            toast.success('Robo excluído com sucesso', {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+    }, [isSuccess]);
 
     return (
         <BaseModalProvider>

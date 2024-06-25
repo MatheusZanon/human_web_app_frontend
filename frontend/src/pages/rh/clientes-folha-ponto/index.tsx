@@ -25,7 +25,7 @@ import { AddSchemaType, addSchema } from '@/utils/types/rh/criar_cliente_folha_p
 import { RemoveSchemaType, removeSchema } from '@/utils/types/rh/remover_cliente_folha_ponto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowBigLeftDash, ArrowBigRightDash, Check, Pencil, Trash2, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -107,51 +107,75 @@ export default function ClientesFolhaPontoRH() {
 
     const onSubmitAdd = ({ id_clientes }: AddSchemaType) => {
         postClienteFolhaPontoMutate({ id_clientes });
+    };
 
+    useEffect(() => {
         if (isPostClienteFolhaPontoPending) {
             toast.loading('Adicionando...');
         }
+    }, [isPostClienteFolhaPontoPending]);
 
+    useEffect(() => {
         if (isPostClienteFolhaPontoError) {
+            toast.dismiss();
             toast.error(postClienteFolhaPontoError.response?.data as string);
         }
+    }, [isPostClienteFolhaPontoError, postClienteFolhaPontoError]);
 
+    useEffect(() => {
         if (isPostClienteFolhaPontoSuccess) {
+            toast.dismiss();
             toast.success('Adicionado com sucesso');
         }
-    };
+    }, [isPostClienteFolhaPontoSuccess]);
 
     const onSubmitRemove = ({ id }: RemoveSchemaType) => {
         deleteClienteFolhaPontoMutate({ id });
+    };
 
+    useEffect(() => {
         if (isDeleteClienteFolhaPontoPending) {
             toast.loading('Removendo...');
         }
+    }, [isDeleteClienteFolhaPontoPending]);
 
+    useEffect(() => {
         if (isDeleteClienteFolhaPontoError) {
+            toast.dismiss();
             toast.error(deleteClienteFolhaPontoError.response?.data as string);
         }
+    }, [isDeleteClienteFolhaPontoError, deleteClienteFolhaPontoError]);
 
+    useEffect(() => {
         if (isDeleteClienteFolhaPontoSuccess) {
+            toast.dismiss();
             toast.success('Removido com sucesso');
         }
-    };
+    }, [isDeleteClienteFolhaPontoSuccess]);
 
     const onSubmitUpdate = ({ id, id_cliente, registrado, colaborador }: UpdateSchemaType) => {
         updateClienteFolhaPontoMutate({ id, id_cliente, registrado, colaborador });
+    };
 
+    useEffect(() => {
         if (isUpdateClienteFolhaPontoPending) {
-            toast.loading('Atualizando...');
+            toast.loading('Alterando...');
         }
+    }, [isUpdateClienteFolhaPontoPending]);
 
+    useEffect(() => {
         if (isUpdateClienteFolhaPontoError) {
+            toast.dismiss();
             toast.error(updateClienteFolhaPontoError.response?.data as string);
         }
+    }, [isUpdateClienteFolhaPontoError, updateClienteFolhaPontoError]);
 
+    useEffect(() => {
         if (isUpdateClienteFolhaPontoSuccess) {
-            toast.success('Atualizado com sucesso');
+            toast.dismiss();
+            toast.success('Alterado com sucesso');
         }
-    };
+    }, [isUpdateClienteFolhaPontoSuccess]);
 
     const handleSort = (columnKey: DotNestedKeys<ClienteFolhaPonto>) => {
         if (sortBy === columnKey) {

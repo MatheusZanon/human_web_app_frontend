@@ -13,6 +13,7 @@ import {
 } from '@/components/baseModal';
 import { CriarRoboType } from '@/utils/types/robos/criar_robo';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
@@ -40,10 +41,13 @@ function CriarRoboCard() {
         resolver: zodResolver(criarRoboSchema),
     });
 
-    const { mutate: create, isPending, isSuccess } = useCreateRobo();
+    const { mutate: create, isPending, isSuccess, isError, error } = useCreateRobo();
 
     function onSubmit(data: CriarRoboType) {
         create(data);
+    }
+
+    useEffect(() => {
         if (isSuccess) {
             toast.success('Robo criado com sucesso', {
                 autoClose: 3000,
@@ -55,11 +59,22 @@ function CriarRoboCard() {
                 descricao: '',
             });
         }
-    }
+    }, [isSuccess, reset]);
+
+    useEffect(() => {
+        if (isError) {
+            toast.error(`Erro ao criar robo!`, {
+                autoClose: 3000,
+                position: 'bottom-right',
+            });
+        }
+    }, [isError, error]);
 
     return (
         <BaseModalProvider>
-            <BaseModalTrigger variant='primary' modalKey='criar-robo'>Criar Robo</BaseModalTrigger>
+            <BaseModalTrigger variant='primary' modalKey='criar-robo'>
+                Criar Robo
+            </BaseModalTrigger>
             <BaseModalRoot modalKey='criar-robo'>
                 <BaseModalContent>
                     <BaseModalHeader>

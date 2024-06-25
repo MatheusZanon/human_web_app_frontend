@@ -17,6 +17,7 @@ import {
     BaseModalTitle,
     BaseModalTrigger,
 } from '../baseModal';
+import { useEffect } from 'react';
 
 const UpdateUserModal: React.FC = () => {
     const { user } = useProfileCard();
@@ -59,7 +60,12 @@ const UpdateUserModal: React.FC = () => {
         setValue('phone', formattedPhone);
     };
 
-    const { mutate: updateUser, isPending: isUpdateUserPending, error: updateUserError } = useUpdateUser();
+    const {
+        mutate: updateUser,
+        isPending: isUpdateUserPending,
+        error: updateUserError,
+        isSuccess: isUpdateUserSuccess,
+    } = useUpdateUser();
 
     const onSubmit = ({ email, first_name, last_name, groups, phone, username }: UpdateUserType) => {
         const cleanedPhone = phone.replace(/\D/g, '');
@@ -107,29 +113,33 @@ const UpdateUserModal: React.FC = () => {
         }
 
         updateUser({ userId: user!.id, data: updatedValues });
-
-        if (isUpdateUserPending) {
-            toast.loading('Por favor, aguarde...');
-        }
-
-        if (!isUpdateUserPending) {
-            toast.dismiss();
-        }
-
-        if (!isUpdateUserPending && !updateUserError) {
-            toast.success('Dados atualizados com sucesso!', {
-                autoClose: 3000,
-                position: 'bottom-right',
-            });
-        }
-
-        if (!isUpdateUserPending && updateUserError) {
-            toast.error(`Erro ao atualizar dados! ${updateUserError?.response?.data}`, {
-                autoClose: 3000,
-                position: 'bottom-right',
-            });
-        }
     };
+
+    useEffect(() => {
+        if (isUpdateUserPending) {
+            toast.info('Atualizando usuário...', {
+                autoClose: 3000,
+            });
+        }
+    }, [isUpdateUserPending]);
+
+    useEffect(() => {
+        if (isUpdateUserSuccess) {
+            toast.dismiss();
+            toast.success('Usuário atualizado com sucesso!', {
+                autoClose: 3000,
+            });
+        }
+    }, [isUpdateUserSuccess]);
+
+    useEffect(() => {
+        if (updateUserError) {
+            toast.dismiss();
+            toast.error(`Erro ao atualizar usuário! ${updateUserError}`, {
+                autoClose: 3000,
+            });
+        }
+    }, [updateUserError]);
 
     return (
         <BaseModalProvider>

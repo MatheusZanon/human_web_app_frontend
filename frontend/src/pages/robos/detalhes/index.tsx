@@ -20,7 +20,7 @@ import { AlterarRoboRotina } from '@/components/robos/alterar-robo-rotinas';
 import LoadingScreen from '@/components/loading-screen';
 import { Content } from '@/components/layout/content';
 import { BaseModalProvider, BaseModalTrigger } from '@/components/baseModal';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { RoboParametros } from '@/utils/types/robos/robo_parametros';
 import RoboRotina from '@/utils/types/robos/robo_rotinas';
 import { useGetClientesFinanceiro } from '@/api/http/dashboard';
@@ -113,38 +113,47 @@ function RoboDetalhes() {
 
     const handleDeleteParametro = (parametroId: number) => {
         deleteParametro(parametroId);
+    };
 
+    useEffect(() => {
         if (isDeleteParametroSuccess) {
             toast.success('Parâmetro excluído com sucesso!', {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
+    }, [isDeleteParametroSuccess]);
 
+    useEffect(() => {
         if (isDeleteParametroError) {
-            toast.error(`Erro ao excluir parametro rotina! ${error?.response?.data}`, {
+            toast.error(`Erro ao excluir parâmetro! ${error?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
-    };
+    }, [isDeleteParametroError, error]);
 
     const handleDeleteRotina = (rotinaId: number) => {
         deleteRotina(rotinaId);
+    };
+
+    useEffect(() => {
         if (isDeleteRotinaSuccess) {
             toast.success('Rotina excluída com sucesso!', {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
+    }, [isDeleteRotinaSuccess]);
 
+    useEffect(() => {
         if (isDeleteRotinaError) {
             toast.error(`Erro ao excluir rotina! ${error?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
-    };
+    }, [isDeleteRotinaError, error]);
 
     const [alterarParametro, setAlterarParametro] = useState<RoboParametros | undefined>(undefined);
     const [alterarRotina, setAlterarRotina] = useState<RoboRotina | undefined>(undefined);
