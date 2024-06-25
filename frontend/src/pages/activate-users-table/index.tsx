@@ -5,7 +5,7 @@ import { Group } from '@/utils/types/user/group';
 import { User } from '@/utils/types/user/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ShieldCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
@@ -34,6 +34,22 @@ function ActivateUsersTable() {
     const { hasRole } = useAuthenticatedUser();
     const [sortBy, setSortBy] = useState<keyof User>('id');
     const [sortDirection, setSortDirection] = useState('asc');
+
+    useEffect(() => {
+        if (activateSuccess) {
+            toast.success('Funcionário ativado com sucesso!', {
+                autoClose: 3000,
+            });
+        }
+    }, [activateSuccess]);
+
+    useEffect(() => {
+        if (activateError) {
+            toast.error(`Erro ao ativar funcionário! ${error?.response?.data}`, {
+                autoClose: 3000,
+            });
+        }
+    }, [activateError, error]);
 
     const schema = z.object({
         id: z.array(z.coerce.number(), { required_error: 'Selecione pelo menos um grupo' }),
@@ -132,20 +148,6 @@ function ActivateUsersTable() {
 
     const handleActivate = (userId: number, data: GroupType) => {
         activate({ userId, data });
-
-        if (activateSuccess) {
-            toast.success('Funcionário ativado com sucesso!', {
-                autoClose: 3000,
-                position: 'bottom-right',
-            });
-        }
-
-        if (activateError) {
-            toast.error(`Erro ao ativar funcionário ${error?.response?.data}`, {
-                autoClose: 3000,
-                position: 'bottom-right',
-            });
-        }
     };
 
     const findGroupsIds = (funcionario: User, groups: Group[]) => {

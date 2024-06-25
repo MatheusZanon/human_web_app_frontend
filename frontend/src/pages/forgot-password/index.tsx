@@ -2,9 +2,10 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { usePostForgotPassword } from '@/api/http/user';
+import { useEffect } from 'react';
 
 const ForgotPasswordSchema = z.object({
     email: z.string().email('Email inválido'),
@@ -49,28 +50,36 @@ function ForgotPassword() {
         forgotPasswordMutation(parsedData.data);
     }
 
-    if (isForgotPasswordPending) {
-        toast.info('Enviando email...', {
-            position: 'bottom-right',
-            autoClose: 5000,
-        });
-        return;
-    }
+    useEffect(() => {
+        if (isForgotPasswordPending) {
+            toast.info('Enviando email...', {
+                position: 'bottom-right',
+                autoClose: 5000,
+            });
+            return;
+        }
+    }, [isForgotPasswordPending]);
 
-    if (isForgotPasswordError) {
-        toast.error(`Erro: ${forgotPasswordError?.response?.data}`, {
-            position: 'bottom-right',
-            autoClose: 7000,
-        });
-        return;
-    }
+    useEffect(() => {
+        if (isForgotPasswordError) {
+            toast.dismiss();
+            toast.error(`Erro: ${forgotPasswordError?.response?.data}`, {
+                position: 'bottom-right',
+                autoClose: 7000,
+            });
+            return;
+        }
+    }, [isForgotPasswordError, forgotPasswordError]);
 
-    if (isForgotPasswordSuccess) {
-        toast.success('O link para redefinir sua senha foi enviado para o email informado!', {
-            position: 'bottom-right',
-            autoClose: 7000,
-        });
-    }
+    useEffect(() => {
+        if (isForgotPasswordSuccess) {
+            toast.dismiss();
+            toast.success('O link para redefinir sua senha foi enviado para o email informado!', {
+                position: 'bottom-right',
+                autoClose: 7000,
+            });
+        }
+    }, [isForgotPasswordSuccess]);
 
     return (
         <div className='w-50 p-3 d-flex flex-column align-items-center shadow rounded'>
@@ -98,7 +107,6 @@ function ForgotPassword() {
                     </span>
                 </div>
             </form>
-            <ToastContainer />
         </div>
     );
 }

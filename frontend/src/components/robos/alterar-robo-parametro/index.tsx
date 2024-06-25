@@ -14,6 +14,7 @@ import {
     BaseModalRoot,
     BaseModalTitle,
 } from '@/components/baseModal';
+import { useEffect } from 'react';
 
 function AlterarRoboParametro({
     roboId,
@@ -40,20 +41,25 @@ function AlterarRoboParametro({
 
     const onSubmit = (parametroId: number, data: CriarParametroType) => {
         alterarParametro({ parametroId, data });
+    };
+
+    useEffect(() => {
         if (isSuccess) {
             toast.success('Parâmetro alterado com sucesso!', {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
+    }, [isSuccess]);
 
+    useEffect(() => {
         if (isError) {
             toast.error(`Erro ao alterar parâmetro! ${error?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
-    };
+    }, [isError, error]);
 
     return (
         <BaseModalRoot

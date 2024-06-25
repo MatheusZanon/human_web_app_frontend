@@ -14,6 +14,7 @@ import {
     BaseModalRoot,
     BaseModalTitle,
 } from '@/components/baseModal';
+import { useEffect } from 'react';
 
 function AlterarRoboRotina({ roboId, rotina, modalKey }: { roboId: string; rotina: RoboRotina; modalKey: string }) {
     const { register, handleSubmit, setValue } = useForm<CriarRotinaType>({
@@ -31,20 +32,25 @@ function AlterarRoboRotina({ roboId, rotina, modalKey }: { roboId: string; rotin
 
     const onSubmit = (rotinaId: number, data: CriarRotinaType) => {
         alterarRotina({ rotinaId, data });
+    };
+
+    useEffect(() => {
         if (isSuccess) {
             toast.success('Rotina alterada com sucesso!', {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
+    }, [isSuccess]);
 
+    useEffect(() => {
         if (isError) {
             toast.error(`Erro ao alterar rotina! ${error?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
-    };
+    }, [isError, error]);
 
     return (
         <BaseModalRoot onOpen={() => setValue('nome', rotina.nome)} modalKey={modalKey}>

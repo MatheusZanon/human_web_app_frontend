@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableData } from '@/components/table';
 import { Pen, Search, Trash2 } from 'lucide-react';
 import { useAuthenticatedUser } from '@/contexts/AuthenticatedUser/AuthenticatedUserProvider';
@@ -40,21 +40,25 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
     const handleDeactivate = (id: number) => {
         deactivateUser(id);
         setShowModal(null);
+    };
 
+    useEffect(() => {
         if (isSuccess) {
             toast.success('Funcionário desativado com sucesso!', {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
+    }, [isSuccess]);
 
+    useEffect(() => {
         if (isError) {
-            toast.error(`Erro ao desativar funcionário ${error?.response?.data}`, {
+            toast.error(`Erro ao desativar funcionário! ${error?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
-    };
+    }, [isError, error]);
 
     const handleSort = (columnKey: string) => {
         if (sortBy === columnKey) {
@@ -99,21 +103,25 @@ function TabelaFuncionarios({ data }: { data: User[] }) {
 
     const onSubmit = (id: number, data: ChangeSituacaoType) => {
         updateSituacao({ userId: id, data: data });
+    };
 
+    useEffect(() => {
         if (isSuccessSituacao) {
             toast.success('Situação alterada com sucesso!', {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
+    }, [isSuccessSituacao]);
 
+    useEffect(() => {
         if (isErrorSituacao) {
-            toast.error(`Erro ao alterar situação do funcionário ${errorSituacao?.response?.data}`, {
+            toast.error(`Erro ao alterar situação! ${errorSituacao?.response?.data}`, {
                 autoClose: 3000,
                 position: 'bottom-right',
             });
         }
-    };
+    }, [isErrorSituacao, errorSituacao]);
 
     return (
         <Table>

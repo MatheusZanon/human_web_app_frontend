@@ -51,7 +51,10 @@ function Login() {
                     )
                         .then((response) => {
                             if (response.status == 200) {
-                                toast('Login efetuado com sucesso!');
+                                toast('Login efetuado com sucesso!', {
+                                    autoClose: 3000,
+                                    position: 'bottom-right',
+                                });
                                 setTimeout(() => {
                                     navigate('/main');
                                 }, 1500);
