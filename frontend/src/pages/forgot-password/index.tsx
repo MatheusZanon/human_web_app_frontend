@@ -83,7 +83,7 @@ function ForgotPassword() {
 
     return (
         <div className='w-50 p-3 d-flex flex-column align-items-center shadow rounded'>
-            <img src='/human-logo-full.svg' alt={`Human logo`} className='w-50 mb-2' />
+            <img src='/human-logo-full-font-black.svg' alt={`Human logo`} className='w-50 mb-2' style={{maxHeight: '100px', maxWidth: '200px' }}/>
             <form onSubmit={handleSubmit(onSubmit)} className='w-100'>
                 <div className='d-flex gap-3 mt-2 mb-2'>
                     <div className='w-100'>
