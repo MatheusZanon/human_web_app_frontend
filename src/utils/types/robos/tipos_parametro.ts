@@ -6,6 +6,7 @@ const tiposParametroEnum = z.enum([
   'FLOAT',
   'BOOLEAN',
   'DATE',
+  'CENTRO_DE_CUSTO',
 ]);
 
 type TiposParametroType = z.infer<typeof tiposParametroEnum>;

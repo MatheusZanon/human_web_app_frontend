@@ -25,6 +25,7 @@ import { RoboParametros } from '@/utils/types/robos/robo_parametros';
 import RoboRotina from '@/utils/types/robos/robo_rotinas';
 import { useGetClientesFinanceiro } from '@/api/http/dashboard';
 import UploadDropzone from '@/components/upload-dropzone';
+import { Search } from '@/components/dashboard/search';
 
 function RoboDetalhes() {
     const { roboId } = useParams();
@@ -227,6 +228,10 @@ function RoboDetalhes() {
                                                                     )}
                                                                 </div>
                                                             </label>
+                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
+                                                                'centro_de_custo' && (
+                                                                    <Search companyFilter />
+                                                            )}
                                                             {parametro.parametro_info.tipo.toLowerCase().trim() ===
                                                                 'date' && (
                                                                 <input

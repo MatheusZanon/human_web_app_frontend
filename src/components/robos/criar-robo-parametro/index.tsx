@@ -80,7 +80,7 @@ function CriarRoboParametroModal({ roboId }: { roboId: string }) {
                                     <option value=''>Selecione um tipo</option>
                                     {tipos.map((tipo) => (
                                         <option key={tipo} value={tipo}>
-                                            {tipo}
+                                            {tipo.split('_').join(' ')}
                                         </option>
                                     ))}
                                 </select>

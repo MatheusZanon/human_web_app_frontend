@@ -47,6 +47,7 @@ import ClientesFolhaPontoRH from '@/pages/rh/clientes-folha-ponto';
 import { BaseModalProvider } from '@/components/baseModal';
 import ForgotPassword from '@/pages/forgot-password';
 import ResetPassword from '@/pages/reset-password';
+import { SearchProvider } from '@/components/dashboard/search/search-provider';
 
 type route = {
     path: string;
@@ -76,7 +77,11 @@ const allRoutes: route[] = [
     },
     {
         path: 'robos/:roboId',
-        element: <RoboDetalhes />,
+        element: (
+            <SearchProvider>
+                <RoboDetalhes />,
+            </SearchProvider>
+        ) 
     },
     {
         path: 'financeiro/clientes',
