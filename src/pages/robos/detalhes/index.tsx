@@ -233,6 +233,22 @@ function RoboDetalhes() {
                                                                     <Search companyFilter />
                                                             )}
                                                             {parametro.parametro_info.tipo.toLowerCase().trim() ===
+                                                                'select' && (
+                                                                    <select className='form-select'>
+                                                                        <option>Selecione</option>
+                                                                        {parametro.parametro_info.options!.map(
+                                                                            (option) => (
+                                                                                <option
+                                                                                    key={option.id}
+                                                                                    value={option.nome}
+                                                                                >
+                                                                                    {option.nome}
+                                                                                </option>
+                                                                            ),
+                                                                        )}
+                                                                    </select>
+                                                            )}
+                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
                                                                 'date' && (
                                                                 <input
                                                                     type='date'
