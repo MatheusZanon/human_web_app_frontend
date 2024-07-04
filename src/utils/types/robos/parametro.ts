@@ -1,15 +1,10 @@
-interface SelectOptions {
-    id: string;
-    nome: string;
-    created_at: string;
-    updated_at: string;
-}
+import { SelectOption } from "./option";
 
 interface Parametro {
     id: string;
     nome: string;
     tipo: string;
-    options?: SelectOptions[];
+    options?: SelectOption[];
     created_at: string;
     updated_at: string;
 }

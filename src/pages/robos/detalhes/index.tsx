@@ -26,6 +26,7 @@ import RoboRotina from '@/utils/types/robos/robo_rotinas';
 import { useGetClientesFinanceiro } from '@/api/http/dashboard';
 import UploadDropzone from '@/components/upload-dropzone';
 import { Search } from '@/components/dashboard/search';
+import { CriarRoboOptionModal } from '@/components/robos/criar-robo-parametro/select/criar-option';
 
 function RoboDetalhes() {
     const { roboId } = useParams();
@@ -180,6 +181,7 @@ function RoboDetalhes() {
                                     <>
                                         <CriarRoboParametroModal roboId={roboId ? roboId : ''} />
                                         <CriarRoboRotinaModal roboId={roboId ? roboId : ''} />
+                                        <CriarRoboOptionModal roboId={roboId ? roboId : ''} />
                                     </>
                                 )}
                             </div>

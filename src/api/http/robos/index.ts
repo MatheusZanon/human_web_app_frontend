@@ -17,6 +17,8 @@ import { putParametros } from './putParametros';
 import { deleteRotina } from './deleteRotinas';
 import { putRotinas } from './putRotinas';
 import { getCategorias } from './getCategorias';
+import { CriarOptionType } from '@/utils/types/robos/criar_option';
+import { postOption } from './postOption';
 export type { RoboParametrosType } from './postExecutarRobo';
 
 export function useGetCategorias() {
@@ -102,6 +104,18 @@ export function useCriarRotina({ roboId }: { roboId: string }) {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/rotinas/listar`] });
+        },
+    });
+}
+
+export function useCriarOption({ roboId }: { roboId: string }) {
+    return useMutation({
+        mutationKey: [`robo/${roboId}/parametros/criar-option/`],
+        mutationFn: (data: CriarOptionType) => {
+            return postOption(parseInt(roboId), data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`robo/${roboId}/parametros/listar`] });
         },
     });
 }
