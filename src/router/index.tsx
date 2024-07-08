@@ -79,7 +79,7 @@ const allRoutes: route[] = [
         path: 'robos/:roboId',
         element: (
             <SearchProvider>
-                <RoboDetalhes />,
+                <RoboDetalhes />
             </SearchProvider>
         ) 
     },

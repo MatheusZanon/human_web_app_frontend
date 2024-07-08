@@ -27,10 +27,16 @@ import { useGetClientesFinanceiro } from '@/api/http/dashboard';
 import UploadDropzone from '@/components/upload-dropzone';
 import { Search } from '@/components/dashboard/search';
 import { CriarRoboOptionModal } from '@/components/robos/criar-robo-parametro/select/criar-option';
+import { useSearch } from '@/components/dashboard/search/search-provider';
 
 function RoboDetalhes() {
     const { roboId } = useParams();
     const { register, getValues, setValue, watch } = useForm<RoboParametrosType>();
+    const { selected } = useSearch();
+
+    useEffect(() => {
+        setValue('Centro de Custo', selected);
+    }, [selected, setValue]);
 
     const {
         data: roboParametros,
@@ -191,130 +197,164 @@ function RoboDetalhes() {
                                         <>
                                             <h2>Parametros</h2>
                                             <form className='d-flex flex-column gap-2'>
-                                                {roboParametros.map((parametro) => (
-                                                    <div key={parametro.id}>
-                                                        <div className='flex-grow-1'>
-                                                            <label
-                                                                className='form-label d-flex justify-content-between'
-                                                                htmlFor={`parametro_${parametro.id}`}
-                                                            >
-                                                                <span className='flex-grow-1'>
-                                                                    {parametro.parametro_info.nome}
-                                                                </span>
-                                                                <div className={`d-flex gap-2`}>
-                                                                    {hasRole('TI') && (
-                                                                        <>
-                                                                            <BaseModalTrigger
-                                                                                modalKey='alterar-robo-parametro'
-                                                                                onMouseEnter={() =>
-                                                                                    setAlterarParametro(parametro)
-                                                                                }
-                                                                            >
-                                                                                <Pencil size={18} />
-                                                                            </BaseModalTrigger>
-                                                                            <button
-                                                                                className='btn py-0 px-2'
-                                                                                key={`delete-${parametro.id}`}
-                                                                                type='button'
-                                                                                onClick={() =>
-                                                                                    handleDeleteParametro(
-                                                                                        parseInt(parametro.id),
-                                                                                    )
-                                                                                }
-                                                                                disabled={isDeleteParametroPending}
-                                                                                aria-disabled={isDeleteParametroPending}
-                                                                            >
-                                                                                <X size={18} />
-                                                                            </button>
-                                                                        </>
+                                                {roboParametros.map((parametro) => {
+                                                    const isRelatoriosDemissionais = roboDetalhes?.nome === 'Relatórios Demissionais';
+                                                    const isDispensaComJustaCausa = watch('rotina') === '2. Dispensa com Justa Causa';
+                                                    const isSpecificBooleanParametro = ['trct', 'trct complementar', 'homologação', 'relatório de médias'].includes(parametro.parametro_info.nome.toLowerCase());
+                                            
+                                                    const showField = 
+                                                        !isRelatoriosDemissionais ||
+                                                        (isRelatoriosDemissionais && isSpecificBooleanParametro) ||
+                                                        (isRelatoriosDemissionais && isDispensaComJustaCausa) ||
+                                                        (!isRelatoriosDemissionais && isDispensaComJustaCausa) ||
+                                                        (isRelatoriosDemissionais && parametro.parametro_info.tipo.toLowerCase() !== 'boolean' && parametro.parametro_info.nome.toLowerCase() !== 'descrição dos fatos');
+
+                                                    return (
+                                                        showField && (
+                                                            <div key={parametro.id}>
+                                                                <div className='flex-grow-1'>
+                                                                    <label
+                                                                        className='form-label d-flex justify-content-between'
+                                                                        htmlFor={`parametro_${parametro.id}`}
+                                                                    >
+                                                                        <span className='flex-grow-1'>
+                                                                            {parametro.parametro_info.nome}
+                                                                        </span>
+                                                                        <div className={`d-flex gap-2`}>
+                                                                            {hasRole('TI') && (
+                                                                                <>
+                                                                                    <BaseModalTrigger
+                                                                                        modalKey='alterar-robo-parametro'
+                                                                                        onMouseEnter={() =>
+                                                                                            setAlterarParametro(
+                                                                                                parametro,
+                                                                                            )
+                                                                                        }
+                                                                                    >
+                                                                                        <Pencil size={18} />
+                                                                                    </BaseModalTrigger>
+                                                                                    <button
+                                                                                        className='btn py-0 px-2'
+                                                                                        key={`delete-${parametro.id}`}
+                                                                                        type='button'
+                                                                                        onClick={() =>
+                                                                                            handleDeleteParametro(
+                                                                                                parseInt(parametro.id),
+                                                                                            )
+                                                                                        }
+                                                                                        disabled={
+                                                                                            isDeleteParametroPending
+                                                                                        }
+                                                                                        aria-disabled={
+                                                                                            isDeleteParametroPending
+                                                                                        }
+                                                                                    >
+                                                                                        <X size={18} />
+                                                                                    </button>
+                                                                                </>
+                                                                            )}
+                                                                        </div>
+                                                                    </label>
+                                                                    {parametro.parametro_info.tipo
+                                                                        .toLowerCase()
+                                                                        .trim() === 'centro_de_custo' && (
+                                                                        <Search companyFilter />
+                                                                    )}
+                                                                    {parametro.parametro_info.tipo
+                                                                        .toLowerCase()
+                                                                        .trim() === 'select' && (
+                                                                        <select
+                                                                            className='form-select'
+                                                                            {...register(parametro.parametro_info.nome)}
+                                                                        >
+                                                                            <option>Selecione</option>
+                                                                            {parametro.parametro_info.options!.map(
+                                                                                (option) => (
+                                                                                    <option
+                                                                                        key={option.id}
+                                                                                        value={option.nome}
+                                                                                    >
+                                                                                        {option.nome}
+                                                                                    </option>
+                                                                                ),
+                                                                            )}
+                                                                        </select>
+                                                                    )}
+                                                                    {parametro.parametro_info.tipo
+                                                                        .toLowerCase()
+                                                                        .trim() === 'date' && (
+                                                                        <input
+                                                                            type='date'
+                                                                            id={`parametro_${parametro.id}`}
+                                                                            defaultValue={parametro.valor}
+                                                                            {...register(parametro.parametro_info.nome)}
+                                                                            className={`form-control`}
+                                                                        />
+                                                                    )}
+                                                                    {parametro.parametro_info.tipo
+                                                                        .toLowerCase()
+                                                                        .trim() === 'integer' && (
+                                                                        <input
+                                                                            type='number'
+                                                                            id={`parametro_${parametro.id}`}
+                                                                            {...register(parametro.parametro_info.nome)}
+                                                                            onChange={(e) => {
+                                                                                setValue(
+                                                                                    parametro.parametro_info.nome,
+                                                                                    e.target.value,
+                                                                                ),
+                                                                                    roboDetalhes?.nome ===
+                                                                                        'Organiza Extrato' &&
+                                                                                        parametro.parametro_info
+                                                                                            .nome === 'mes' &&
+                                                                                        configuraMes(e.target.value);
+                                                                                roboDetalhes?.nome ===
+                                                                                    'Organiza Extrato' &&
+                                                                                    parametro.parametro_info.nome ===
+                                                                                        'ano' &&
+                                                                                    configuraAno(e.target.value);
+                                                                            }}
+                                                                            className={`form-control`}
+                                                                        />
+                                                                    )}
+                                                                    {parametro.parametro_info.tipo
+                                                                        .toLowerCase()
+                                                                        .trim() === 'float' && (
+                                                                        <input
+                                                                            type='number'
+                                                                            id={`parametro_${parametro.id}`}
+                                                                            defaultValue={parametro.valor}
+                                                                            {...register(parametro.parametro_info.nome)}
+                                                                            className={`form-control`}
+                                                                        />
+                                                                    )}
+                                                                    {parametro.parametro_info.tipo
+                                                                        .toLowerCase()
+                                                                        .trim() === 'boolean' && (
+                                                                        <input
+                                                                            type='checkbox'
+                                                                            id={`parametro_${parametro.id}`}
+                                                                            defaultValue={parametro.valor}
+                                                                            {...register(parametro.parametro_info.nome)}
+                                                                            className={`form-check-input`}
+                                                                        />
+                                                                    )}
+                                                                    {parametro.parametro_info.tipo
+                                                                        .toLowerCase()
+                                                                        .trim() === 'text' && (
+                                                                        <input
+                                                                            type='text'
+                                                                            id={`parametro_${parametro.id}`}
+                                                                            defaultValue={parametro.valor}
+                                                                            {...register(parametro.parametro_info.nome)}
+                                                                            className={`form-control`}
+                                                                        />
                                                                     )}
                                                                 </div>
-                                                            </label>
-                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                'centro_de_custo' && (
-                                                                    <Search companyFilter />
-                                                            )}
-                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                'select' && (
-                                                                    <select className='form-select'>
-                                                                        <option>Selecione</option>
-                                                                        {parametro.parametro_info.options!.map(
-                                                                            (option) => (
-                                                                                <option
-                                                                                    key={option.id}
-                                                                                    value={option.nome}
-                                                                                >
-                                                                                    {option.nome}
-                                                                                </option>
-                                                                            ),
-                                                                        )}
-                                                                    </select>
-                                                            )}
-                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                'date' && (
-                                                                <input
-                                                                    type='date'
-                                                                    id={`parametro_${parametro.id}`}
-                                                                    defaultValue={parametro.valor}
-                                                                    {...register(parametro.parametro_info.nome)}
-                                                                    className={`form-control`}
-                                                                />
-                                                            )}
-                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                'integer' && (
-                                                                <input
-                                                                    type='number'
-                                                                    id={`parametro_${parametro.id}`}
-                                                                    {...register(parametro.parametro_info.nome)}
-                                                                    onChange={(e) => {
-                                                                        setValue(
-                                                                            parametro.parametro_info.nome,
-                                                                            e.target.value,
-                                                                        ),
-                                                                            roboDetalhes?.nome === 'Organiza Extrato' &&
-                                                                                parametro.parametro_info.nome ===
-                                                                                    'mes' &&
-                                                                                configuraMes(e.target.value);
-                                                                        roboDetalhes?.nome === 'Organiza Extrato' &&
-                                                                            parametro.parametro_info.nome === 'ano' &&
-                                                                            configuraAno(e.target.value);
-                                                                    }}
-                                                                    className={`form-control`}
-                                                                />
-                                                            )}
-                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                'float' && (
-                                                                <input
-                                                                    type='number'
-                                                                    id={`parametro_${parametro.id}`}
-                                                                    defaultValue={parametro.valor}
-                                                                    {...register(parametro.parametro_info.nome)}
-                                                                    className={`form-control`}
-                                                                />
-                                                            )}
-                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                'boolean' && (
-                                                                <input
-                                                                    type='checkbox'
-                                                                    id={`parametro_${parametro.id}`}
-                                                                    defaultValue={parametro.valor}
-                                                                    {...register(parametro.parametro_info.nome)}
-                                                                    className={`form-check-input`}
-                                                                />
-                                                            )}
-                                                            {parametro.parametro_info.tipo.toLowerCase().trim() ===
-                                                                'text' && (
-                                                                <input
-                                                                    type='text'
-                                                                    id={`parametro_${parametro.id}`}
-                                                                    defaultValue={parametro.valor}
-                                                                    {...register(parametro.parametro_info.nome)}
-                                                                    className={`form-control`}
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                                            </div>
+                                                        )
+                                                    );
+                                                })}
                                                 {isRoboRotinasSuccess && roboRotinas.length > 0 && (
                                                     <>
                                                         <div>
