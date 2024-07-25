@@ -6,9 +6,11 @@ const WEB_BASE_URL = import.meta.env.VITE_WEB_BASE_URL;
 export const api = axios.create({
     baseURL: API_BASE_URL,
     withCredentials: true,
-    headers : {
-        'Referer' : WEB_BASE_URL
-    }
+});
+
+api.interceptors.request.use((config) => {
+    config.headers['Referer'] = WEB_BASE_URL;
+    return config;
 });
 
 api.interceptors.response.use(
