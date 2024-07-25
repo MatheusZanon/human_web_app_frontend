@@ -8,10 +8,14 @@ export const api = axios.create({
     withCredentials: true,
 });
 
-api.interceptors.request.use((config) => {
-    config.headers['Referer'] = WEB_BASE_URL;
-    return config;
-});
+api.interceptors.request.use(
+    (config) => {
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 api.interceptors.response.use(
     (response) => response,
